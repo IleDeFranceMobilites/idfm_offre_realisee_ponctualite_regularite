@@ -136,3 +136,13 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# VScode
+.vscode/
+
+# mac
+.DS_Store
+
+# Local Data
+data/input/
+data/output/
