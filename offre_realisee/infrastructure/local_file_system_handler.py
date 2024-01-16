@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pandas as pd
 
-from config.file_extensions import FileExtensions
+from offre_realisee.config.file_extensions import FileExtensions
 from offre_realisee.config.offre_realisee_config import MesureType
 from offre_realisee.config.aggregation_config import (AggregationLevel, suffix_by_agg)
 from offre_realisee.domain.port.file_system_handler import FileSystemHandler
@@ -11,7 +11,7 @@ from offre_realisee.domain.port.file_system_handler import FileSystemHandler
 from offre_realisee.config.input_config import InputColumns
 from offre_realisee.config.offre_realisee_config import MESURE_TYPE
 
-from config.logger import logger
+from offre_realisee.config.logger import logger
 
 
 class LocalFileSystemHandler(FileSystemHandler):

@@ -3,7 +3,7 @@ from typing import List, Tuple
 
 import pandas as pd
 
-from config.logger import logger
+from offre_realisee.config.logger import logger
 from offre_realisee.config.aggregation_config import AggregationLevel
 from offre_realisee.config.offre_realisee_config import MesureType, Mesure, MESURE_TYPE
 from offre_realisee.domain.entities.aggregation.generate_date_aggregation_lists import (

@@ -14,6 +14,6 @@ test:
 yaml-validation:
 	yamllint *.yml .ci_templates/*.yml
 
-.phony: deploy
-deploy:
-	func azure functionapp publish dpp-deptdata-dev-function-offre-de-transport
+.phony: build wheel
+build-wheel:
+	python -m build --wheel

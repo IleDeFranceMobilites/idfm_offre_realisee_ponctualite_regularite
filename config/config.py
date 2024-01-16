@@ -1,4 +1,4 @@
-from config.file_extensions import FileExtensions
+from offre_realisee.config.file_extensions import FileExtensions
 
 data_path_config = {
     'input_path': 'input',

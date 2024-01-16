@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pytest
 
-from config.file_extensions import FileExtensions
+from offre_realisee.config.file_extensions import FileExtensions
 from offre_realisee.config.aggregation_config import AggregationLevel, suffix_by_agg
 from offre_realisee.config.offre_realisee_config import MesureType
 from offre_realisee.domain.usecases.create_mesure_qs import create_mesure_qs

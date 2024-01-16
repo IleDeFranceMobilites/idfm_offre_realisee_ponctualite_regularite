@@ -3,7 +3,7 @@ from collections import defaultdict
 
 import pandas as pd
 
-from config.logger import logger
+from offre_realisee.config.logger import logger
 from offre_realisee.config.aggregation_config import AggregationLevel
 from offre_realisee.config.input_config import InputColumns
 from offre_realisee.config.offre_realisee_config import MesureType

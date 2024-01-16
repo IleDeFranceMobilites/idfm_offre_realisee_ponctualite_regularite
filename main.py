@@ -7,7 +7,7 @@ from offre_realisee.domain.usecases.aggregate_mesure_qs import aggregate_mesure_
 from offre_realisee.domain.usecases.create_mesure_qs import create_mesure_qs
 from offre_realisee.infrastructure.local_file_system_handler import LocalFileSystemHandler
 from config.config import data_path_config
-from config.logger import logger
+from offre_realisee.config.logger import logger
 from data import DATA_PATH
 
 
