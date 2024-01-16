@@ -1,0 +1,64 @@
+---
+name: Python CI
+
+trigger:
+  - main
+  - feature/*
+  - pullrequest/*
+
+
+variables:
+  vmImageName: 'ubuntu-latest'
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+stages:
+
+  - stage: Validate
+    displayName: Validate code
+    jobs:
+      - job: Validate
+        displayName: Validate
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.10'
+            displayName: 'Use Python 3.10'
+
+          - script: |
+              pip install --upgrade pip
+              pip install -r requirements.txt
+            displayName: 'Installer les dépendances'
+
+          - script: |
+              pip install -r requirements_dev.txt
+            displayName: 'Installer les dépendances de dev'
+
+          - script: |
+              pip install -r requirements_build.txt
+            displayName: 'Installer les dépendances de build'
+
+          - script: |
+              flake8 .
+            displayName: 'Valider la syntaxe avec Flake8'
+
+          - script: |
+              vulture . --ignore-names "mytimer,*_fixture,return_value"
+            displayName: "Vérifier l'absence de code mort Vulture"
+
+          - script: |
+              safety check -r requirements.txt
+            displayName: 'Valider les dépendances Safety sur requirements.txt'
+
+          - script: |
+              safety check -r requirements_dev.txt
+            displayName: 'Valider les dépendances Safety sur requirements_dev.txt'
+
+          - script: |
+              bandit .
+            displayName: "Valider l'absence de faille de sécurité avec Bandit"
+
+          - script: |
+              python -m pytest tests
+            displayName: "Lancer les tests avec pytest"
