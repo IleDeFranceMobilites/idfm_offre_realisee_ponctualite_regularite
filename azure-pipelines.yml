@@ -3,9 +3,11 @@ name: Python CI
 
 trigger:
   - main
-  - feature/*
-  - pullrequest/*
 
+pr:
+  branches:
+    include:
+      - main
 
 variables:
   vmImageName: 'ubuntu-latest'
@@ -62,3 +64,51 @@ stages:
           - script: |
               python -m pytest tests
             displayName: "Lancer les tests avec pytest"
+
+  - stage: Build
+    displayName: Build stage
+    dependsOn: Validate
+    condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/main'), succeeded())
+
+    jobs:
+      - job: Build
+        displayName: Build
+        pool:
+          vmImage: $(vmImageName)
+
+        steps:
+          - bash: |
+              if [ -f extensions.csproj ]
+              then
+                  dotnet build extensions.csproj --runtime ubuntu.16.04-x64 --output ./bin
+              fi
+            workingDirectory: $(workingDirectory)
+            displayName: 'Build extensions'
+
+          - task: UsePythonVersion@0
+            displayName: 'Use Python 3.10'
+            inputs:
+              versionSpec: 3.10
+
+          - script: |
+              pip install --upgrade pip
+              pip install -r requirements.txt
+              pip install -r requirements_build.txt
+            displayName: 'Installer les dépendances'
+
+          - bash: |
+              python -m build --wheel
+            workingDirectory: $(workingDirectory)
+            displayName: 'Build package'
+
+          - bash: |
+              cp dist/idfm_qualite_de_service_calculateur* dist/idfm_qualite_de_service_calculateur-latest.whl
+            workingDirectory: $(workingDirectory)
+            displayName: 'Copy latest'
+
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'DataAnalytics'
+              scriptType: 'pscore'
+              scriptLocation: 'inlineScript'
+              inlineScript: 'az storage blob upload-batch --destination python-package --account-name dppdeptdatadevsto01 --source $(workingDirectory)/dist --overwrite true --auth-mode login'
