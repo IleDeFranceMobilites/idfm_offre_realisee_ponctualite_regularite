@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "idfm-qualite-de-service-calculateur"
-version = "1.0.0"
+version = "1.0.1"
 description = "Calculateur de qualité de service basé sur les données d'offre réalisées"
 dependencies = [
     'pandas >= 2.0.0',

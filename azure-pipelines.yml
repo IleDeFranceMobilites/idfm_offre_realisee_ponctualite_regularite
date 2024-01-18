@@ -4,10 +4,6 @@ name: Python CI
 trigger:
   - main
 
-pr:
-  branches:
-    include:
-      - main
 
 variables:
   vmImageName: 'ubuntu-latest'
@@ -36,10 +32,6 @@ stages:
           - script: |
               pip install -r requirements_dev.txt
             displayName: 'Installer les dépendances de dev'
-
-          - script: |
-              pip install -r requirements_build.txt
-            displayName: 'Installer les dépendances de build'
 
           - script: |
               flake8 .
@@ -101,14 +93,11 @@ stages:
             workingDirectory: $(workingDirectory)
             displayName: 'Build package'
 
-          - bash: |
-              cp dist/idfm_qualite_de_service_calculateur* dist/idfm_qualite_de_service_calculateur-latest.whl
-            workingDirectory: $(workingDirectory)
-            displayName: 'Copy latest'
-
-          - task: AzureCLI@2
+          - task: TwineAuthenticate@1
             inputs:
-              azureSubscription: 'DataAnalytics'
-              scriptType: 'pscore'
-              scriptLocation: 'inlineScript'
-              inlineScript: 'az storage blob upload-batch --destination python-package --account-name dppdeptdatadevsto01 --source $(workingDirectory)/dist --overwrite true --auth-mode login'
+              artifactFeed: 'Data Analytics/idfm_feed'
+            displayName: 'Twine Authenticate'
+
+          - script: |
+              python -m twine upload -r idfm_feed --config-file $(PYPIRC_PATH) dist/*.whl
+            displayName: 'Upload to feed'
