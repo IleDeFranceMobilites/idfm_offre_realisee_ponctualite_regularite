@@ -31,13 +31,13 @@ def stat_compliance_score_regularite(df: pd.DataFrame, n_theorique_by_lignes: Di
 
     df[MesureRegularite.nombre_theorique] = df[MesureRegularite.ligne].apply(lambda x: int(n_theorique_by_lignes[x]))
 
-    df[MesureRegularite.taux_de_conformite] = (
-            df[MesureRegularite.score_de_conformite] / df[MesureRegularite.nombre_theorique] * 100
+    df[MesureRegularite.taux_de_conformite] = round(
+            df[MesureRegularite.score_de_conformite] / df[MesureRegularite.nombre_theorique] * 100, 2
     )
 
-    df[MesureRegularite.taux_absence_de_donnees] = (
+    df[MesureRegularite.taux_absence_de_donnees] = round(
             (df[MesureRegularite.nombre_theorique] - df[MesureRegularite.nombre_reel]) /
-            df[MesureRegularite.nombre_theorique] * 100
+            df[MesureRegularite.nombre_theorique] * 100, 2
     )
 
     return df

@@ -28,8 +28,8 @@ def test_stat_compliance_score_ponctualite():
         MesurePonctualite.situation_inacceptable_retard: [1, 0],
         MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue: [1, 0],
         MesurePonctualite.situation_inacceptable_total: [2, 0],
-        MesurePonctualite.taux_de_conformite: [5 / 9 * 100, 50.0],
-        MesurePonctualite.taux_absence_de_donnees: [1 / 9 * 100, 0.0]
+        MesurePonctualite.taux_de_conformite: [55.56, 50.0],
+        MesurePonctualite.taux_absence_de_donnees: [11.11, 0.0]
     })
 
     # When

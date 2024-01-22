@@ -62,13 +62,13 @@ def stat_compliance_score_ponctualite(df: pd.DataFrame) -> pd.DataFrame:
 
     df = df.merge(df_si, on=[MesurePonctualite.ligne])
 
-    df[MesurePonctualite.taux_de_conformite] = (
-            df[MesurePonctualite.score_de_conformite] / df[MesurePonctualite.nombre_theorique] * 100
+    df[MesurePonctualite.taux_de_conformite] = round(
+        df[MesurePonctualite.score_de_conformite] / df[MesurePonctualite.nombre_theorique] * 100, 2
     )
 
-    df[MesurePonctualite.taux_absence_de_donnees] = (
-            (df[MesurePonctualite.nombre_theorique] - df[MesurePonctualite.nombre_reel]) /
-            df[MesurePonctualite.nombre_theorique] * 100
+    df[MesurePonctualite.taux_absence_de_donnees] = round(
+        (df[MesurePonctualite.nombre_theorique] - df[MesurePonctualite.nombre_reel]) /
+        df[MesurePonctualite.nombre_theorique] * 100, 2
     )
 
     return df

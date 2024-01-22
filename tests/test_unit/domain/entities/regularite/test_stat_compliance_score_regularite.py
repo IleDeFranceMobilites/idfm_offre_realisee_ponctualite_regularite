@@ -31,7 +31,7 @@ def test_stat_regularite_compliance_score():
         MesureRegularite.nombre_theorique: [5, 7, 1],
         MesureRegularite.nombre_reel: [4, 5, 1],
         MesureRegularite.taux_de_conformite: [30.0, 50.0, 50.0],
-        MesureRegularite.taux_absence_de_donnees: [20.0, 2 / 7 * 100, 0.0]
+        MesureRegularite.taux_absence_de_donnees: [20.0, 28.57, 0.0]
     })
 
     # When
