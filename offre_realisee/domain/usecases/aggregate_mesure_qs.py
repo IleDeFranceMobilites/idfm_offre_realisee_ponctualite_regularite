@@ -41,7 +41,8 @@ def aggregate_df(df_all_mesure: pd.DataFrame, mesure: Mesure) -> pd.DataFrame:
     df_aggregated = grouped_df[columns_to_sum].sum()
 
     df_aggregated[mesure.taux_de_conformite] = round(
-            df_aggregated[mesure.score_de_conformite] / df_aggregated[mesure.nombre_theorique] * 100), 2
+            df_aggregated[mesure.score_de_conformite] / df_aggregated[mesure.nombre_theorique] * 100, 2
+    )
 
     df_aggregated[mesure.taux_absence_de_donnees] = round(
             (df_aggregated[mesure.nombre_theorique] - df_aggregated[mesure.nombre_reel]) /
