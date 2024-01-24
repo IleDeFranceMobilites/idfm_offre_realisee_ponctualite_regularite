@@ -10,6 +10,30 @@ _SI_VALUES_SET = {
 
 def stat_compliance_score_regularite(df: pd.DataFrame, n_theorique_by_lignes: Dict[str, int],
                                      any_high_frequency_on_lignes: Dict[str, bool]) -> pd.DataFrame:
+    """Calcule le taux de conformité pour la régularité pour les lignes hautes fréquences (= les lignes qui contiennent
+    au moins un arrêt haute fréquence sur la période analysée).
+    La formule de calcul du taux de conformité est :
+    [somme des score de conformité] / [nombre de passages théoriques] * 100.
+    Le nombre de situations inacceptables par typologie et total sont sommées par ligne.
+    Le taux d'absence des données est également calculé :
+    [nombre de passages théoriques - nombre de passages réels] / [nombre de passages théoriques] * 100
+
+    Parameters
+    ----------
+    df : DataFrame
+        DataFrame qui contient les scores de conformité pour la régularité pour tous les arrêts par ligne
+    n_theorique_by_lignes : dict
+        Dictionnaire qui contient les lignes en clé et le nombre de passages théoriques en valeur
+    any_high_frequency_on_lignes : dict
+        Dictionnaire qui contient les lignes en clé et True en valeur si la ligne contient au moins un arrêt haute
+        fréquence sur la période analysée, False sinon
+
+    Returns
+    ----------
+    df : DataFrame
+        DataFrame qui contient le nombre de passages théoriques, réels, le nombre de situations inacceptables par
+        typologie et total, le taux de conformité pour la régularité, le taux d'absence des données (réelles)
+    """
 
     # Filter lignes with at least one high frequency measure
     df = df[df[MesureRegularite.ligne].apply(lambda x: any_high_frequency_on_lignes[x])]

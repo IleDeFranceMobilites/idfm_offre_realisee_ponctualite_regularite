@@ -8,6 +8,24 @@ FREQUENCY_THRESHOLD = timedelta(hours=1)
 
 
 def add_frequency(df_by_stop: pd.DataFrame) -> pd.DataFrame:
+    """Ajout d'une colonne de fréquence aux données de ponctualité par arrêt.
+
+    Cette fonction prend en entrée un DataFrame contenant des données de ponctualité par arrêt et ajoute une colonne
+    indiquant la fréquence de passage pour chaque enregistrement. La fréquence est déterminée en comparant la différence
+    entre l'heure théorique actuelle et celle du cinquième passage suivant. Si cette différence est inférieure au seuil
+    FREQUENCY_THRESHOLD (défini à 1h), la fréquence est considérée comme haute (HF), sinon elle est considérée comme
+    basse (BF). Elle retourne le DataFrame modifié avec la colonne de fréquence ajoutée.
+
+    Parameters
+    ----------
+    df_by_stop : pd.DataFrame
+        DataFrame contenant les données de ponctualité par arrêt.
+
+    Returns
+    -------
+    df_by_stop : DataFrame
+        DataFrame modifié avec une colonne de fréquence ajoutée.
+    """
     df_by_stop = df_by_stop.sort_values(by=MesurePonctualite.heure_theorique)
     heure_theorique_col = df_by_stop[MesurePonctualite.heure_theorique]
 

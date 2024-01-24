@@ -9,7 +9,22 @@ from offre_realisee.domain.entities.regularite.matching_heure_theorique_reelle_r
 
 
 def process_stop_regularite(df_by_stop: pd.DataFrame):
+    """Calcule le score de conformité pour tous les passages d'un arrêt sur la période analysée.
+    Les étapes de calcul sont les suivantes :
+    1. Association d'un passage à l'heure réelle à 2 passages à l'heure théorique (inf.=précédent, sup.=suivant)
+    2. Calcul du score de conformité en fonction de chacun des 2 passages à l'heure théorique
+    3. Sélection du score de conformité le plus optimal en fonction des résultats précédents
 
+    Parameters
+    ----------
+    df_by_stop : DataFrame
+        DataFrame qui contient les données de passages réels et théoriques pour un arrêt sur toute la période analysée
+
+    Returns
+    ----------
+     df_score : DataFrame
+        DataFrame qui contient les scores de conformité pour tous les passages d'un arrêt sur la période analysée
+    """
     #  If no passage reel is present no regularity score is computed
     if df_by_stop[MesureRegularite.heure_reelle].count() == 0:
         return pd.DataFrame()

@@ -10,6 +10,23 @@ set_printoptions(suppress=True)
 
 
 def process_stop_ponctualite(df_by_stop: pd.DataFrame) -> pd.DataFrame:
+    """Traitement des données par arrêt et ajout des scores de conformité.
+
+    Cette fonction prend un DataFrame avec des données de ponctualité par arrêt et optimise les attributions de temps
+    réelle/théorique pour minimiser les pénalités. Elle retourne un DataFrame incluant les scores de conformité, le
+    lien théorique réelle et gère les passages aberrants en les marquant comme non attribués.
+
+    Parameters
+    ----------
+    df_by_stop : DataFrame
+        DataFrame contenant les données par arrêt.
+
+    Returns
+    -------
+    df_by_stop :  DataFrame
+        DataFrame contenant l'assignement optimal des valeurs théoriques/réelles ainsi que le score de conformité
+        associé.
+    """
     # On extrait la colonne d'heures réelles, en conservant les valeurs NaN pour pouvoir les associer de manière
     # optimale aux heures théoriques dans la matrice de coût.
 
@@ -48,6 +65,26 @@ def process_stop_ponctualite(df_by_stop: pd.DataFrame) -> pd.DataFrame:
 
 
 def compute_cost_matrix(df_by_stop: pd.DataFrame, heure_reelle_col: np.ndarray) -> np.ndarray:
+    """Traite les données de ponctualité par arrêts et génère le scores de conformité.
+
+    Parameters
+    ----------
+    df_by_stop : DataFrame
+        DataFrame contenant les données de ponctualité par arrêt.
+    heure_reelle_col : ndarray
+        Le type de franquence de la ligne (HF: Haute Fréquence, BF: Basse Fréquence).
+
+    Returns
+    -------
+    matrix : ndarray
+        Matrice contenant les scores de conformité:
+        - ComplianceType.compliant (1).
+        - ComplianceType.semi_compliant (0.5).
+        - ComplianceType.not_compliant (0).
+        - ComplianceType.situation_inacceptable_retard (-1000000): En retard.
+        - ComplianceType.situation_inacceptable_avance (-999900): En avance.
+        - ComplianceType.situation_inacceptable_absence (-999000): Pas de données.
+    """
     matrix_timedelta = np.subtract.outer(
         heure_reelle_col,
         df_by_stop[MesurePonctualite.heure_theorique].to_numpy()

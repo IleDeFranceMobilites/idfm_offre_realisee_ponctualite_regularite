@@ -36,6 +36,30 @@ class FrequencyThreshold:
 
 def score(freq: FrequenceType, matrix: np.ndarray, is_terminus: np.ndarray,
           next_theorique_interval: np.ndarray) -> np.ndarray:
+    """Calcul des scores de conformité pour la ponctualité.
+
+    Parameters
+    ----------
+    freq : FrequenceType
+        La fréquence de notre ligne (HF: Haute Frequence, BF: Basse Frequence).
+    matrix : ndarray
+        Matrice d'entrée contenant les deltas de temps entre les valeurs réelles et théoriques.
+    is_terminus : ndarray
+        Tableau de booléen indiquant si un arrêt est un terminus d'arrivée ou non.
+    next_theorique_interval : ndarray
+        Tableau contenant les intervalles de temps avec le prochain passage théorique.
+
+    Returns
+    -------
+    matrix_score : ndarray
+        Matrice contenant les scores de conformité:
+        - ComplianceType.compliant (1).
+        - ComplianceType.semi_compliant (0.5).
+        - ComplianceType.not_compliant (0).
+        - ComplianceType.situation_inacceptable_retard (-1000000): En retard.
+        - ComplianceType.situation_inacceptable_avance (-999900): En avance.
+        - ComplianceType.situation_inacceptable_absence (-999000): Pas de données.
+    """
     matrix_score = np.empty(matrix.shape)
     matrix_score[:] = np.NaN
 

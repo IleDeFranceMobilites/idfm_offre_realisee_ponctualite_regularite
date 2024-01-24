@@ -18,6 +18,22 @@ _ASSIGNED_VALUES_SET = {
 
 
 def stat_situation_inacceptable(df: pd.DataFrame) -> pd.DataFrame:
+    """Génère les statistiques des Situations Inacceptables (SI) par ligne.
+
+    Cette fonction prend un DataFrame avec des données de ponctualité et calcule les statistiques liées aux SI.
+    Elle compte le nombre de SI pour différents types (avance, retard, absence) pour chaque arrêt, et garde les valeurs
+    de l'arrêt ayant le plus de SI par ligne et sens.
+
+    Parameters
+    ----------
+    df : DataFrame
+        DataFrame contenant les données par arrêt, leur score de conformité et le nombre de SI.
+
+    Returns
+    -------
+    df_si :  DataFrame
+        DataFrame contenant les statistiques sur les SI pour chaque ligne.
+    """
     # Compte le nombre de SI par arrêts
     df_si_grouped = df.groupby([MesurePonctualite.ligne, MesurePonctualite.sens, MesurePonctualite.arret])
     df_si = df_si_grouped[MesurePonctualite.resultat].agg([
@@ -52,6 +68,27 @@ def stat_situation_inacceptable(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def stat_compliance_score_ponctualite(df: pd.DataFrame) -> pd.DataFrame:
+    """Génère les statistiques de conformité pour les données de ponctualité.
+
+    Cette fonction prend un DataFrame avec les scores de conformtié et calcule les statistiques liées à ces données.
+    Elle renvoit un DataFrame contenant :
+        - Le nombre de passage théoriques.
+        - Le nombre de passages réelles assignées à une valeur théorique.
+        - La somme des scores de conformité.
+        - Les statistiques sur les SI (SI avance, SI retard, SI absence, SI total)
+        - Le pourcentage de conformité.
+        - Le pourcentage de données manquantes.
+
+    Parameters
+    ----------
+    df : DataFrame
+        DataFrame contenant les données par arrêt, leur score de conformité et le nombre de SI.
+
+    Returns
+    -------
+    df : DataFrame
+        DataFrame contenant les statistiques de conformité pour chaque ligne.
+    """
     df_si = stat_situation_inacceptable(df)
 
     df = df.groupby([MesurePonctualite.ligne])[MesurePonctualite.resultat].agg([

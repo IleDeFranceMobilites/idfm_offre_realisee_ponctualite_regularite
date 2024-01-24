@@ -23,12 +23,36 @@ class LocalFileSystemHandler(FileSystemHandler):
         self.input_file_name = input_file_name
 
     def read_offre_realisee(self, **kwargs) -> pd.DataFrame:
+        """Récupération des données d'offre réalisée.
+
+        Parameters
+        ----------
+        **kwargs :
+            Keyword arguments supplémentaires passés à la fonction pandas read_parquet.
+
+        Returns
+        -------
+        df : DataFrame
+            DataFrame d'offre réalisée.
+        """
         file_path = os.path.join(self.data_path, self.input_path, self.input_file_name)
 
         logger.info(f"Reading input data from: {file_path}")
         return pd.read_parquet(file_path, **kwargs)
 
     def get_daily_offre_realisee(self, date: datetime) -> pd.DataFrame:
+        """Récupération des données d'offre réalisée pour une date.
+
+        Parameters
+        ----------
+        date : datetime
+            Date pour laquelle nous voulons les données d'offre théorique.
+
+        Returns
+        -------
+        df_offre_realisee : DataFrame
+            DataFrame d'offre réalisée.
+        """
         filters = [(InputColumns.jour, 'in', {date.strftime("%Y-%m-%d")})]
         df_offre_realisee = self.read_offre_realisee(
             columns=[InputColumns.ligne, InputColumns.arret,
@@ -39,8 +63,23 @@ class LocalFileSystemHandler(FileSystemHandler):
 
         return df_offre_realisee
 
-    def save_mesure_qs(self, df_mesure_qs: pd.DataFrame, date: datetime, aggregation_level: AggregationLevel,
-                       mesure_type: MesureType):
+    def save_mesure_qs(
+            self, df_mesure_qs: pd.DataFrame, date: datetime,
+            aggregation_level: AggregationLevel, mesure_type: MesureType
+    ) -> None:
+        """Sauvegarde du DataFrame de mesure de Qualité de Service (QS).
+
+        Parameters
+        ----------
+        df_mesure_qs : DataFrame
+            DataFrame que nous voulons sauvegarder.
+        date : datetime
+            Date des données de mesure QS.
+        aggregation_level : AggregationLevel
+            Niveau d'aggrégation de la mesure QS (by_day, by_week, by_year, ...).
+        mesure_type : MesureType
+            Le type de mesure (ponctualite, regularite).
+        """
         mesure_qs = MESURE_TYPE[mesure_type]
 
         folder_path = os.path.join(self.data_path, self.output_path, aggregation_level, mesure_type)
@@ -54,6 +93,20 @@ class LocalFileSystemHandler(FileSystemHandler):
         df_mesure_qs[mesure_qs.column_order].to_csv(file_path)
 
     def get_daily_mesure_qs(self, date: datetime, mesure_type: MesureType) -> pd.DataFrame:
+        """Récupération des données de mesure QS par jour.
+
+        Parameters
+        ----------
+        date : datetime
+            Date des données de mesure QS.
+        mesure_type : MesureType
+            Le type de mesure (ponctualite, regularite).
+
+        Returns
+        -------
+        df : DataFrame
+            DataFrame d'offre réalisée par jour.
+        """
         suffix = suffix_by_agg[AggregationLevel.by_day](date)
         folder_path = os.path.join(
             self.data_path, self.output_path, AggregationLevel.by_day, mesure_type
