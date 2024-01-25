@@ -20,6 +20,18 @@ from offre_realisee.config.offre_realisee_config import MesureRegularite, Freque
 def create_mesure_qs_regularite(
         file_system_handler: FileSystemHandler, date: datetime
 ):
+    """Crée et sauvegarde les mesures de qualité de service de type régularité.
+
+    Cette fonction récupère les données d'offre réalisée pour une date donnée, effectue des calculs de régularité pour
+    chaque arrêt, agrège les résultats et sauvegarde le DataFrame résultant.
+
+    Parameters
+    ----------
+        file_system_handler : FileSystemHandler
+            Gestionnaire du système de fichiers.
+        date : datetime
+            Date pour laquelle les mesures de qualité de service doivent être calculées.
+    """
 
     logger.info(f'Process: {date.strftime("%Y-%m-%d")}')
     df_offre_realisee = file_system_handler.get_daily_offre_realisee(date=date)

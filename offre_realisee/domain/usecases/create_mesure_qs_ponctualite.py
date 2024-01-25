@@ -15,6 +15,18 @@ from offre_realisee.domain.port.file_system_handler import FileSystemHandler
 
 
 def create_mesure_qs_ponctualite(file_system_handler: FileSystemHandler, date: datetime):
+    """Crée et sauvegarde les mesures de qualité de service de type ponctualité.
+
+    Cette fonction récupère les données d'offre réalisée pour une date donnée, effectue des calculs de ponctualité pour
+    chaque arrêt, agrège les résultats et sauvegarde le DataFrame résultant.
+
+    Parameters
+    ----------
+        file_system_handler : FileSystemHandler
+            Gestionnaire du système de fichiers.
+        date : datetime
+            Date pour laquelle les mesures de qualité de service doivent être calculées.
+    """
 
     logger.info(f'Process: {date.strftime("%Y-%m-%d")}')
     df_offre_realisee = file_system_handler.get_daily_offre_realisee(date=date)

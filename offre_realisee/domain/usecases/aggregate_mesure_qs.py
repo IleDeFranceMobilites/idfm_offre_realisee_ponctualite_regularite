@@ -12,7 +12,23 @@ from offre_realisee.domain.port.file_system_handler import FileSystemHandler
 
 
 def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: Tuple[datetime, datetime],
-                        aggregation_level: AggregationLevel, mesure_type: MesureType):
+                        aggregation_level: AggregationLevel, mesure_type: MesureType) -> None:
+    """Agrège les mesures journalières de la qualité de service et les sauvegarde selon les spécifications fournies.
+
+    Agrège les dates contenu dans la plage de données date_range en fonction du type de mesure: ponctualité ou
+    régularité.
+
+    Parameters
+    ----------
+        file_system_handler : FileSystemHandler
+            Gestionnaire du système de fichiers.
+        date_range : Tuple[datetime, datetime]
+            Plage de dates pour l'agrégation.
+        aggregation_level : AggregationLevel
+            Niveau d'agrégation des données.
+        mesure_type : MesureType
+            Type de mesure à agréger (ponctualite ou regularite).
+    """
     dict_date_lists = generate_date_aggregation_lists(date_range, aggregation_level)
 
     for suffix, date_list in dict_date_lists.items():
@@ -29,6 +45,23 @@ def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: Tupl
 
 
 def aggregate_df(df_all_mesure: pd.DataFrame, mesure: Mesure) -> pd.DataFrame:
+    """Agrège les mesures de la qualité de service.
+
+    Cette fonction prend un DataFrame de toutes les mesures quotidiennes de qualité de service et agrège ces mesures par
+    lignes. Les colonnes agrégées incluent le nombre théorique, le nombre réel, le score de conformité, et les types de
+    situations inacceptables. De plus, elle calcule le taux de conformité et le taux d'absence de données.
+
+    Parameters
+    ----------
+        df_all_mesure : pd.DataFrame
+            DataFrame contenant les mesures quotidiennes de qualité de service.
+        mesure : Mesure
+            Objet Mesure spécifiant les colonnes à agréger.
+
+    Returns
+    -------
+        pd.DataFrame: DataFrame agrégé des mesures de qualité de service.
+    """
     grouped_df = df_all_mesure.groupby(mesure.ligne)
 
     columns_to_sum = [
