@@ -1,4 +1,7 @@
 from datetime import datetime
+from multiprocessing import Pool
+from functools import partial
+from typing import Tuple
 
 import pandas as pd
 
@@ -12,6 +15,9 @@ from offre_realisee.domain.entities.ponctualite.stat_compliance_score_ponctualit
     stat_compliance_score_ponctualite)
 from offre_realisee.domain.entities.ponctualite.process_stop_ponctualite import process_stop_ponctualite
 from offre_realisee.domain.port.file_system_handler import FileSystemHandler
+
+
+NUMBER_OF_PARALLEL_PROCESS = 6
 
 
 def create_mesure_qs_ponctualite(file_system_handler: FileSystemHandler, date: datetime):
@@ -51,3 +57,29 @@ def create_mesure_qs_ponctualite(file_system_handler: FileSystemHandler, date: d
     file_system_handler.save_mesure_qs(
         df_stat_ponctualite, date, AggregationLevel.by_day, MesureType.ponctualite
     )
+
+
+def create_mesure_qs_ponctualite_date_range(
+        file_system_handler: FileSystemHandler, date_range: Tuple[datetime, datetime],
+        n_thread: int = NUMBER_OF_PARALLEL_PROCESS
+) -> None:
+    """Appelle la fonction create_mesure_qs_ponctualite sur une plage de date, en parallélisant les calculs.
+
+    Parameters
+    ----------
+        file_system_handler : FileSystemHandler
+            Gestionnaire du système de fichiers.
+        date_range : datetime
+            Dates de début et de fin pour laquelle les mesures de qualité de service doivent être calculées.
+        n_thread: int
+            Nombre de processus en parallèle.
+    """
+    date_range_list = pd.date_range(start=date_range[0], end=date_range[1])
+
+    create_mesure_qs_ponctualite_partial = partial(
+        create_mesure_qs_ponctualite,
+        file_system_handler
+    )
+
+    with Pool(processes=n_thread) as pool:
+        pool.map(create_mesure_qs_ponctualite_partial, date_range_list)

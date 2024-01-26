@@ -1,5 +1,8 @@
 from datetime import datetime
 from collections import defaultdict
+from multiprocessing import Pool
+from functools import partial
+from typing import Tuple
 
 import pandas as pd
 
@@ -15,6 +18,9 @@ from offre_realisee.domain.entities.regularite.process_stop_regularite import pr
 from offre_realisee.domain.port.file_system_handler import FileSystemHandler
 
 from offre_realisee.config.offre_realisee_config import MesureRegularite, FrequenceType
+
+
+NUMBER_OF_PARALLEL_PROCESS = 6
 
 
 def create_mesure_qs_regularite(
@@ -63,3 +69,29 @@ def create_mesure_qs_regularite(
     file_system_handler.save_mesure_qs(
         df_stat_regularite, date, AggregationLevel.by_day, MesureType.regularite
     )
+
+
+def create_mesure_qs_regularite_date_range(
+        file_system_handler: FileSystemHandler, date_range: Tuple[datetime, datetime],
+        n_thread: int = NUMBER_OF_PARALLEL_PROCESS
+) -> None:
+    """Appelle la fonction create_mesure_qs_regularite sur une plage de date, en parallélisant les calculs.
+
+    Parameters
+    ----------
+        file_system_handler : FileSystemHandler
+            Gestionnaire du système de fichiers.
+        date_range : datetime
+            Dates de début et de fin pour laquelle les mesures de qualité de service doivent être calculées.
+        n_thread: int
+            Nombre de processus en parallèle.
+    """
+    date_range_list = pd.date_range(start=date_range[0], end=date_range[1])
+
+    create_mesure_qs_regularite_partial = partial(
+        create_mesure_qs_regularite,
+        file_system_handler
+    )
+
+    with Pool(processes=n_thread) as pool:
+        pool.map(create_mesure_qs_regularite_partial, date_range_list)

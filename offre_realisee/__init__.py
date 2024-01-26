@@ -1,12 +1,13 @@
 import argparse
-from datetime import datetime, timedelta
+from datetime import datetime
 import logging
 
 from offre_realisee.config.aggregation_config import AggregationLevel
 from offre_realisee.config.file_extensions import FileExtensions
 from offre_realisee.config.offre_realisee_config import MesureType
 from offre_realisee.domain.usecases.aggregate_mesure_qs import aggregate_mesure_qs
-from offre_realisee.domain.usecases.create_mesure_qs_regularite import create_mesure_qs_regularite
+from offre_realisee.domain.usecases.create_mesure_qs_ponctualite import create_mesure_qs_ponctualite_date_range
+from offre_realisee.domain.usecases.create_mesure_qs_regularite import create_mesure_qs_regularite_date_range
 from offre_realisee.infrastructure.local_file_system_handler import LocalFileSystemHandler
 from offre_realisee.config.logger import logger
 
@@ -29,6 +30,7 @@ def compute_qs(
     input_path: str,
     output_path: str,
     input_file_name: str,
+    n_thread: 1,
 ) -> None:
 
     file_system_handler = LocalFileSystemHandler(
@@ -38,14 +40,15 @@ def compute_qs(
         input_file_name=input_file_name,
     )
 
-    current_date = start_date
+    date_range = (start_date, end_date)
+
     if mesure:
-        while current_date <= end_date:
-            create_mesure_qs_regularite(file_system_handler, current_date)
-            current_date += timedelta(days=1)
+        if ponctualite:
+            create_mesure_qs_ponctualite_date_range(file_system_handler, date_range, n_thread)
+        if regularite:
+            create_mesure_qs_regularite_date_range(file_system_handler, date_range, n_thread)
 
     if aggregation:
-        date_range = (start_date, end_date)
         for aggregation_level in [AggregationLevel.by_period, AggregationLevel.by_period_weekdays]:
             if ponctualite:
                 aggregate_mesure_qs(file_system_handler, date_range, aggregation_level, MesureType.ponctualite)
@@ -101,9 +104,28 @@ def main():  # noqa
     parser.add_argument('--input-file-name', default=default_data_path_config["input-file-name"], type=str,
                         help="Nom du fichier de données d'entrée. (default: %(default)s)\n"
                         "Input parquet file name. (default: %(default)s)")
+    parser.add_argument('--n-thread', default=1, type=int,
+                        help="Nombre de threads en parallèle dans le calcul des mesures. (default: %(default)s)\n"
+                        "Number of parallel threads. (default: %(default)s)")
 
     args = parser.parse_args()
 
     logger.setLevel(logging.INFO)
 
     compute_qs(**vars(args))
+
+
+if __name__ == "__main__":
+    compute_qs(
+        mesure=True,
+        aggregation=True,
+        ponctualite=True,
+        regularite=True,
+        data_path="/Users/theophile.molcard/idfm/idfm_offre_realisee_qualite_de_service/data",
+        start_date=datetime.strptime("2023-01-01", "%Y-%m-%d"),
+        end_date=datetime.strptime("2023-01-02", "%Y-%m-%d"),
+        input_path=default_data_path_config["input-path"],
+        output_path=default_data_path_config["output-path"],
+        input_file_name=default_data_path_config["input-file-name"],
+        n_thread=5,
+    )
