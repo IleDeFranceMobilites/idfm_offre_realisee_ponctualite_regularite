@@ -20,14 +20,14 @@ def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: Tupl
 
     Parameters
     ----------
-        file_system_handler : FileSystemHandler
-            Gestionnaire du système de fichiers.
-        date_range : Tuple[datetime, datetime]
-            Plage de dates pour l'agrégation.
-        aggregation_level : AggregationLevel
-            Niveau d'agrégation des données.
-        mesure_type : MesureType
-            Type de mesure à agréger (ponctualite ou regularite).
+    file_system_handler : FileSystemHandler
+        Gestionnaire du système de fichiers.
+    date_range : Tuple[datetime, datetime]
+        Plage de dates pour l'agrégation.
+    aggregation_level : AggregationLevel
+        Niveau d'agrégation des données.
+    mesure_type : MesureType
+        Type de mesure à agréger (ponctualite ou regularite).
     """
     dict_date_lists = generate_date_aggregation_lists(date_range, aggregation_level)
 
@@ -53,14 +53,14 @@ def aggregate_df(df_all_mesure: pd.DataFrame, mesure: Mesure) -> pd.DataFrame:
 
     Parameters
     ----------
-        df_all_mesure : pd.DataFrame
-            DataFrame contenant les mesures quotidiennes de qualité de service.
-        mesure : Mesure
-            Objet Mesure spécifiant les colonnes à agréger.
+    df_all_mesure : pd.DataFrame
+        DataFrame contenant les mesures quotidiennes de qualité de service.
+    mesure : Mesure
+        Objet Mesure spécifiant les colonnes à agréger.
 
     Returns
     -------
-        pd.DataFrame: DataFrame agrégé des mesures de qualité de service.
+    pd.DataFrame: DataFrame agrégé des mesures de qualité de service.
     """
     grouped_df = df_all_mesure.groupby(mesure.ligne)
 

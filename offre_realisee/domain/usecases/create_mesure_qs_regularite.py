@@ -33,10 +33,10 @@ def create_mesure_qs_regularite(
 
     Parameters
     ----------
-        file_system_handler : FileSystemHandler
-            Gestionnaire du système de fichiers.
-        date : datetime
-            Date pour laquelle les mesures de qualité de service doivent être calculées.
+    file_system_handler : FileSystemHandler
+        Gestionnaire du système de fichiers.
+    date : datetime
+        Date pour laquelle les mesures de qualité de service doivent être calculées.
     """
 
     logger.info(f'Process: {date.strftime("%Y-%m-%d")}')
@@ -79,12 +79,12 @@ def create_mesure_qs_regularite_date_range(
 
     Parameters
     ----------
-        file_system_handler : FileSystemHandler
-            Gestionnaire du système de fichiers.
-        date_range : datetime
-            Dates de début et de fin pour laquelle les mesures de qualité de service doivent être calculées.
-        n_thread: int
-            Nombre de processus en parallèle.
+    file_system_handler : FileSystemHandler
+        Gestionnaire du système de fichiers.
+    date_range : datetime
+        Dates de début et de fin pour laquelle les mesures de qualité de service doivent être calculées.
+    n_thread: int
+        Nombre de processus en parallèle.
     """
     date_range_list = pd.date_range(start=date_range[0], end=date_range[1])
 

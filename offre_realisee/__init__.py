@@ -121,7 +121,7 @@ if __name__ == "__main__":
         aggregation=True,
         ponctualite=True,
         regularite=True,
-        data_path="/Users/theophile.molcard/idfm/idfm_offre_realisee_qualite_de_service/data",
+        data_path="./data",
         start_date=datetime.strptime("2023-01-01", "%Y-%m-%d"),
         end_date=datetime.strptime("2023-01-02", "%Y-%m-%d"),
         input_path=default_data_path_config["input-path"],

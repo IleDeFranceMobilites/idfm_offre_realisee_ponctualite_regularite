@@ -3,16 +3,38 @@ Le projet permet de calculer les statistiques de qualité de service basées sur
 
 # Utiliser le module
 
-## Installer le package Python
+## Structure du code
+
+Le code est organisé selon l'architecture hexagonal.
+- Les fonctions "principales" sont rangées dans le sous-dossier **usecases**.
+- Les fonctions "secondaires", qui peuvent être appelées dans les "principales" sont rangées dans le sous-dossier
+**entities**.
+- Les variables sont définies dans les fichiers de configuration contenus dans le dossier **config**.
+- Et enfin les fonctions relatives à l'infrastructure sont rangées dans le dossier **infrastructure**.
+
+├── **sources**
+│   ├── **offre_realisee**
+│   │   ├── config
+│   │   ├── domain
+│   │   │   ├── entities
+│   │   │   ├── port
+│   │   │   ├── usecases
+│   │   ├── infrastructure
+
+## Calculer les indicateurs de Qualité de Service
+
+### Installer le package Python
 ```console
 git clone git@ssh.dev.azure.com:v3/IDFM-AZURE/Data%20Analytics/idfm_offre_realisee_qualite_de_service
 cd idfm_offre_realisee_qualite_de_service
 pip install .
 ```
 
-## Run it on local data
+### Executer le module sur des données locales
 
-### Data structure
+#### Structure des données
+Placer vos données dans un dossier respectant la structure définie.
+
 Le code a été implémenté en suivant une structure de répertoire définie. Les données d'entrée doivent être un fichier parquet nommé "**input-file-name**" partitionné par jour "DAY=AAAA-MM-JJ" en fonction du jour des données. Le dossier "**output**" contiendra les données de sortie. La création de dossiers pour organiser les fichiers de sortie est automatique.
 
 │─ **data-path**\
@@ -24,11 +46,11 @@ Le code a été implémenté en suivant une structure de répertoire définie. L
 Les valeurs suivantes peuvent être modifiées en fonction de la structure de votre répertoire :
 - data-path
 - input (Valeur par défaut: "input")
-- output (Valeur par defaut: "output")
-- input-file-name (Valeur par defaut: "offre_realisee.parquet")
+- output (Valeur par défaut: "output")
+- input-file-name (Valeur par défaut: "offre_realisee.parquet")
 
 
-### Example
+#### Exemple d'execution
 ```console
 offre_realisee
     --data-path=<dossier-racine-des-donnees>
@@ -37,22 +59,25 @@ offre_realisee
     --input-path=<chemin-relatif-du-dossier-des-donnees-en-entree>
     --output-path=<chemin-relatif-du-dossier-des-donnees-en-sortie>
     --input-file-name=<nom-du-fichier-de-donnees-en-entree>
+    --n-thread=<nombre-de-thread-d'execution-parallèle>
 ```
 
 Cette commande permet de calculer et d'agréger les statistiques de qualite de service entre la date de début (start-date) et la date de fin (end-date).
 
 Des paramètres supplémentaires peuvent être ajoutés pour exécuter le script sur :
-- la mesure ou l'aggrégation uniquement
+- la mesure ou l’agrégation uniquement
 - la ponctualité ou la régularité uniquement
 
 Par défaut la qualité de service est calculé par jour et agrégée par période pour la ponctualité et la régularité.
 
-### More details on this package parameters
+#### Plus de détails sur les paramètres d'execution du package
 
 ```console
 $ offre_realisee -h
 
-usage: offre_realisee [-h] [--mesure] [--aggregation] [--ponctualite] [--regularite] --data-path DATA_PATH --start-date START_DATE --end-date END_DATE [--input-path INPUT_PATH] [--output-path OUTPUT_PATH] [--input-file-name INPUT_FILE_NAME]
+usage: offre_realisee [-h] [--mesure | --no-mesure] [--aggregation | --no-aggregation] [--ponctualite | --no-ponctualite]
+                      [--regularite | --no-regularite] --data-path DATA_PATH --start-date START_DATE --end-date END_DATE
+                      [--input-path INPUT_PATH] [--output-path OUTPUT_PATH] [--input-file-name INPUT_FILE_NAME] [--n-thread N_THREAD]
 
 Calcul de la qualite de service.
 Compute qs
@@ -92,4 +117,6 @@ options:
   --input-file-name INPUT_FILE_NAME
                         Nom du fichier de données d'entrée. (default: offre_realisee.parquet)
                         Input parquet file name. (default: offre_realisee.parquet)
+  --n-thread N_THREAD   Nombre de threads en parallèle dans le calcul des mesures. (default: 1)
+                        Number of parallel threads. (default: 1)
 ```
