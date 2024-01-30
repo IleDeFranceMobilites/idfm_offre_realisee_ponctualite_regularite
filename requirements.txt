@@ -2,3 +2,4 @@ pandas==2.0.0
 pyarrow==11.0.0
 scipy==1.11.3
 workalendar==17.0.0
+multiprocess==0.70.16

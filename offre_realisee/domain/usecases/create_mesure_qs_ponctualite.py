@@ -1,9 +1,9 @@
 from datetime import datetime
-from multiprocessing import Pool
 from functools import partial
 from typing import Tuple
 
 import pandas as pd
+from multiprocess import Pool
 
 from offre_realisee.config.logger import logger
 from offre_realisee.config.aggregation_config import AggregationLevel

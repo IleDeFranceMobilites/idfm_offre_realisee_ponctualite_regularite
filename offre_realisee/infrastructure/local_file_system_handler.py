@@ -84,7 +84,7 @@ class LocalFileSystemHandler(FileSystemHandler):
 
         folder_path = os.path.join(self.data_path, self.output_path, aggregation_level, mesure_type)
         if not os.path.exists(folder_path):
-            os.makedirs(folder_path)
+            os.makedirs(folder_path, exist_ok=True)
 
         suffix = suffix_by_agg[aggregation_level](date)
         file_path = os.path.join(folder_path, f"mesure_{mesure_type}_{suffix}" + FileExtensions.csv)
