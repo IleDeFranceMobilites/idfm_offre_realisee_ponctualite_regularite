@@ -27,7 +27,7 @@ class LocalFileSystemHandler(FileSystemHandler):
 
         Parameters
         ----------
-        **kwargs :
+        `**kwargs` :
             Keyword arguments supplémentaires passés à la fonction pandas read_parquet.
 
         Returns

@@ -38,7 +38,7 @@ stages:
             displayName: 'Valider la syntaxe avec Flake8'
 
           - script: |
-              vulture . --ignore-names "mytimer,*_fixture,return_value"
+              vulture . --ignore-names "mytimer,*_fixture,return_value" --exclude="source"
             displayName: "Vérifier l'absence de code mort Vulture"
 
           - script: |

@@ -1,7 +1,7 @@
 .phony: Static validation
 static-validation:
 	flake8 .
-	vulture . --ignore-names "mytimer,return_value,*_fixture" --exclude=".venv,venv"
+	vulture . --ignore-names "mytimer,return_value,*_fixture" --exclude=".venv,venv,source"
 	safety check -r requirements.txt
 	safety check -r requirements_dev.txt
 	bandit .
@@ -17,3 +17,7 @@ yaml-validation:
 .phony: build wheel
 build-wheel:
 	python -m build --wheel
+
+.phony: generate documentation
+generate-documentation:
+	sphinx-build -M html ./source ./0_documentation

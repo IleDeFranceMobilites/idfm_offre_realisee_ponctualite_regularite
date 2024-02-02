@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<html lang="fr" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>stat_compliance_score_regularite &#8212; Documentation Offre realisee qualite de service 1.1.4</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../../_static/documentation_options.js?v=887e8bc4"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/translations.js?v=d99ca74e"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../../search.html" />
+    <link rel="next" title="compliance_score" href="compliance_score.html" />
+    <link rel="prev" title="process_stop_regularite" href="process_stop_regularite.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-offre_realisee.domain.entities.regularite.stat_compliance_score_regularite">
+<span id="stat-compliance-score-regularite"></span><h1>stat_compliance_score_regularite<a class="headerlink" href="#module-offre_realisee.domain.entities.regularite.stat_compliance_score_regularite" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="offre_realisee.domain.entities.regularite.stat_compliance_score_regularite.stat_compliance_score_regularite">
+<span class="sig-prename descclassname"><span class="pre">offre_realisee.domain.entities.regularite.stat_compliance_score_regularite.</span></span><span class="sig-name descname"><span class="pre">stat_compliance_score_regularite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_theorique_by_lignes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">any_high_frequency_on_lignes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.domain.entities.regularite.stat_compliance_score_regularite.stat_compliance_score_regularite" title="Link to this definition">¶</a></dt>
+<dd><p>Calcule le taux de conformité pour la régularité pour les lignes hautes fréquences (= les lignes qui contiennent
+au moins un arrêt haute fréquence sur la période analysée).
+La formule de calcul du taux de conformité est :
+[somme des score de conformité] / [nombre de passages théoriques] * 100.
+Le nombre de situations inacceptables par typologie et total sont sommées par ligne.
+Le taux d’absence des données est également calculé :
+[nombre de passages théoriques - nombre de passages réels] / [nombre de passages théoriques] * 100</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame qui contient les scores de conformité pour la régularité pour tous les arrêts par ligne</p>
+</dd>
+<dt>n_theorique_by_lignes<span class="classifier">dict</span></dt><dd><p>Dictionnaire qui contient les lignes en clé et le nombre de passages théoriques en valeur</p>
+</dd>
+<dt>any_high_frequency_on_lignes<span class="classifier">dict</span></dt><dd><p>Dictionnaire qui contient les lignes en clé et True en valeur si la ligne contient au moins un arrêt haute
+fréquence sur la période analysée, False sinon</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame qui contient le nombre de passages théoriques, réels, le nombre de situations inacceptables par
+typologie et total, le taux de conformité pour la régularité, le taux d’absence des données (réelles)</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Offre realisee qualite de service</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../domain.html">Domaine</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../usecases/usecases.html">Usecases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../port/port.html">Ports</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../entities.html">Entités</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../infrastructure/infrastructure.html">Infrastructure</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../domain.html">Domaine</a><ul>
+  <li><a href="../entities.html">Entités</a><ul>
+  <li><a href="regularite.html">Régularité</a><ul>
+      <li>Previous: <a href="process_stop_regularite.html" title="Chapitre précédent">process_stop_regularite</a></li>
+      <li>Next: <a href="compliance_score.html" title="Chapitre suivant">compliance_score</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Recherche rapide</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, IDFM.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../../../_sources/domain/entities/regularite/stat_compliance_score_regularite.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
