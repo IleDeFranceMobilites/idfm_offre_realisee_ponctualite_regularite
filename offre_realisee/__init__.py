@@ -1,6 +1,7 @@
 import argparse
 from datetime import datetime
 import logging
+from typing import Optional
 
 from offre_realisee.config.aggregation_config import AggregationLevel
 from offre_realisee.config.file_extensions import FileExtensions
@@ -30,6 +31,7 @@ def compute_qs(
     input_path: str,
     output_path: str,
     input_file_name: str,
+    list_journees_exceptionnelles: Optional[list[datetime]],
     n_thread: 1,
 ) -> None:
 
@@ -51,9 +53,11 @@ def compute_qs(
     if aggregation:
         for aggregation_level in [AggregationLevel.by_period, AggregationLevel.by_period_weekdays]:
             if ponctualite:
-                aggregate_mesure_qs(file_system_handler, date_range, aggregation_level, MesureType.ponctualite)
+                aggregate_mesure_qs(file_system_handler, date_range, aggregation_level, MesureType.ponctualite,
+                                    list_journees_exceptionnelles)
             if regularite:
-                aggregate_mesure_qs(file_system_handler, date_range, aggregation_level, MesureType.regularite)
+                aggregate_mesure_qs(file_system_handler, date_range, aggregation_level, MesureType.regularite,
+                                    list_journees_exceptionnelles)
 
 
 def main():  # noqa
@@ -104,8 +108,16 @@ def main():  # noqa
     parser.add_argument('--input-file-name', default=default_data_path_config["input-file-name"], type=str,
                         help="Nom du fichier de données d'entrée. (default: %(default)s)\n"
                         "Input parquet file name. (default: %(default)s)")
+
+    parser.add_argument('--list-journees-exceptionnelles', nargs="*", default=[],
+                        type=lambda s: datetime.strptime(s, '%Y-%m-%d'),
+                        help="Liste des dates des journées exceptionnelles à exclure des calculs agrégés. "
+                             "(Valeur par défaut: None)\n"
+                        "Datetime list of exceptionnal days to exclude. (default: None)\n")
+
     parser.add_argument('--n-thread', default=1, type=int,
-                        help="Nombre de threads en parallèle dans le calcul des mesures. (default: %(default)s)\n"
+                        help="Nombre de threads en parallèle dans le calcul des mesures. "
+                             "(Valeur par défaut: %(default)s)\n"
                         "Number of parallel threads. (default: %(default)s)")
 
     args = parser.parse_args()
@@ -127,5 +139,7 @@ if __name__ == "__main__":
         input_path=default_data_path_config["input-path"],
         output_path=default_data_path_config["output-path"],
         input_file_name=default_data_path_config["input-file-name"],
+        list_journees_exceptionnelles=None,
+
         n_thread=5,
     )

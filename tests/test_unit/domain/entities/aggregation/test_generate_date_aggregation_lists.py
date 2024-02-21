@@ -128,6 +128,7 @@ def test_generate_date_aggregation_lists_test_values_by_period_ferie():
     # Given
     date_range = (datetime(2023, 5, 1), datetime(2023, 5, 18))
     aggregation_level = AggregationLevel.by_period_weekdays
+    list_journees_exceptionnelles = []
 
     expected_result = {
         '2023_sunday_or_holiday_vacances_scolaires': [
@@ -147,7 +148,26 @@ def test_generate_date_aggregation_lists_test_values_by_period_ferie():
         '2023_sunday_or_holiday_plein_trafic': [datetime(2023, 5, 14, 0, 0), datetime(2023, 5, 18, 0, 0)]}
 
     # When
-    result = generate_date_aggregation_lists(date_range, aggregation_level)
+    result = generate_date_aggregation_lists(date_range, aggregation_level, list_journees_exceptionnelles)
+
+    # Then
+    assert result.items() == expected_result.items()
+
+
+def test_generate_date_aggregation_lists_test_values_except_journees_exceptionnelles():
+    # Given
+    date_range = (datetime(2023, 1, 1), datetime(2023, 1, 7))
+    aggregation_level = AggregationLevel.by_year_weekdays
+    list_journees_exceptionnelles = [datetime(2023, 1, 5)]
+
+    expected_result = {
+        "2023_weekend": [datetime(2023, 1, 1), datetime(2023, 1, 7)],
+        "2023_week": [datetime(2023, 1, 2), datetime(2023, 1, 3), datetime(2023, 1, 4),
+                      datetime(2023, 1, 6)]
+    }
+
+    # When
+    result = generate_date_aggregation_lists(date_range, aggregation_level, list_journees_exceptionnelles)
 
     # Then
     assert result.items() == expected_result.items()

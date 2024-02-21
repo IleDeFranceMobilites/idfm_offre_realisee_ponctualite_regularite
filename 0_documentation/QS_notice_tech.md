@@ -89,28 +89,28 @@ ligne et placées dans le dossier "**silver**" et dans le sous-sous-dossier "JOU
 données. Le dossier "**gold**" contiendra les données de sortie. La création des dossiers pour ranger les fichiers de
 sortie est automatique.
 
-├── **sources**
-│   ├── offre_realisee
-│   │   ├── config
-│   │   ├── domain
-│   │   ├── infrastructure
+├── **sources**\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── offre_realisee\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── config\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;── domain\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── infrastructure
 
-├── **data**
-│   ├── **silver**
-│   │   ├── offre_realisee.parquet
-│   │   │   ├── JOUR=AAAA-MM-JJ
-│   │   │   │   ├── *ligne_AAAA-MM-JJ.parquet*
-│   ├── **gold**
-│   │   ├── by_day
-│   │   │   ├── ponctualite
-│   │   │   │   ├── *mesure_ponctualite_AAAA_MM_JJ.csv*
-│   │   │   ├── regularite
-│   │   │   │   ├── *mesure_regularite_AAAA_MM_JJ.csv*
-│   │   ├── by_month
-│   │   ├── by_period
-│   │   ├── by_period_weekdays
-│   │   ├── by_year
-│   │   ├── by_year_weekdays
+├── **data**\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── **silver**\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── offre_realisee.parquet\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── JOUR=AAAA-MM-JJ\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── *ligne_AAAA-MM-JJ.parquet*\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── **gold**\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── by_day\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── ponctualite\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── *mesure_ponctualite_AAAA_MM_JJ.csv*\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── regularite\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── *mesure_regularite_AAAA_MM_JJ.csv*\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── by_month\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── by_period\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── by_period_weekdays\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── by_year\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── by_year_weekdays
 
 # Partie 2 - Lancer le code
 
@@ -123,14 +123,14 @@ Le code est organisé selon l'architecture hexagonal.
 - Les variables sont définies dans les fichiers de configuration contenus dans le dossier **config**.
 - Et enfin les fonctions relatives à l'infrastructure sont rangées dans le dossier **infrastructure**.
 
-├── **sources**
-│   ├── **offre_realisee**
-│   │   ├── config
-│   │   ├── domain
-│   │   │   ├── entities
-│   │   │   ├── port
-│   │   │   ├── usecases
-│   │   ├── infrastructure
+├── **sources**\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── **offre_realisee**\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── config\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── domain\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── entities\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── port\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── usecases\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── infrastructure
 
 ## Calculer les indicateurs de Qualité de Service
 

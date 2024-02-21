@@ -12,14 +12,14 @@ Le code est organisé selon l'architecture hexagonal.
 - Les variables sont définies dans les fichiers de configuration contenus dans le dossier **config**.
 - Et enfin les fonctions relatives à l'infrastructure sont rangées dans le dossier **infrastructure**.
 
-├── **sources**
-│   ├── **offre_realisee**
-│   │   ├── config
-│   │   ├── domain
-│   │   │   ├── entities
-│   │   │   ├── port
-│   │   │   ├── usecases
-│   │   ├── infrastructure
+├── **sources**\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── **offre_realisee**\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── config\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── domain\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── entities\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── port\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── usecases\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── infrastructure\
 
 ## Calculer les indicateurs de Qualité de Service
 
@@ -59,6 +59,7 @@ offre_realisee
     --input-path=<chemin-relatif-du-dossier-des-donnees-en-entree>
     --output-path=<chemin-relatif-du-dossier-des-donnees-en-sortie>
     --input-file-name=<nom-du-fichier-de-donnees-en-entree>
+    --list-journees-exceptionnelles YYYY-MM-DD YYYY-MM-DD YYYY-MM-DD
     --n-thread=<nombre-de-thread-d'execution-parallèle>
 ```
 
@@ -117,6 +118,9 @@ options:
   --input-file-name INPUT_FILE_NAME
                         Nom du fichier de données d'entrée. (default: offre_realisee.parquet)
                         Input parquet file name. (default: offre_realisee.parquet)
-  --n-thread N_THREAD   Nombre de threads en parallèle dans le calcul des mesures. (default: 1)
+  --list-journees-exceptionnelles [LIST_JOURNEES_EXCEPTIONNELLES ...]
+                        Liste des dates des journées exceptionnelles à exclure des calculs agrégés. (Valeur par défaut: None)
+                        Datetime list of exceptionnal days to exclude. (default: None)
+  --n-thread N_THREAD   Nombre de threads en parallèle dans le calcul des mesures. (Valeur par défaut: 1)
                         Number of parallel threads. (default: 1)
 ```
