@@ -8,14 +8,15 @@
 Ce code a été implémenté à partir d'un format de données en entrée dont toutes les colonnes sont nécessaires.
 Les fichiers en entrée doivent être au format parquet. La granularité des fichiers est au jour (1 fichier par jour).
 La partie "Arborescence" de la notice vous donnera l'organisation de ces fichiers dans les dossiers adéquats.
+Ci-dessous, un descriptif des colonnes nécessaires pour l'exécution du code :
 
 | Nom de la colonne | Type                | Description                                                                                                                             |
 |:------------------|:--------------------|:----------------------------------------------------------------------------------------------------------------------------------------|
 | LIGNE             | string              | Le numéro de la ligne de bus/tram/train concernée.                                                                                      |
 | SENS              | string              | Le format des valeurs est `[arrêt_départ]->[terminus]`. Ex : "VIL->RAM".                                                                |
 | ARRET             | string              | Le nom unique de l'arrêt. Si un arrêt est sur plusieurs lignes, le nom doit être le même.                                               |
-| HEURE THEORIQUE   | datetime64[ns, UTC] | L'heure théorique de passage du bus/tram/train. Les valeurs de cette colonne doivent être au format datetime et sous la timezone "UTC". |
-| HEURE REELLE      | datetime64[ns, UTC] | L'heure réelle de passage du bus/tram/train. Les valeurs de cette colonne doivent être au format datetime et sous la timezone "UTC".    |
+| HEURE_THEORIQUE   | datetime64[ns, UTC] | L'heure théorique de passage du bus/tram/train. Les valeurs de cette colonne doivent être au format datetime et sous la timezone "UTC". |
+| HEURE_REELLE      | datetime64[ns, UTC] | L'heure réelle de passage du bus/tram/train. Les valeurs de cette colonne doivent être au format datetime et sous la timezone "UTC".    |
 | IS_TERMINUS       | boolean             | "False" si l'arrêt n'est pas le terminus de la course, "True" s'il s'agit du terminus.                                                  |
 
 
