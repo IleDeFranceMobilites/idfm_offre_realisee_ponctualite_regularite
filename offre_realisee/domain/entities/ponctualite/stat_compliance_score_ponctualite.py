@@ -72,12 +72,12 @@ def stat_compliance_score_ponctualite(df: pd.DataFrame) -> pd.DataFrame:
 
     Cette fonction prend un DataFrame avec les scores de conformtié et calcule les statistiques liées à ces données.
     Elle renvoit un DataFrame contenant :
-        - Le nombre de passage théoriques.
-        - Le nombre de passages réelles assignées à une valeur théorique.
-        - La somme des scores de conformité.
-        - Les statistiques sur les SI (SI avance, SI retard, SI absence, SI total)
-        - Le pourcentage de conformité.
-        - Le pourcentage de données manquantes.
+    - Le nombre de passage théoriques.
+    - Le nombre de passages réelles assignées à une valeur théorique.
+    - La somme des scores de conformité.
+    - Les statistiques sur les SI (SI avance, SI retard, SI absence, SI total)
+    - Le pourcentage de conformité.
+    - Le pourcentage de données manquantes.
 
     Parameters
     ----------
