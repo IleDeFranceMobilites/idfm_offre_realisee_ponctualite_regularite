@@ -1,6 +1,8 @@
 # Introduction
 Le projet permet de calculer les statistiques de qualité de service basées sur les données de l'offre réalisée.
 
+[La documentation du code est disponible ici.](https://iledefrancemobilites.github.io/idfm_offre_realisee_ponctualite_regularite/index.html)
+
 # Utiliser le module
 
 ## Structure du code
