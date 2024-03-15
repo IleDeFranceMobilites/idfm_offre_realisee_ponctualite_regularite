@@ -4,9 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "idfm-qualite-de-service-calculateur"
-version = "1.2.0"
+version = "1.2.1"
 description = "Calculateur de qualité de service basé sur les données d'offre réalisées"
 readme = "README.md"
+license = {file = "LICENSE"}
 dependencies = [
     'pandas >= 2.0.0',
     'pyarrow >= 15.0.0',
@@ -14,9 +15,17 @@ dependencies = [
     'workalendar == 17.0.0',
     'multiprocess >= 0.70.16',
 ]
+maintainers = [
+  {name = "Ile de France Mobilitees", email = "github@iledefrance-mobilites.fr"}
+]
 
 [tool.setuptools.packages.find]
 include = ["offre_realisee*"]
 
 [project.scripts]
 offre_realisee = "offre_realisee:main"
+
+[project.urls]
+Homepage = "https://pypi.org/project/idfm-qualite-de-service-calculateur/"
+Documentation = "https://iledefrancemobilites.github.io/idfm_offre_realisee_ponctualite_regularite/index.html"
+Repository = "https://github.com/IleDeFranceMobilites/idfm_offre_realisee_ponctualite_regularite"

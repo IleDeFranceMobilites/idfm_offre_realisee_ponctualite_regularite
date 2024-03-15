@@ -27,9 +27,7 @@ Le code est organisé selon l'architecture hexagonal.
 
 ### Installer le package Python
 ```console
-git clone git@ssh.dev.azure.com:v3/IDFM-AZURE/Data%20Analytics/idfm_offre_realisee_qualite_de_service
-cd idfm_offre_realisee_qualite_de_service
-pip install .
+pip install idfm-qualite-de-service-calculateur
 ```
 
 ### Executer le module sur des données locales
@@ -37,7 +35,7 @@ pip install .
 #### Structure des données
 Placer vos données dans un dossier respectant la structure définie.
 
-Le code a été implémenté en suivant une structure de répertoire définie. Les données d'entrée doivent être un fichier parquet nommé "**input-file-name**" partitionné par jour "DAY=AAAA-MM-JJ" en fonction du jour des données. Le dossier "**output**" contiendra les données de sortie. La création de dossiers pour organiser les fichiers de sortie est automatique.
+Le code a été implémenté en suivant une structure de répertoire définie. Les données d'entrée doivent être un fichier parquet nommé "**input-file-name**" partitionné par jour "JOUR=AAAA-MM-JJ" en fonction du jour des données. Le dossier "**output**" contiendra les données de sortie. La création de dossiers pour organiser les fichiers de sortie est automatique.
 
 |- **data-path**\
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- input\
