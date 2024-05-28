@@ -33,7 +33,9 @@ def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: Tupl
         La liste des journées exceptionnelles à excluse (ex: émeutes, grèves...). Par défaut, cette liste est vide.
     """
 
-    dict_date_lists = generate_date_aggregation_lists(date_range, aggregation_level, list_journees_exceptionnelles)
+    df_calendrier_scolaire = file_system_handler.get_calendrier_scolaire()
+    dict_date_lists = generate_date_aggregation_lists(date_range, aggregation_level, df_calendrier_scolaire,
+                                                      list_journees_exceptionnelles)
 
     for suffix, date_list in dict_date_lists.items():
         logger.info(f"Processing {mesure_type} aggregation: {suffix}")
