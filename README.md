@@ -1,8 +1,6 @@
 # Introduction
 Le projet permet de calculer les statistiques de qualité de service basées sur les données de l'offre réalisée.
 
-[La documentation du code est disponible ici.](https://iledefrancemobilites.github.io/idfm_offre_realisee_ponctualite_regularite/index.html)
-
 # Utiliser le module
 
 ## Structure du code
@@ -14,20 +12,22 @@ Le code est organisé selon l'architecture hexagonal.
 - Les variables sont définies dans les fichiers de configuration contenus dans le dossier **config**.
 - Et enfin les fonctions relatives à l'infrastructure sont rangées dans le dossier **infrastructure**.
 
-|- **sources**\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- **offre_realisee**\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- config\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- domain\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- entities\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- port\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- usecases\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- infrastructure
+├── **sources**\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── **offre_realisee**\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── config\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── domain\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── entities\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── port\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── usecases\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── infrastructure\
 
 ## Calculer les indicateurs de Qualité de Service
 
 ### Installer le package Python
 ```console
-pip install idfm-qualite-de-service-calculateur
+git clone git@ssh.dev.azure.com:v3/IDFM-AZURE/Data%20Analytics/idfm_offre_realisee_qualite_de_service
+cd idfm_offre_realisee_qualite_de_service
+pip install .
 ```
 
 ### Executer le module sur des données locales
@@ -35,19 +35,21 @@ pip install idfm-qualite-de-service-calculateur
 #### Structure des données
 Placer vos données dans un dossier respectant la structure définie.
 
-Le code a été implémenté en suivant une structure de répertoire définie. Les données d'entrée doivent être un fichier parquet nommé "**input-file-name**" partitionné par jour "JOUR=AAAA-MM-JJ" en fonction du jour des données. Le dossier "**output**" contiendra les données de sortie. La création de dossiers pour organiser les fichiers de sortie est automatique.
+Le code a été implémenté en suivant une structure de répertoire définie. Les données d'entrée doivent être un fichier parquet nommé "**input-file-name**" partitionné par jour "DAY=AAAA-MM-JJ" en fonction du jour des données ainsi qu'un fichier parquet nommé "**calendrier-scolaire-file-name**" contenant le référentiel du calendrier scolaire. Le dossier "**output**" contiendra les données de sortie. La création de dossiers pour organiser les fichiers de sortie est automatique.
 
-|- **data-path**\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- input\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- input-file-name\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- JOUR=AAAA-MM-JJ\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- output
+│─ **data-path**\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│─ input\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│─ input-file-name\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│─ JOUR=AAAA-MM-JJ\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│─ calendrier-scolaire-file-name\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│─ output
 
 Les valeurs suivantes peuvent être modifiées en fonction de la structure de votre répertoire :
 - data-path
 - input (Valeur par défaut: "input")
 - output (Valeur par défaut: "output")
 - input-file-name (Valeur par défaut: "offre_realisee.parquet")
+- calendrier-scolaire-file-namee (Valeur par défaut: "calendrier_scolaire.parquet")
 
 
 #### Exemple d'execution
@@ -59,6 +61,7 @@ offre_realisee
     --input-path=<chemin-relatif-du-dossier-des-donnees-en-entree>
     --output-path=<chemin-relatif-du-dossier-des-donnees-en-sortie>
     --input-file-name=<nom-du-fichier-de-donnees-en-entree>
+    --calendrier-scolaire-file-name=<nom-du-fichier-de-référentiel-du-calendrier-scolaire>
     --list-journees-exceptionnelles YYYY-MM-DD YYYY-MM-DD YYYY-MM-DD
     --n-thread=<nombre-de-thread-d'execution-parallèle>
 ```
@@ -78,7 +81,8 @@ $ offre_realisee -h
 
 usage: offre_realisee [-h] [--mesure | --no-mesure] [--aggregation | --no-aggregation] [--ponctualite | --no-ponctualite]
                       [--regularite | --no-regularite] --data-path DATA_PATH --start-date START_DATE --end-date END_DATE
-                      [--input-path INPUT_PATH] [--output-path OUTPUT_PATH] [--input-file-name INPUT_FILE_NAME] [--n-thread N_THREAD]
+                      [--input-path INPUT_PATH] [--output-path OUTPUT_PATH] [--input-file-name INPUT_FILE_NAME]
+                      [--calendrier-scolaire-file-name CALENDRIER_SCOLAIRE_FILE_NAME] [--n-thread N_THREAD]
 
 Calcul de la qualite de service.
 Compute qs
@@ -118,6 +122,9 @@ options:
   --input-file-name INPUT_FILE_NAME
                         Nom du fichier de données d'entrée. (default: offre_realisee.parquet)
                         Input parquet file name. (default: offre_realisee.parquet)
+  --calendrier-scolaire-file-name CALENDRIER_SCOLAIRE_FILE_NAME
+                        Nom du fichier du referentiel du calendrier scolaire. (default: calendrier_scolaire.parquet)
+                        School calendar parquet file name. (default: calendrier_scolaire.parquet)
   --list-journees-exceptionnelles [LIST_JOURNEES_EXCEPTIONNELLES ...]
                         Liste des dates des journées exceptionnelles à exclure des calculs agrégés. (Valeur par défaut: None)
                         Datetime list of exceptionnal days to exclude. (default: None)

@@ -20,6 +20,3 @@ class CalendrierScolaireColumns:
     description = 'description'
     start_date = 'start_date'
     end_date = 'end_date'
-
-
-calendrier_scolaire_filename = 'calendrier_scolaire' + FileExtensions.parquet
