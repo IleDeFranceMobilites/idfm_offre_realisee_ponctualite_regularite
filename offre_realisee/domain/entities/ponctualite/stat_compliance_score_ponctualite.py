@@ -1,6 +1,6 @@
 import pandas as pd
 
-from offre_realisee.config.offre_realisee_config import MesurePonctualite, ComplianceType
+from offre_realisee.config.offre_realisee_config import FrequenceType, MesurePonctualite, ComplianceType, MesureType
 
 _SI_VALUES_SET = {
     ComplianceType.situation_inacceptable_avance,
@@ -10,8 +10,10 @@ _SI_VALUES_SET = {
 
 _ASSIGNED_VALUES_SET = {
     ComplianceType.compliant,
-    ComplianceType.semi_compliant,
-    ComplianceType.not_compliant,
+    ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
+    ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
+    ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
+    ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
     ComplianceType.situation_inacceptable_avance,
     ComplianceType.situation_inacceptable_retard,
 }

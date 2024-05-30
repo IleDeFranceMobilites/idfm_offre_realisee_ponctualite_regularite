@@ -2,7 +2,7 @@ from datetime import timedelta
 from typing import Dict
 
 import numpy as np
-from offre_realisee.config.offre_realisee_config import FrequenceType, ComplianceType
+from offre_realisee.config.offre_realisee_config import FrequenceType, ComplianceType, MesureType
 
 _ThresholdType = Dict[FrequenceType, timedelta]
 
@@ -64,12 +64,15 @@ def score(freq: FrequenceType, matrix: np.ndarray, is_terminus: np.ndarray,
     matrix_score[:] = np.NaN
 
     # Calcul de la compliance des arrêts
-    matrix_score[(matrix > FrequencyThreshold.lower_si[freq]) & (
-            matrix <= FrequencyThreshold.compliance[freq])] = ComplianceType.compliant
-    matrix_score[(matrix > FrequencyThreshold.compliance[freq]) & (
-            matrix <= FrequencyThreshold.semi_compliance[freq])] = ComplianceType.semi_compliant
-    matrix_score[(matrix > FrequencyThreshold.semi_compliance[freq]) & (
-            matrix < FrequencyThreshold.upper_si[freq])] = ComplianceType.not_compliant
+    matrix_score[
+        (matrix > FrequencyThreshold.lower_si[freq]) & (matrix <= FrequencyThreshold.compliance[freq])
+    ] = ComplianceType.compliant
+    matrix_score[
+        (matrix > FrequencyThreshold.compliance[freq]) & (matrix <= FrequencyThreshold.semi_compliance[freq])
+    ] = ComplianceType.semi_compliant[MesureType.ponctualite][freq]
+    matrix_score[
+        (matrix > FrequencyThreshold.semi_compliance[freq]) & (matrix < FrequencyThreshold.upper_si[freq])
+    ] = ComplianceType.not_compliant[MesureType.ponctualite][freq]
 
     # Entre la borne haute de non compliance et une heure de retard: SI de retard
     matrix_score[(matrix >= FrequencyThreshold.upper_si[freq])] = ComplianceType.situation_inacceptable_retard
@@ -91,9 +94,11 @@ def score(freq: FrequenceType, matrix: np.ndarray, is_terminus: np.ndarray,
 
     # Exception - bus en avance au terminus : il est compliant
     where_is_terminus = np.where(is_terminus)
-    matrix_score[where_is_terminus] = np.where(matrix[where_is_terminus] <= FrequencyThreshold.lower_si[freq],
-                                               ComplianceType.compliant,
-                                               matrix_score[where_is_terminus])
+    matrix_score[where_is_terminus] = np.where(
+        matrix[where_is_terminus] <= FrequencyThreshold.lower_si[freq],
+        ComplianceType.compliant,
+        matrix_score[where_is_terminus]
+    )
 
     # Les heures réelles manquantes (pd.NaT) sont remplacées par des non assignments
     where_heure_reel_is_nan = np.where(matrix != matrix)
