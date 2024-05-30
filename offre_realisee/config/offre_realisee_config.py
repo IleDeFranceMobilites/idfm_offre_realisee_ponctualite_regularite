@@ -143,14 +143,14 @@ class ComplianceType:
     compliant = 1.
     semi_compliant = {
         MesureType.ponctualite: {
-            FrequenceType.haute_frequence: 0.5,
+            FrequenceType.haute_frequence: 0.75,
             FrequenceType.basse_frequence: 0.5,
         },
         MesureType.regularite: 0.5,
     }
     not_compliant = {
         MesureType.ponctualite: {
-            FrequenceType.haute_frequence: 0.,
+            FrequenceType.haute_frequence: 0.25,
             FrequenceType.basse_frequence: 0.,
         },
         MesureType.regularite: 0.,

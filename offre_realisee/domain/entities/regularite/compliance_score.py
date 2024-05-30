@@ -31,11 +31,11 @@ def calculate_compliance_score_for_each_borne(df_with_interval: pd.DataFrame) ->
 
     for borne in [Borne.inf, Borne.sup]:
         df_with_score.loc[
-            (df_with_score[MesureRegularite.difference_reelle] < timedelta(minutes=2)),
+            (df_with_score[MesureRegularite.difference_reelle] < timedelta(seconds=90)),
             MesureRegularite.resultat + borne] = ComplianceType.situation_inacceptable_train_de_bus
 
         df_with_score.loc[
-            (df_with_score[MesureRegularite.difference_reelle] >= timedelta(minutes=2)) &
+            (df_with_score[MesureRegularite.difference_reelle] >= timedelta(seconds=90)) &
             (df_with_score[MesureRegularite.difference_reelle] <= (
                     df_with_score[MesureRegularite.difference_theorique + borne] + timedelta(minutes=2))),
             MesureRegularite.resultat + borne] = ComplianceType.compliant
