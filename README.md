@@ -1,6 +1,8 @@
 # Introduction
 Le projet permet de calculer les statistiques de qualité de service basées sur les données de l'offre réalisée.
 
+[La documentation du code est disponible ici.](https://iledefrancemobilites.github.io/idfm_offre_realisee_ponctualite_regularite/index.html)
+
 # Utiliser le module
 
 ## Structure du code
@@ -12,22 +14,20 @@ Le code est organisé selon l'architecture hexagonal.
 - Les variables sont définies dans les fichiers de configuration contenus dans le dossier **config**.
 - Et enfin les fonctions relatives à l'infrastructure sont rangées dans le dossier **infrastructure**.
 
-├── **sources**\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── **offre_realisee**\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── config\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── domain\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── entities\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── port\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── usecases\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── infrastructure\
+|- **sources**\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- **offre_realisee**\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- config\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- domain\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- entities\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- port\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- usecases\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- infrastructure
 
 ## Calculer les indicateurs de Qualité de Service
 
 ### Installer le package Python
 ```console
-git clone git@ssh.dev.azure.com:v3/IDFM-AZURE/Data%20Analytics/idfm_offre_realisee_qualite_de_service
-cd idfm_offre_realisee_qualite_de_service
-pip install .
+pip install idfm-qualite-de-service-calculateur
 ```
 
 ### Executer le module sur des données locales
@@ -35,14 +35,14 @@ pip install .
 #### Structure des données
 Placer vos données dans un dossier respectant la structure définie.
 
-Le code a été implémenté en suivant une structure de répertoire définie. Les données d'entrée doivent être un fichier parquet nommé "**input-file-name**" partitionné par jour "DAY=AAAA-MM-JJ" en fonction du jour des données ainsi qu'un fichier parquet nommé "**calendrier-scolaire-file-name**" contenant le référentiel du calendrier scolaire. Le dossier "**output**" contiendra les données de sortie. La création de dossiers pour organiser les fichiers de sortie est automatique.
+Le code a été implémenté en suivant une structure de répertoire définie. Les données d'entrée doivent être un fichier parquet nommé "**input-file-name**" partitionné par jour "JOUR=AAAA-MM-JJ" en fonction du jour des données ainsi qu'un fichier parquet nommé "**calendrier-scolaire-file-name**" contenant le référentiel du calendrier scolaire. Le dossier "**output**" contiendra les données de sortie. La création de dossiers pour organiser les fichiers de sortie est automatique.
 
-│─ **data-path**\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│─ input\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│─ input-file-name\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│─ JOUR=AAAA-MM-JJ\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│─ calendrier-scolaire-file-name\
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│─ output
+|- **data-path**\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- input\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- input-file-name\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- JOUR=AAAA-MM-JJ\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- calendrier-scolaire-file-name\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- output
 
 Les valeurs suivantes peuvent être modifiées en fonction de la structure de votre répertoire :
 - data-path
