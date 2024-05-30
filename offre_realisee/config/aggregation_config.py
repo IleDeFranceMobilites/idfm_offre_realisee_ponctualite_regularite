@@ -1,6 +1,3 @@
-from offre_realisee.config.file_extensions import FileExtensions
-
-
 class AggregationLevel:
     by_day = "by_day"
     by_month = "by_month"

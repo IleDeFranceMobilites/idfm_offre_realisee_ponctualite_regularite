@@ -16,7 +16,8 @@ from offre_realisee.infrastructure.local_file_system_handler import LocalFileSys
 TEST_DATA_PATH_CONFIG = {
     'input_path': 'input',
     'output_path': 'output',
-    'input_file_name': f'offre_realisee{FileExtensions.parquet}'
+    'input_file_name': f'offre_realisee{FileExtensions.parquet}',
+    'calendrier_scolaire_file_name': f'calendrier_scolaire{FileExtensions.parquet}'
 }
 
 START_DATE = datetime(2023, 9, 27)
@@ -36,6 +37,7 @@ def test_create_mesure_qs(file_system_fixture):
         input_path=TEST_DATA_PATH_CONFIG['input_path'],
         output_path=TEST_DATA_PATH_CONFIG['output_path'],
         input_file_name=TEST_DATA_PATH_CONFIG['input_file_name'],
+        calendrier_scolaire_file_name=TEST_DATA_PATH_CONFIG['calendrier_scolaire_file_name'],
     )
 
     date = START_DATE
@@ -63,6 +65,7 @@ def test_create_mesure_qs_ponctualite_date_range(file_system_fixture):
         input_path=TEST_DATA_PATH_CONFIG['input_path'],
         output_path=TEST_DATA_PATH_CONFIG['output_path'],
         input_file_name=TEST_DATA_PATH_CONFIG['input_file_name'],
+        calendrier_scolaire_file_name=TEST_DATA_PATH_CONFIG['calendrier_scolaire_file_name'],
     )
 
     start_date = START_DATE

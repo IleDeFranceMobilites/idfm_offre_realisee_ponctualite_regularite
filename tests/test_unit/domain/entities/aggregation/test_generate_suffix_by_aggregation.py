@@ -10,7 +10,7 @@ def test_get_period_name_plein_trafic():
     # Given
     date = datetime(2023, 9, 4)
     df_calendrier_scolaire = pd.DataFrame({
-        'descritpion': ['Vacances d\'Été', 'Vacances'],
+        'description': ['Vacances d\'Été', 'Vacances'],
         'start_date': [datetime(2023, 7, 1), datetime(2023, 9, 1)],
         'end_date': [datetime(2023, 8, 31), datetime(2023, 9, 3)]
     })
@@ -28,7 +28,7 @@ def test_get_period_name_vacances():
     # Given
     date = datetime(2023, 9, 2)
     df_calendrier_scolaire = pd.DataFrame({
-        'descritpion': ['Vacances d\'Été', 'Vacances'],
+        'description': ['Vacances d\'Été', 'Vacances'],
         'start_date': [datetime(2023, 7, 1), datetime(2023, 9, 1)],
         'end_date': [datetime(2023, 8, 31), datetime(2023, 9, 3)]
     })
@@ -46,7 +46,7 @@ def test_get_period_name_ete():
     # Given
     date = datetime(2023, 7, 4)
     df_calendrier_scolaire = pd.DataFrame({
-        'descritpion': ['Vacances d\'Été', 'Vacances'],
+        'description': ['Vacances d\'Été', 'Vacances'],
         'start_date': [datetime(2023, 7, 1), datetime(2023, 9, 1)],
         'end_date': [datetime(2023, 8, 31), datetime(2023, 9, 3)]
     })

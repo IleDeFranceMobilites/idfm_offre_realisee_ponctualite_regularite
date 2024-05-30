@@ -11,7 +11,7 @@ def test_generate_date_aggregation_lists():
     date_range = (datetime(2023, 1, 1), datetime(2023, 1, 3))
     aggregation_level = AggregationLevel.by_month
     df_calendrier_scolaire = pd.DataFrame({
-        'descritpion': [],
+        'description': [],
         'start_date': [],
         'end_date': []
     })
@@ -30,7 +30,7 @@ def test_generate_date_aggregation_lists_test_keys_by_month():
     date_range = (datetime(2023, 1, 1), datetime(2023, 3, 1))
     aggregation_level = AggregationLevel.by_month
     df_calendrier_scolaire = pd.DataFrame({
-        'descritpion': [],
+        'description': [],
         'start_date': [],
         'end_date': []
     })
@@ -49,7 +49,7 @@ def test_generate_date_aggregation_lists_test_keys_by_year():
     date_range = (datetime(2023, 1, 1), datetime(2024, 9, 1))
     aggregation_level = AggregationLevel.by_year
     df_calendrier_scolaire = pd.DataFrame({
-        'descritpion': [],
+        'description': [],
         'start_date': [],
         'end_date': []
     })
@@ -68,7 +68,7 @@ def test_generate_date_aggregation_lists_test_keys_by_year_weekdays():
     date_range = (datetime(2023, 1, 1), datetime(2024, 9, 1))
     aggregation_level = AggregationLevel.by_year_weekdays
     df_calendrier_scolaire = pd.DataFrame({
-        'descritpion': [],
+        'description': [],
         'start_date': [],
         'end_date': []
     })
@@ -87,7 +87,7 @@ def test_generate_date_aggregation_lists_test_values_by_year_weekdays():
     date_range = (datetime(2023, 1, 1), datetime(2023, 1, 7))
     aggregation_level = AggregationLevel.by_year_weekdays
     df_calendrier_scolaire = pd.DataFrame({
-        'descritpion': [],
+        'description': [],
         'start_date': [],
         'end_date': []
     })
@@ -110,7 +110,7 @@ def test_generate_date_aggregation_lists_test_values_by_period():
     date_range = (datetime(2023, 8, 31), datetime(2023, 9, 4))
     aggregation_level = AggregationLevel.by_period
     df_calendrier_scolaire = pd.DataFrame({
-        'descritpion': ['Vacances d\'Été', 'Vacances'],
+        'description': ['Vacances d\'Été', 'Vacances'],
         'start_date': [datetime(2023, 7, 1), datetime(2023, 9, 1)],
         'end_date': [datetime(2023, 8, 31), datetime(2023, 9, 3)]
     })
@@ -133,7 +133,7 @@ def test_generate_date_aggregation_lists_test_values_by_period_weekdays():
     date_range = (datetime(2023, 8, 20), datetime(2023, 9, 12))
     aggregation_level = AggregationLevel.by_period_weekdays
     df_calendrier_scolaire = pd.DataFrame({
-        'descritpion': ['Vacances d\'Été', 'Vacances'],
+        'description': ['Vacances d\'Été', 'Vacances'],
         'start_date': [datetime(2023, 7, 1), datetime(2023, 9, 1)],
         'end_date': [datetime(2023, 8, 31), datetime(2023, 9, 3)]
     })
@@ -166,7 +166,7 @@ def test_generate_date_aggregation_lists_test_values_by_period_ferie():
     date_range = (datetime(2023, 5, 1), datetime(2023, 5, 18))
     aggregation_level = AggregationLevel.by_period_weekdays
     df_calendrier_scolaire = pd.DataFrame({
-        'descritpion': ['Vacances'],
+        'description': ['Vacances'],
         'start_date': [datetime(2023, 4, 23)],
         'end_date': [datetime(2023, 5, 8)]
     })
@@ -202,7 +202,7 @@ def test_generate_date_aggregation_lists_test_values_except_journees_exceptionne
     date_range = (datetime(2023, 1, 1), datetime(2023, 1, 7))
     aggregation_level = AggregationLevel.by_year_weekdays
     df_calendrier_scolaire = pd.DataFrame({
-        'descritpion': [],
+        'description': [],
         'start_date': [],
         'end_date': []
     })
