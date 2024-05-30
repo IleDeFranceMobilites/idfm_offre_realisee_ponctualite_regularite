@@ -77,3 +77,19 @@ class FileSystemHandler(abc.ABC):
             DataFrame d'offre réalisée par jour.
         """
         pass
+
+    @abc.abstractmethod
+    def get_calendrier_scolaire(self, **kwargs) -> pd.DataFrame:
+        """Récupération des données de calendrier scolaire.
+
+        Parameters
+        ----------
+        **kwargs :
+            Keyword arguments supplémentaires passés à la fonction pandas read_parquet.
+
+        Returns
+        -------
+        df : DataFrame
+            DataFrame du calendrier scolaire.
+        """
+        pass

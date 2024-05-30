@@ -16,7 +16,8 @@ from offre_realisee.config.logger import logger
 default_data_path_config = {
     'input-path': 'input',
     'output-path': 'output',
-    'input-file-name': f'offre_realisee{FileExtensions.parquet}'
+    'input-file-name': f'offre_realisee{FileExtensions.parquet}',
+    'calendrier-scolaire-file-name': f'calendrier_scolaire{FileExtensions.parquet}'
 }
 
 
@@ -31,6 +32,7 @@ def compute_qs(
     input_path: str,
     output_path: str,
     input_file_name: str,
+    calendrier_scolaire_file_name: str,
     list_journees_exceptionnelles: Optional[list[datetime]],
     n_thread: 1,
 ) -> None:
@@ -40,6 +42,7 @@ def compute_qs(
         input_path=input_path,
         output_path=output_path,
         input_file_name=input_file_name,
+        calendrier_scolaire_file_name=calendrier_scolaire_file_name
     )
 
     date_range = (start_date, end_date)
@@ -108,6 +111,10 @@ def main():  # noqa
     parser.add_argument('--input-file-name', default=default_data_path_config["input-file-name"], type=str,
                         help="Nom du fichier de données d'entrée. (default: %(default)s)\n"
                         "Input parquet file name. (default: %(default)s)")
+    parser.add_argument('--calendrier-scolaire-file-name',
+                        default=default_data_path_config["calendrier-scolaire-file-name"], type=str,
+                        help="Nom du fichier du referentiel du calendrier scolaire. (default: %(default)s)\n"
+                             "School calendar parquet file name. (default: %(default)s)")
 
     parser.add_argument('--list-journees-exceptionnelles', nargs="*", default=[],
                         type=lambda s: datetime.strptime(s, '%Y-%m-%d'),
@@ -139,6 +146,7 @@ if __name__ == "__main__":
         input_path=default_data_path_config["input-path"],
         output_path=default_data_path_config["output-path"],
         input_file_name=default_data_path_config["input-file-name"],
+        calendrier_scolaire_file_name=default_data_path_config["calendrier-scolaire-file-name"],
         list_journees_exceptionnelles=None,
 
         n_thread=5,

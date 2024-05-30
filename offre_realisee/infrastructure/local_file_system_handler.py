@@ -5,7 +5,8 @@ import pandas as pd
 
 from offre_realisee.config.file_extensions import FileExtensions
 from offre_realisee.config.offre_realisee_config import MesureType
-from offre_realisee.config.aggregation_config import (AggregationLevel, suffix_by_agg)
+from offre_realisee.config.aggregation_config import AggregationLevel
+from offre_realisee.domain.entities.aggregation.generate_suffix_by_aggregation import generate_suffix_by_aggregagtion
 from offre_realisee.domain.port.file_system_handler import FileSystemHandler
 
 from offre_realisee.config.input_config import InputColumns
@@ -16,11 +17,14 @@ from offre_realisee.config.logger import logger
 
 class LocalFileSystemHandler(FileSystemHandler):
 
-    def __init__(self, data_path: str, input_path: str, output_path: str, input_file_name: str):
+    def __init__(self, data_path: str, input_path: str, output_path: str, input_file_name: str,
+                 calendrier_scolaire_file_name: str):
         self.data_path = data_path
         self.input_path = input_path
         self.output_path = output_path
         self.input_file_name = input_file_name
+        self.calendrier_scolaire_file_name = calendrier_scolaire_file_name
+        self.suffix_by_agg = generate_suffix_by_aggregagtion(self.get_calendrier_scolaire())
 
     def read_offre_realisee(self, **kwargs) -> pd.DataFrame:
         """Récupération des données d'offre réalisée.
@@ -86,7 +90,7 @@ class LocalFileSystemHandler(FileSystemHandler):
         if not os.path.exists(folder_path):
             os.makedirs(folder_path, exist_ok=True)
 
-        suffix = suffix_by_agg[aggregation_level](date)
+        suffix = self.suffix_by_agg[aggregation_level](date)
         file_path = os.path.join(folder_path, f"mesure_{mesure_type}_{suffix}" + FileExtensions.csv)
 
         logger.info(f"Writing a dataframe of shape {df_mesure_qs.shape} in {file_path}")
@@ -107,7 +111,7 @@ class LocalFileSystemHandler(FileSystemHandler):
         df : DataFrame
             DataFrame d'offre réalisée par jour.
         """
-        suffix = suffix_by_agg[AggregationLevel.by_day](date)
+        suffix = self.suffix_by_agg[AggregationLevel.by_day](date)
         folder_path = os.path.join(
             self.data_path, self.output_path, AggregationLevel.by_day, mesure_type
         )
@@ -115,3 +119,21 @@ class LocalFileSystemHandler(FileSystemHandler):
 
         logger.info(f"Reading daily mesure qs for date: {date.strftime('%Y-%m-%d')}, from: {file_path}")
         return pd.read_csv(file_path)
+
+    def get_calendrier_scolaire(self, **kwargs) -> pd.DataFrame:
+        """Récupération des données de calendrier scolaire.
+
+        Parameters
+        ----------
+        **kwargs :
+            Keyword arguments supplémentaires passés à la fonction pandas read_parquet.
+
+        Returns
+        -------
+        df : DataFrame
+            DataFrame du calendrier scolaire.
+        """
+        file_path = os.path.join(self.data_path, self.input_path, self.calendrier_scolaire_file_name)
+
+        logger.info(f"Reading input data from: {file_path}")
+        return pd.read_parquet(file_path, **kwargs)

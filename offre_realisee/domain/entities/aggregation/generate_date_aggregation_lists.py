@@ -2,12 +2,16 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 from typing import Dict, List, Tuple, Optional
 
-from offre_realisee.config.aggregation_config import AggregationLevel, suffix_by_agg
+import pandas as pd
+
+from offre_realisee.config.aggregation_config import AggregationLevel
+from offre_realisee.domain.entities.aggregation.generate_suffix_by_aggregation import generate_suffix_by_aggregagtion
 
 
 def generate_date_aggregation_lists(
         date_range: Tuple[datetime, datetime], aggregation_level: AggregationLevel,
-        list_journees_exceptionnelles: Optional[List[datetime]] = None) -> Dict[str, List[datetime]]:
+        df_calendrier_scolaire: pd.DataFrame, list_journees_exceptionnelles: Optional[List[datetime]] = None
+) -> Dict[str, List[datetime]]:
     """Liste toutes les dates de la plage de date donnée avec leur suffix d'agrégation.
 
     Parameters
@@ -16,6 +20,8 @@ def generate_date_aggregation_lists(
         Tuple de deux dates, une date de début et une de fin.
     aggregation_level : AggregationLevel
         Niveau de l'aggrégation (by_day, by_month, by_year, ...)
+    df_calendrier_scolaire : pd.DataFrame
+        Dataframe du referentiel du calendrier scolaire
     list_journees_exceptionnelles : Optional[List[datetime]]
         Liste des journées exceptionnelles à exclures des calculs agrégés.
 
@@ -26,6 +32,7 @@ def generate_date_aggregation_lists(
         une liste de date en datetime.
     """
     dict_date_lists: Dict[str, List[datetime]] = defaultdict(list)
+    suffix_by_agg = generate_suffix_by_aggregagtion(df_calendrier_scolaire)
     suffix_generator = suffix_by_agg[aggregation_level]
 
     if list_journees_exceptionnelles is None:
