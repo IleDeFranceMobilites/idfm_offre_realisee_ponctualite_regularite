@@ -146,7 +146,7 @@ class ComplianceType:
             FrequenceType.haute_frequence: 0.75,
             FrequenceType.basse_frequence: 0.5,
         },
-        MesureType.regularite: 0.5,
+        MesureType.regularite: 0.75,
     }
     not_compliant = {
         MesureType.ponctualite: {
