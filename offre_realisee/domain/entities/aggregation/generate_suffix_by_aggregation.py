@@ -19,7 +19,7 @@ def get_period_name(date: datetime, df_calendrier_scolaire: pd.DataFrame):
         return PeriodeName.vacances_scolaires
 
 
-def generate_suffix_by_aggregagtion(df_calendrier_scolaire: pd.DataFrame) -> dict:
+def generate_suffix_by_aggregation(df_calendrier_scolaire: pd.DataFrame) -> dict:
     calendrier = France()
 
     suffix_by_agg = {

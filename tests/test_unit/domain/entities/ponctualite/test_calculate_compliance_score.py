@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 from offre_realisee.domain.entities.ponctualite.compliance_score import score
-from offre_realisee.config.offre_realisee_config import FrequenceType, ComplianceType
+from offre_realisee.config.offre_realisee_config import FrequenceType, ComplianceType, MesureType
 
 
 def test_score_bf():
@@ -21,10 +21,10 @@ def test_score_bf():
             ComplianceType.situation_inacceptable_absence
         ],
         [
-            ComplianceType.semi_compliant,
-            ComplianceType.semi_compliant,
-            ComplianceType.semi_compliant,
-            ComplianceType.not_compliant
+            ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
+            ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
+            ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
+            ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.basse_frequence]
         ],
     ])
 
@@ -49,10 +49,10 @@ def test_score_hf():
             ComplianceType.situation_inacceptable_absence
         ],
         [
-            ComplianceType.semi_compliant,
-            ComplianceType.not_compliant,
-            ComplianceType.not_compliant,
-            ComplianceType.not_compliant
+            ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
+            ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
+            ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
+            ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
         ],
     ])
 

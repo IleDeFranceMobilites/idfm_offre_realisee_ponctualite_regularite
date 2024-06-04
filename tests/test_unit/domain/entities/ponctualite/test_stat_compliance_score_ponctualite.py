@@ -1,6 +1,6 @@
 import pandas as pd
 
-from offre_realisee.config.offre_realisee_config import MesurePonctualite, ComplianceType
+from offre_realisee.config.offre_realisee_config import FrequenceType, MesurePonctualite, ComplianceType, MesureType
 from offre_realisee.domain.entities.ponctualite.stat_compliance_score_ponctualite import (
     stat_compliance_score_ponctualite, stat_situation_inacceptable
 )
@@ -13,10 +13,16 @@ def test_stat_compliance_score_ponctualite():
         MesurePonctualite.arret: [1, 1, 1, 1, 1, 2, 2, 2, 2, 1],
         MesurePonctualite.sens: [1, 1, 2, 2, 2, 1, 1, 2, 2, 1],
         MesurePonctualite.resultat: [
-            ComplianceType.compliant, ComplianceType.situation_inacceptable_retard, ComplianceType.semi_compliant,
-            ComplianceType.not_compliant, ComplianceType.situation_inacceptable_absence, ComplianceType.compliant,
-            ComplianceType.compliant, ComplianceType.semi_compliant, ComplianceType.compliant,
-            ComplianceType.semi_compliant]
+            ComplianceType.compliant,
+            ComplianceType.situation_inacceptable_retard,
+            ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
+            ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
+            ComplianceType.situation_inacceptable_absence,
+            ComplianceType.compliant,
+            ComplianceType.compliant,
+            ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
+            ComplianceType.compliant,
+            ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence]]
     })
 
     expected_result = pd.DataFrame({
@@ -46,10 +52,16 @@ def test_stat_situation_inacceptable():
         MesurePonctualite.arret: [1, 1, 1, 1, 1, 2, 2, 2, 2, 1],
         MesurePonctualite.sens: [1, 1, 2, 2, 2, 1, 1, 2, 2, 1],
         MesurePonctualite.resultat: [
-            ComplianceType.situation_inacceptable_absence, ComplianceType.situation_inacceptable_retard,
-            ComplianceType.semi_compliant, ComplianceType.not_compliant, ComplianceType.situation_inacceptable_absence,
-            ComplianceType.compliant, ComplianceType.semi_compliant, ComplianceType.situation_inacceptable_avance,
-            ComplianceType.compliant, ComplianceType.situation_inacceptable_avance
+            ComplianceType.situation_inacceptable_absence,
+            ComplianceType.situation_inacceptable_retard,
+            ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
+            ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
+            ComplianceType.situation_inacceptable_absence,
+            ComplianceType.compliant,
+            ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
+            ComplianceType.situation_inacceptable_avance,
+            ComplianceType.compliant,
+            ComplianceType.situation_inacceptable_avance
         ]
     })
 

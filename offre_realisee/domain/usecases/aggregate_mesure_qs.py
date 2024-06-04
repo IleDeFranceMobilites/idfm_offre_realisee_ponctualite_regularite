@@ -3,6 +3,7 @@ from typing import List, Tuple, Optional
 
 import pandas as pd
 
+from offre_realisee.domain.entities.aggregation.generate_suffix_by_aggregation import generate_suffix_by_aggregation
 from offre_realisee.config.logger import logger
 from offre_realisee.config.aggregation_config import AggregationLevel
 from offre_realisee.config.offre_realisee_config import MesureType, Mesure, MESURE_TYPE
@@ -34,7 +35,8 @@ def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: Tupl
     """
 
     df_calendrier_scolaire = file_system_handler.get_calendrier_scolaire()
-    dict_date_lists = generate_date_aggregation_lists(date_range, aggregation_level, df_calendrier_scolaire,
+    suffix_by_agg = generate_suffix_by_aggregation(df_calendrier_scolaire)
+    dict_date_lists = generate_date_aggregation_lists(date_range, aggregation_level, suffix_by_agg,
                                                       list_journees_exceptionnelles)
 
     for suffix, date_list in dict_date_lists.items():
@@ -42,12 +44,13 @@ def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: Tupl
         mesure_list: List[pd.DataFrame] = []
 
         for date_to_agg in date_list:
-            df = file_system_handler.get_daily_mesure_qs(date=date_to_agg, mesure_type=mesure_type)
+            df = file_system_handler.get_daily_mesure_qs(date=date_to_agg, mesure_type=mesure_type,
+                                                         suffix_by_agg=suffix_by_agg)
             mesure_list.append(df)
 
         df_all_mesure = pd.concat(mesure_list)
         df_aggregated = aggregate_df(df_all_mesure, MESURE_TYPE[mesure_type])
-        file_system_handler.save_mesure_qs(df_aggregated, date_list[0], aggregation_level, mesure_type)
+        file_system_handler.save_mesure_qs(df_aggregated, date_list[0], aggregation_level, mesure_type, suffix_by_agg)
 
 
 def aggregate_df(df_all_mesure: pd.DataFrame, mesure: Mesure) -> pd.DataFrame:

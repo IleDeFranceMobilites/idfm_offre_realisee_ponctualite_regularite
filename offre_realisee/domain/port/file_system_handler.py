@@ -1,5 +1,6 @@
 import abc
 from datetime import datetime
+from typing import Dict, Callable
 
 import pandas as pd
 
@@ -43,7 +44,8 @@ class FileSystemHandler(abc.ABC):
     @abc.abstractmethod
     def save_mesure_qs(
         self, df_mesure_qs: pd.DataFrame, date: datetime,
-        aggregation_level: AggregationLevel, mesure_type: MesureType
+        aggregation_level: AggregationLevel, mesure_type: MesureType,
+        suffix_by_agg: Dict[AggregationLevel, Callable]
     ) -> None:
         """Sauvegarde du DataFrame de mesure de Qualité de Service (QS).
 
@@ -57,11 +59,14 @@ class FileSystemHandler(abc.ABC):
             Niveau d'aggrégation de la mesure QS (by_day, by_week, by_year, ...).
         mesure_type : MesureType
             Le type de mesure (ponctualite, regularite).
+        suffix_by_agg: Dict[AggregationLevel, Callable]
+            Dictionnaire de fonction de génération de suffix basé sur la date et le calendrier scolaire.
         """
         pass
 
     @abc.abstractmethod
-    def get_daily_mesure_qs(self, date: datetime, mesure_type: MesureType) -> pd.DataFrame:
+    def get_daily_mesure_qs(self, date: datetime, mesure_type: MesureType,
+                            suffix_by_agg: Dict[AggregationLevel, Callable]) -> pd.DataFrame:
         """Récupération des données de mesure QS par jour.
 
         Parameters
@@ -70,6 +75,8 @@ class FileSystemHandler(abc.ABC):
             Date des données de mesure QS.
         mesure_type : MesureType
             Le type de mesure (ponctualite, regularite).
+        suffix_by_agg: Dict[AggregationLevel, Callable]
+            Dictionnaire de fonction de génération de suffix basé sur la date et le calendrier scolaire.
 
         Returns
         -------

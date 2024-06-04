@@ -1,12 +1,12 @@
 import os
 from datetime import datetime
+from typing import Dict, Callable
 
 import pandas as pd
 
 from offre_realisee.config.file_extensions import FileExtensions
 from offre_realisee.config.offre_realisee_config import MesureType
 from offre_realisee.config.aggregation_config import AggregationLevel
-from offre_realisee.domain.entities.aggregation.generate_suffix_by_aggregation import generate_suffix_by_aggregagtion
 from offre_realisee.domain.port.file_system_handler import FileSystemHandler
 
 from offre_realisee.config.input_config import InputColumns
@@ -24,7 +24,6 @@ class LocalFileSystemHandler(FileSystemHandler):
         self.output_path = output_path
         self.input_file_name = input_file_name
         self.calendrier_scolaire_file_name = calendrier_scolaire_file_name
-        self.suffix_by_agg = generate_suffix_by_aggregagtion(self.get_calendrier_scolaire())
 
     def read_offre_realisee(self, **kwargs) -> pd.DataFrame:
         """Récupération des données d'offre réalisée.
@@ -69,7 +68,8 @@ class LocalFileSystemHandler(FileSystemHandler):
 
     def save_mesure_qs(
             self, df_mesure_qs: pd.DataFrame, date: datetime,
-            aggregation_level: AggregationLevel, mesure_type: MesureType
+            aggregation_level: AggregationLevel, mesure_type: MesureType,
+            suffix_by_agg: Dict[AggregationLevel, Callable]
     ) -> None:
         """Sauvegarde du DataFrame de mesure de Qualité de Service (QS).
 
@@ -83,6 +83,8 @@ class LocalFileSystemHandler(FileSystemHandler):
             Niveau d'aggrégation de la mesure QS (by_day, by_week, by_year, ...).
         mesure_type : MesureType
             Le type de mesure (ponctualite, regularite).
+        suffix_by_agg: Dict[AggregationLevel, Callable]
+            Dictionnaire de fonction de génération de suffix basé sur la date et le calendrier scolaire.
         """
         mesure_qs = MESURE_TYPE[mesure_type]
 
@@ -90,13 +92,14 @@ class LocalFileSystemHandler(FileSystemHandler):
         if not os.path.exists(folder_path):
             os.makedirs(folder_path, exist_ok=True)
 
-        suffix = self.suffix_by_agg[aggregation_level](date)
+        suffix = suffix_by_agg[aggregation_level](date)
         file_path = os.path.join(folder_path, f"mesure_{mesure_type}_{suffix}" + FileExtensions.csv)
 
         logger.info(f"Writing a dataframe of shape {df_mesure_qs.shape} in {file_path}")
         df_mesure_qs[mesure_qs.column_order].to_csv(file_path)
 
-    def get_daily_mesure_qs(self, date: datetime, mesure_type: MesureType) -> pd.DataFrame:
+    def get_daily_mesure_qs(self, date: datetime, mesure_type: MesureType,
+                            suffix_by_agg: Dict[AggregationLevel, Callable]) -> pd.DataFrame:
         """Récupération des données de mesure QS par jour.
 
         Parameters
@@ -105,13 +108,15 @@ class LocalFileSystemHandler(FileSystemHandler):
             Date des données de mesure QS.
         mesure_type : MesureType
             Le type de mesure (ponctualite, regularite).
+        suffix_by_agg: Dict[AggregationLevel, Callable]
+            Dictionnaire de fonction de génération de suffix basé sur la date et le calendrier scolaire.
 
         Returns
         -------
         df : DataFrame
             DataFrame d'offre réalisée par jour.
         """
-        suffix = self.suffix_by_agg[AggregationLevel.by_day](date)
+        suffix = suffix_by_agg[AggregationLevel.by_day](date)
         folder_path = os.path.join(
             self.data_path, self.output_path, AggregationLevel.by_day, mesure_type
         )

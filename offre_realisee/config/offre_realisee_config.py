@@ -141,8 +141,20 @@ class FrequenceType:
 
 class ComplianceType:
     compliant = 1.
-    semi_compliant = 0.5
-    not_compliant = 0.
+    semi_compliant = {
+        MesureType.ponctualite: {
+            FrequenceType.haute_frequence: 0.5,
+            FrequenceType.basse_frequence: 0.5,
+        },
+        MesureType.regularite: 0.5,
+    }
+    not_compliant = {
+        MesureType.ponctualite: {
+            FrequenceType.haute_frequence: 0.,
+            FrequenceType.basse_frequence: 0.,
+        },
+        MesureType.regularite: 0.,
+    }
 
     # Ponctualité
     situation_inacceptable_retard = -1000000. - 0      # Un retard est le SI le moins pénalisant
