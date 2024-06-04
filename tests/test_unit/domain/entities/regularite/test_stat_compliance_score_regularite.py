@@ -1,6 +1,6 @@
 import pandas as pd
 
-from offre_realisee.config.offre_realisee_config import MesureRegularite, ComplianceType
+from offre_realisee.config.offre_realisee_config import MesureRegularite, ComplianceType, MesureType
 from offre_realisee.domain.entities.regularite.stat_compliance_score_regularite import (
     stat_compliance_score_regularite
 )
@@ -14,9 +14,10 @@ def test_stat_regularite_compliance_score():
         MesureRegularite.sens: [1, 1, 1, 2, 3, 3, 3, 4, 4, 5],
         MesureRegularite.resultat: [
             ComplianceType.compliant, ComplianceType.situation_inacceptable_faible_frequence,
-            ComplianceType.semi_compliant, ComplianceType.situation_inacceptable_train_de_bus,
+            ComplianceType.semi_compliant[MesureType.regularite], ComplianceType.situation_inacceptable_train_de_bus,
             ComplianceType.situation_inacceptable_train_de_bus, ComplianceType.compliant, ComplianceType.compliant,
-            ComplianceType.semi_compliant, ComplianceType.compliant, ComplianceType.semi_compliant
+            ComplianceType.semi_compliant[MesureType.regularite], ComplianceType.compliant,
+            ComplianceType.semi_compliant[MesureType.regularite]
         ]
     })
     n_theorique_by_lignes = {"1": 5, "2": 7, "3": 1}

@@ -7,7 +7,7 @@ import pytest
 from offre_realisee.config.file_extensions import FileExtensions
 from offre_realisee.config.aggregation_config import AggregationLevel
 from offre_realisee.config.offre_realisee_config import MesureType
-from offre_realisee.domain.entities.aggregation.generate_suffix_by_aggregation import generate_suffix_by_aggregagtion
+from offre_realisee.domain.entities.aggregation.generate_suffix_by_aggregation import generate_suffix_by_aggregation
 from offre_realisee.domain.usecases.create_mesure_qs_ponctualite import (create_mesure_qs_ponctualite,
                                                                          create_mesure_qs_ponctualite_date_range)
 from tests.test_data import TEST_DATA_PATH
@@ -47,7 +47,7 @@ def test_create_mesure_qs(file_system_fixture):
 
     # Assert
     df_calendrier_scolaire = local_file_system_handler.get_calendrier_scolaire()
-    suffix = generate_suffix_by_aggregagtion(df_calendrier_scolaire)[AggregationLevel.by_day](date)
+    suffix = generate_suffix_by_aggregation(df_calendrier_scolaire)[AggregationLevel.by_day](date)
 
     result_clean = os.listdir(
         os.path.join(
@@ -78,7 +78,7 @@ def test_create_mesure_qs_ponctualite_date_range(file_system_fixture):
 
     # Assert
     df_calendrier_scolaire = local_file_system_handler.get_calendrier_scolaire()
-    suffix_by_agg = generate_suffix_by_aggregagtion(df_calendrier_scolaire)
+    suffix_by_agg = generate_suffix_by_aggregation(df_calendrier_scolaire)
     start_date_suffix = suffix_by_agg[AggregationLevel.by_day](start_date)
     end_date_suffix = suffix_by_agg[AggregationLevel.by_day](end_date)
 

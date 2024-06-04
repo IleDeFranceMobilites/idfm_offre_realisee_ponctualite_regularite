@@ -14,6 +14,7 @@ from offre_realisee.domain.entities.add_frequency import add_frequency
 from offre_realisee.domain.entities.ponctualite.stat_compliance_score_ponctualite import (
     stat_compliance_score_ponctualite)
 from offre_realisee.domain.entities.ponctualite.process_stop_ponctualite import process_stop_ponctualite
+from offre_realisee.domain.entities.aggregation.generate_suffix_by_aggregation import generate_suffix_by_aggregation
 from offre_realisee.domain.port.file_system_handler import FileSystemHandler
 
 
@@ -36,6 +37,8 @@ def create_mesure_qs_ponctualite(file_system_handler: FileSystemHandler, date: d
 
     logger.info(f'Process: {date.strftime("%Y-%m-%d")}')
     df_offre_realisee = file_system_handler.get_daily_offre_realisee(date=date)
+    df_calendrier_scolaire = file_system_handler.get_calendrier_scolaire()
+    suffix_by_agg = generate_suffix_by_aggregation(df_calendrier_scolaire)
 
     df_offre_realisee = drop_stop_without_real_time(df_offre_realisee)
     df_grouped = df_offre_realisee.groupby(by=[
@@ -55,7 +58,7 @@ def create_mesure_qs_ponctualite(file_system_handler: FileSystemHandler, date: d
 
     df_stat_ponctualite = stat_compliance_score_ponctualite(df_concat_ponctualite)
     file_system_handler.save_mesure_qs(
-        df_stat_ponctualite, date, AggregationLevel.by_day, MesureType.ponctualite
+        df_stat_ponctualite, date, AggregationLevel.by_day, MesureType.ponctualite, suffix_by_agg
     )
 
 

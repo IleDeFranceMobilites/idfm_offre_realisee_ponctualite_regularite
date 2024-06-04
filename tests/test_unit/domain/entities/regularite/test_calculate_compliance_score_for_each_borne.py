@@ -3,7 +3,7 @@ from datetime import timedelta
 import numpy as np
 import pandas as pd
 
-from offre_realisee.config.offre_realisee_config import MesureRegularite, ComplianceType
+from offre_realisee.config.offre_realisee_config import MesureRegularite, ComplianceType, MesureType
 from offre_realisee.domain.entities.regularite.compliance_score import \
     calculate_compliance_score_for_each_borne
 
@@ -35,8 +35,9 @@ def test_calculate_compliance_score_for_each_borne():
         MesureRegularite.resultat_sup: [
             None, ComplianceType.situation_inacceptable_faible_frequence, ComplianceType.compliant,
             ComplianceType.compliant, ComplianceType.situation_inacceptable_faible_frequence,
-            ComplianceType.semi_compliant, ComplianceType.semi_compliant, ComplianceType.compliant,
-            ComplianceType.compliant, None]
+            ComplianceType.semi_compliant[MesureType.regularite],
+            ComplianceType.semi_compliant[MesureType.regularite],
+            ComplianceType.compliant, ComplianceType.compliant, None]
     })
 
     # When
