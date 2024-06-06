@@ -131,6 +131,9 @@ options:
   --calendrier-scolaire-file-name CALENDRIER_SCOLAIRE_FILE_NAME
                         Nom du fichier du referentiel du calendrier scolaire. (default: calendrier_scolaire.parquet)
                         School calendar parquet file name. (default: calendrier_scolaire.parquet)
+  --periode-ete PERIODE_ETE
+                        Dates sous forme de string au format ['mois_jour', 'mois_jour'] definissant la période d'été. (default: ('07_01', '08_31'))
+                        Summer period between two dates. (default: ('07_01', '08_31'))
   --list-journees-exceptionnelles [LIST_JOURNEES_EXCEPTIONNELLES ...]
                         Liste des dates des journées exceptionnelles à exclure des calculs agrégés. (Valeur par défaut: None)
                         Datetime list of exceptionnal days to exclude. (default: None)

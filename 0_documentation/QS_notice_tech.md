@@ -256,10 +256,11 @@ Le score est calculé de la manière suivante pour chaque passage:
 - Heure théorique - 1 min < Heure réelle <= Heure théorique + 3 min
     - Score = 1
 - Heure théorique + 3 min < Heure réelle <= Heure théorique + 6 min
-    - Score = 0.5
+    - Score = 0.75
 - Heure théorique + 6 min < Heure réelle < Heure théorique + 12 min
-    - Score = 0
+    - Score = 0.25
 - Heure théorique + 12 min <= Heure réelle <= Heure théorique + 60 min
+    - Score = 0
     - Situation inacceptable retard
 - Heure théorique + 60 min < Heure réelle
     - Le trajet est considéré comme non affecté
@@ -329,13 +330,13 @@ Soit :
 - « i’ » l’intervalle réel entre la course précédente et la course étudiée
 
 Score :
-- Si i’ est inférieur à 2’
+- Si i’ est inférieur à 1’30
     - Score = 0
     - Situation inacceptable train de bus
-- Si i’ est supérieur ou égal à 2’ et inférieur ou égal à i +2‘ alors 1
+- Si i’ est supérieur ou égal à 1’30 et inférieur ou égal à i +2‘ alors 1
     - Score = 1
 - Si i ‘ est supérieur à i +2’ et inférieur ou égal à 2i alors 0,5
-    - Score = 0.5
+    - Score = 0.65
 - Si i’ est supérieur à 2i alors 0
     - Score = 0
     - Situation inacceptable faible frequence

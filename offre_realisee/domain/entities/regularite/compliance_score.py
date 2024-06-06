@@ -11,7 +11,7 @@ def calculate_compliance_score_for_each_borne(df_with_interval: pd.DataFrame) ->
 
     Les scores de conformité (régularité) pour chaque borne sont calculés ainsi :
         - ComplianceType.compliant (1).
-        - ComplianceType.semi_compliant (0.5).
+        - ComplianceType.semi_compliant (0.65).
         - ComplianceType.situation_inacceptable_faible_frequence (-2): Intervalle entre 2 passages trop important.
         - ComplianceType.situation_inacceptable_train_de_bus (-1): Train de bus.
 

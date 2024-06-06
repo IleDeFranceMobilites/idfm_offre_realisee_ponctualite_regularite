@@ -130,7 +130,7 @@ def main():  # noqa
                              "School calendar parquet file name. (default: %(default)s)")
     parser.add_argument('--periode-ete',
                         default=default_data_path_config["periode-ete"], type=Tuple[str],
-                        help="Dates sous forme de string au format [mois_jour, mois_jour]"
+                        help="Dates sous forme de string au format ['mois_jour', 'mois_jour'] "
                              "definissant la période d'été. (default: %(default)s)\n"
                              "Summer period between two dates. (default: %(default)s)")
 
