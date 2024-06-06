@@ -5,7 +5,7 @@ import pandas as pd
 
 from offre_realisee.domain.entities.aggregation.generate_suffix_by_aggregation import generate_suffix_by_aggregation
 from offre_realisee.config.logger import logger
-from offre_realisee.config.aggregation_config import AggregationLevel
+from offre_realisee.config.aggregation_config import DEFAULT_PERIODE_ETE, AggregationLevel
 from offre_realisee.config.offre_realisee_config import MesureType, Mesure, MESURE_TYPE
 from offre_realisee.domain.entities.aggregation.generate_date_aggregation_lists import (
     generate_date_aggregation_lists)
@@ -14,7 +14,8 @@ from offre_realisee.domain.port.file_system_handler import FileSystemHandler
 
 def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: Tuple[datetime, datetime],
                         aggregation_level: AggregationLevel, mesure_type: MesureType,
-                        list_journees_exceptionnelles: Optional[List[datetime]] = None) -> None:
+                        periode_ete: Tuple[str] = DEFAULT_PERIODE_ETE,
+                        list_journees_exceptionnelles: Optional[List[datetime]] = None,) -> None:
     """Agrège les mesures journalières de la qualité de service et les sauvegarde selon les spécifications fournies.
 
     Agrège les dates contenu dans la plage de données date_range en fonction du type de mesure: ponctualité ou
@@ -35,9 +36,10 @@ def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: Tupl
     """
 
     df_calendrier_scolaire = file_system_handler.get_calendrier_scolaire()
-    suffix_by_agg = generate_suffix_by_aggregation(df_calendrier_scolaire)
-    dict_date_lists = generate_date_aggregation_lists(date_range, aggregation_level, suffix_by_agg,
-                                                      list_journees_exceptionnelles)
+    suffix_by_agg = generate_suffix_by_aggregation(df_calendrier_scolaire, periode_ete)
+    dict_date_lists = generate_date_aggregation_lists(
+        date_range, aggregation_level, suffix_by_agg, list_journees_exceptionnelles
+    )
 
     for suffix, date_list in dict_date_lists.items():
         logger.info(f"Processing {mesure_type} aggregation: {suffix}")
