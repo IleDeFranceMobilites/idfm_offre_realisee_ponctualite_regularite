@@ -35,7 +35,7 @@ pip install idfm-qualite-de-service-calculateur
 #### Structure des données
 Placer vos données dans un dossier respectant la structure définie.
 
-Le code a été implémenté en suivant une structure de répertoire définie. Les données d'entrée doivent être un fichier parquet nommé "**input-file-name**" partitionné par jour "JOUR=AAAA-MM-JJ" en fonction du jour des données ainsi qu'un fichier parquet nommé "**calendrier-scolaire-file-name**" contenant le référentiel du calendrier scolaire. Le dossier "**output**" contiendra les données de sortie. La création de dossiers pour organiser les fichiers de sortie est automatique.
+Le code a été implémenté en suivant une structure de répertoire définie. Les données d'entrée doivent être un fichier parquet nommé "**input-file-name**" partitionné par jour "JOUR=AAAA-MM-JJ" en fonction du jour des données ainsi qu'un fichier parquet nommé "**calendrier-scolaire-file-name**" contenant le référentiel du calendrier scolaire (ce fichier pouvant être téléchargé via le code). Le dossier "**output**" contiendra les données de sortie. La création de dossiers pour organiser les fichiers de sortie est automatique.
 
 |- **data-path**\
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- input\
@@ -69,6 +69,7 @@ offre_realisee
 Cette commande permet de calculer et d'agréger les statistiques de qualite de service entre la date de début (start-date) et la date de fin (end-date).
 
 Des paramètres supplémentaires peuvent être ajoutés pour exécuter le script sur :
+- le téléchargment du calendrier scolaire
 - la mesure ou l’agrégation uniquement
 - la ponctualité ou la régularité uniquement
 
@@ -79,16 +80,21 @@ Par défaut la qualité de service est calculé par jour et agrégée par pério
 ```console
 $ offre_realisee -h
 
-usage: offre_realisee [-h] [--mesure | --no-mesure] [--aggregation | --no-aggregation] [--ponctualite | --no-ponctualite]
-                      [--regularite | --no-regularite] --data-path DATA_PATH --start-date START_DATE --end-date END_DATE
-                      [--input-path INPUT_PATH] [--output-path OUTPUT_PATH] [--input-file-name INPUT_FILE_NAME]
-                      [--calendrier-scolaire-file-name CALENDRIER_SCOLAIRE_FILE_NAME] [--n-thread N_THREAD]
+usage: offre_realisee [-h] [--calendrier-scolaire | --no-calendrier-scolaire] [--mesure | --no-mesure] [--aggregation | --no-aggregation]
+                      [--ponctualite | --no-ponctualite] [--regularite | --no-regularite] --data-path DATA_PATH
+                      --start-date START_DATE --end-date END_DATE [--input-path INPUT_PATH] [--output-path OUTPUT_PATH]
+                      [--input-file-name INPUT_FILE_NAME] [--calendrier-scolaire-file-name CALENDRIER_SCOLAIRE_FILE_NAME]
+                      [--n-thread N_THREAD]
 
 Calcul de la qualite de service.
 Compute qs
 
 options:
   -h, --help            show this help message and exit
+  --calendrier-scolaire, --no-calendrier-scolaire
+                        Télécharge le calendrier scolaire.
+                         (Valeur par défaut: False)
+                        Download holidays. (default: False)
   --mesure, --no-mesure
                         Calcule la mesure par jour.
                          (Valeur par défaut: True)

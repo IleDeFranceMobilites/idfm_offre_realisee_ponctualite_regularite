@@ -5,6 +5,7 @@ from typing import Dict, Callable
 import pandas as pd
 
 from offre_realisee.config.file_extensions import FileExtensions
+from offre_realisee.config.calendrier_scolaire_config import PARQUET_ENGINE, PARQUET_COMPRESSION
 from offre_realisee.config.offre_realisee_config import MesureType
 from offre_realisee.config.aggregation_config import AggregationLevel
 from offre_realisee.domain.port.file_system_handler import FileSystemHandler
@@ -142,3 +143,15 @@ class LocalFileSystemHandler(FileSystemHandler):
 
         logger.info(f"Reading input data from: {file_path}")
         return pd.read_parquet(file_path, **kwargs)
+
+    def save_calendrier_scolaire(self, filtered_calendrier_scolaire: pd.DataFrame) -> None:
+        """Sauvegarde les données du calendrier scolaire dans le dossier input.
+
+        Parameters
+        ----------
+        filtered_calendrier_scolaire :
+            DataFrame du calendrier scolaire.
+        """
+        file_path = os.path.join(self.data_path, self.input_path, self.calendrier_scolaire_file_name)
+        logger.info(f"Saving holidays to {file_path}")
+        filtered_calendrier_scolaire.to_parquet(file_path, engine=PARQUET_ENGINE, compression=PARQUET_COMPRESSION)
