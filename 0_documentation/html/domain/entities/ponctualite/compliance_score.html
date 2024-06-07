@@ -57,8 +57,8 @@
 <dl class="simple">
 <dt>matrix_score<span class="classifier">ndarray</span></dt><dd><p>Matrice contenant les scores de conformité:
 - ComplianceType.compliant (1).
-- ComplianceType.semi_compliant (0.5).
-- ComplianceType.not_compliant (0).
+- ComplianceType.semi_compliant (0.75 en haute frequence, 0.5 en basse frequence).
+- ComplianceType.not_compliant (0.25 en haute frequence, 0 en basse frequence).
 - ComplianceType.situation_inacceptable_retard (-1000000): En retard.
 - ComplianceType.situation_inacceptable_avance (-999900): En avance.
 - ComplianceType.situation_inacceptable_absence (-999000): Pas de données.</p>

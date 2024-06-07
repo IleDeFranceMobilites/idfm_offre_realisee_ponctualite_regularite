@@ -43,7 +43,7 @@ les plus proches qui lui sont attribués (= borne inférieure et borne supérieu
 <dl class="simple">
 <dt>Les scores de conformité (régularité) pour chaque borne sont calculés ainsi :</dt><dd><ul class="simple">
 <li><p>ComplianceType.compliant (1).</p></li>
-<li><p>ComplianceType.semi_compliant (0.5).</p></li>
+<li><p>ComplianceType.semi_compliant (0.65).</p></li>
 <li><p>ComplianceType.situation_inacceptable_faible_frequence (-2): Intervalle entre 2 passages trop important.</p></li>
 <li><p>ComplianceType.situation_inacceptable_train_de_bus (-1): Train de bus.</p></li>
 </ul>
@@ -72,14 +72,10 @@ tableau des scores de conformité pour la régularité de la notice)</p>
 <span class="sig-prename descclassname"><span class="pre">offre_realisee.domain.entities.regularite.compliance_score.</span></span><span class="sig-name descname"><span class="pre">choose_best_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.domain.entities.regularite.compliance_score.choose_best_score" title="Link to this definition">¶</a></dt>
 <dd><p>Sélectionne le score de conformité pour la régularité le plus optimal pour chaque passage réel d’un arrêt.
 Trois situations sont possibles :
-1. les intervalles supérieurs et inférieurs ne sont pas identiques, alors on sélectionne le plus petit intervalle de</p>
-<blockquote>
-<div><p>temps</p>
-</div></blockquote>
-<ol class="arabic simple" start="2">
-<li><p>les intervalles supérieurs et inférieurs sont identiques, alors on sélectionne celui qui donne le meilleur score</p></li>
-<li><p>le passage réel est le premier de la période analysée, alors on fixe son score à « conforme »</p></li>
-</ol>
+1. les intervalles supérieurs et inférieurs ne sont pas identiques, alors on sélectionne le plus petit intervalle de
+temps
+2. les intervalles supérieurs et inférieurs sont identiques, alors on sélectionne celui qui donne le meilleur score
+3. le passage réel est le premier de la période analysée, alors on fixe son score à « conforme »</p>
 <section id="id1">
 <h2>Parameters<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
 <dl class="simple">

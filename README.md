@@ -55,6 +55,7 @@ Les valeurs suivantes peuvent être modifiées en fonction de la structure de vo
 #### Exemple d'execution
 ```console
 offre_realisee
+    --telecharge-calendrier-scolaire
     --data-path=<dossier-racine-des-donnees>
     --start-date=YYYY-MM-DD
     --end-date=YYYY-MM-DD

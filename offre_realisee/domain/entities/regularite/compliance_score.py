@@ -139,7 +139,7 @@ def choose_best_score(df: pd.DataFrame) -> pd.DataFrame:
     """Sélectionne le score de conformité pour la régularité le plus optimal pour chaque passage réel d'un arrêt.
     Trois situations sont possibles :
     1. les intervalles supérieurs et inférieurs ne sont pas identiques, alors on sélectionne le plus petit intervalle de
-        temps
+    temps
     2. les intervalles supérieurs et inférieurs sont identiques, alors on sélectionne celui qui donne le meilleur score
     3. le passage réel est le premier de la période analysée, alors on fixe son score à "conforme"
 
