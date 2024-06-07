@@ -9,6 +9,8 @@ from offre_realisee.config.offre_realisee_config import MesureType
 from offre_realisee.domain.usecases.aggregate_mesure_qs import aggregate_mesure_qs
 from offre_realisee.domain.usecases.create_mesure_qs_ponctualite import create_mesure_qs_ponctualite_date_range
 from offre_realisee.domain.usecases.create_mesure_qs_regularite import create_mesure_qs_regularite_date_range
+from offre_realisee.domain.usecases.download_calendrier_scolaire import download_calendrier_scolaire
+from offre_realisee.infrastructure.calendrier_scolaire_api_handler import CalendrierScolaireApiHandler
 from offre_realisee.infrastructure.local_file_system_handler import LocalFileSystemHandler
 from offre_realisee.config.logger import logger
 
@@ -22,6 +24,7 @@ default_data_path_config = {
 
 
 def compute_qs(
+    telecharge_calendrier_scolaire: bool,
     mesure: bool,
     aggregation: bool,
     ponctualite: bool,
@@ -44,6 +47,10 @@ def compute_qs(
         input_file_name=input_file_name,
         calendrier_scolaire_file_name=calendrier_scolaire_file_name
     )
+
+    if telecharge_calendrier_scolaire:
+        calendrier_scolaire_api_handler = CalendrierScolaireApiHandler()
+        download_calendrier_scolaire(calendrier_scolaire_api_handler, file_system_handler)
 
     date_range = (start_date, end_date)
 
@@ -71,6 +78,10 @@ def main():  # noqa
         formatter_class=argparse.RawTextHelpFormatter
     )
 
+    parser.add_argument('--telecharge-calendrier-scolaire', default=False, action=argparse.BooleanOptionalAction,
+                        help="Télécharge le calendrier scolaire.\n"
+                             " (Valeur par défaut: %(default)s)\n"
+                             "Download holidays.")
     parser.add_argument('--mesure', default=True, action=argparse.BooleanOptionalAction,
                         help="Calcule la mesure par jour.\n"
                         " (Valeur par défaut: %(default)s)\n"
@@ -136,6 +147,7 @@ def main():  # noqa
 
 if __name__ == "__main__":
     compute_qs(
+        telecharge_calendrier_scolaire=False,
         mesure=True,
         aggregation=True,
         ponctualite=True,
