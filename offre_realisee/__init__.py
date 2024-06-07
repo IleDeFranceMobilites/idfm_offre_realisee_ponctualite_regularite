@@ -1,9 +1,9 @@
 import argparse
 from datetime import datetime
 import logging
-from typing import Optional
+from typing import Optional, Tuple
 
-from offre_realisee.config.aggregation_config import AggregationLevel
+from offre_realisee.config.aggregation_config import DEFAULT_PERIODE_ETE, AggregationLevel
 from offre_realisee.config.file_extensions import FileExtensions
 from offre_realisee.config.offre_realisee_config import MesureType
 from offre_realisee.domain.usecases.aggregate_mesure_qs import aggregate_mesure_qs
@@ -19,7 +19,8 @@ default_data_path_config = {
     'input-path': 'input',
     'output-path': 'output',
     'input-file-name': f'offre_realisee{FileExtensions.parquet}',
-    'calendrier-scolaire-file-name': f'calendrier_scolaire{FileExtensions.parquet}'
+    'calendrier-scolaire-file-name': f'calendrier_scolaire{FileExtensions.parquet}',
+    'periode-ete': DEFAULT_PERIODE_ETE
 }
 
 
@@ -36,6 +37,7 @@ def compute_qs(
     output_path: str,
     input_file_name: str,
     calendrier_scolaire_file_name: str,
+    periode_ete: Tuple[str],
     list_journees_exceptionnelles: Optional[list[datetime]],
     n_thread: 1,
 ) -> None:
@@ -64,10 +66,10 @@ def compute_qs(
         for aggregation_level in [AggregationLevel.by_period, AggregationLevel.by_period_weekdays]:
             if ponctualite:
                 aggregate_mesure_qs(file_system_handler, date_range, aggregation_level, MesureType.ponctualite,
-                                    list_journees_exceptionnelles)
+                                    periode_ete, list_journees_exceptionnelles)
             if regularite:
                 aggregate_mesure_qs(file_system_handler, date_range, aggregation_level, MesureType.regularite,
-                                    list_journees_exceptionnelles)
+                                    periode_ete, list_journees_exceptionnelles)
 
 
 def main():  # noqa
@@ -126,6 +128,11 @@ def main():  # noqa
                         default=default_data_path_config["calendrier-scolaire-file-name"], type=str,
                         help="Nom du fichier du referentiel du calendrier scolaire. (default: %(default)s)\n"
                              "School calendar parquet file name. (default: %(default)s)")
+    parser.add_argument('--periode-ete', nargs=2,
+                        default=default_data_path_config["periode-ete"], type=str,
+                        help="Dates sous forme de string au format ['mois_jour', 'mois_jour'] "
+                             "definissant la période d'été. (default: %(default)s)\n"
+                             "Summer period between two dates. (default: %(default)s)")
 
     parser.add_argument('--list-journees-exceptionnelles', nargs="*", default=[],
                         type=lambda s: datetime.strptime(s, '%Y-%m-%d'),
@@ -159,6 +166,7 @@ if __name__ == "__main__":
         output_path=default_data_path_config["output-path"],
         input_file_name=default_data_path_config["input-file-name"],
         calendrier_scolaire_file_name=default_data_path_config["calendrier-scolaire-file-name"],
+        periode_ete=DEFAULT_PERIODE_ETE,
         list_journees_exceptionnelles=None,
 
         n_thread=5,

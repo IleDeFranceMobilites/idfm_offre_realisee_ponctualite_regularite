@@ -11,7 +11,7 @@ def calculate_compliance_score_for_each_borne(df_with_interval: pd.DataFrame) ->
 
     Les scores de conformité (régularité) pour chaque borne sont calculés ainsi :
         - ComplianceType.compliant (1).
-        - ComplianceType.semi_compliant (0.5).
+        - ComplianceType.semi_compliant (0.65).
         - ComplianceType.situation_inacceptable_faible_frequence (-2): Intervalle entre 2 passages trop important.
         - ComplianceType.situation_inacceptable_train_de_bus (-1): Train de bus.
 
@@ -31,11 +31,11 @@ def calculate_compliance_score_for_each_borne(df_with_interval: pd.DataFrame) ->
 
     for borne in [Borne.inf, Borne.sup]:
         df_with_score.loc[
-            (df_with_score[MesureRegularite.difference_reelle] < timedelta(minutes=2)),
+            (df_with_score[MesureRegularite.difference_reelle] < timedelta(seconds=90)),
             MesureRegularite.resultat + borne] = ComplianceType.situation_inacceptable_train_de_bus
 
         df_with_score.loc[
-            (df_with_score[MesureRegularite.difference_reelle] >= timedelta(minutes=2)) &
+            (df_with_score[MesureRegularite.difference_reelle] >= timedelta(seconds=90)) &
             (df_with_score[MesureRegularite.difference_reelle] <= (
                     df_with_score[MesureRegularite.difference_theorique + borne] + timedelta(minutes=2))),
             MesureRegularite.resultat + borne] = ComplianceType.compliant
@@ -139,7 +139,7 @@ def choose_best_score(df: pd.DataFrame) -> pd.DataFrame:
     """Sélectionne le score de conformité pour la régularité le plus optimal pour chaque passage réel d'un arrêt.
     Trois situations sont possibles :
     1. les intervalles supérieurs et inférieurs ne sont pas identiques, alors on sélectionne le plus petit intervalle de
-        temps
+    temps
     2. les intervalles supérieurs et inférieurs sont identiques, alors on sélectionne celui qui donne le meilleur score
     3. le passage réel est le premier de la période analysée, alors on fixe son score à "conforme"
 

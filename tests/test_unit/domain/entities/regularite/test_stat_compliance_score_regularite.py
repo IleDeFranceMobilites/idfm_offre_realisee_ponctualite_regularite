@@ -25,13 +25,13 @@ def test_stat_regularite_compliance_score():
 
     expected_result = pd.DataFrame({
         MesureRegularite.ligne: ["1", "2", "3"],
-        MesureRegularite.score_de_conformite: [1.5, 3.5, 0.5],
+        MesureRegularite.score_de_conformite: [1.65, 3.65, 0.65],
         MesureRegularite.situation_inacceptable_train_de_bus: [1, 1, 0],
         MesureRegularite.situation_inacceptable_ecart_important: [1, 0, 0],
         MesureRegularite.situation_inacceptable_total: [2, 1, 0],
         MesureRegularite.nombre_theorique: [5, 7, 1],
         MesureRegularite.nombre_reel: [4, 5, 1],
-        MesureRegularite.taux_de_conformite: [30.0, 50.0, 50.0],
+        MesureRegularite.taux_de_conformite: [33.0, 52.14, 65.0],
         MesureRegularite.taux_absence_de_donnees: [20.0, 28.57, 0.0]
     })
 
