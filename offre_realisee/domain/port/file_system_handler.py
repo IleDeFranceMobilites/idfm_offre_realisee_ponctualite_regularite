@@ -100,14 +100,3 @@ class FileSystemHandler(abc.ABC):
             DataFrame du calendrier scolaire.
         """
         pass
-
-    @abc.abstractmethod
-    def save_calendrier_scolaire(self, filtered_calendrier_scolaire: pd.DataFrame) -> None:
-        """Sauvegarde les données du calendrier scolaire dans le dossier input.
-
-        Parameters
-        ----------
-        filtered_calendrier_scolaire :
-            DataFrame du calendrier scolaire.
-        """
-        pass

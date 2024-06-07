@@ -8,6 +8,7 @@ from offre_realisee.config.file_extensions import FileExtensions
 from offre_realisee.config.calendrier_scolaire_config import PARQUET_ENGINE, PARQUET_COMPRESSION
 from offre_realisee.config.offre_realisee_config import MesureType
 from offre_realisee.config.aggregation_config import AggregationLevel
+from offre_realisee.domain.port.calendrier_scolaire_file_system_handler import CalendrierScolaireFileSystemHandler
 from offre_realisee.domain.port.file_system_handler import FileSystemHandler
 
 from offre_realisee.config.input_config import InputColumns
@@ -16,7 +17,7 @@ from offre_realisee.config.offre_realisee_config import MESURE_TYPE
 from offre_realisee.config.logger import logger
 
 
-class LocalFileSystemHandler(FileSystemHandler):
+class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHandler):
 
     def __init__(self, data_path: str, input_path: str, output_path: str, input_file_name: str,
                  calendrier_scolaire_file_name: str):
