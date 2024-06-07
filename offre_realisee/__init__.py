@@ -117,8 +117,8 @@ def main():  # noqa
                         default=default_data_path_config["calendrier-scolaire-file-name"], type=str,
                         help="Nom du fichier du referentiel du calendrier scolaire. (default: %(default)s)\n"
                              "School calendar parquet file name. (default: %(default)s)")
-    parser.add_argument('--periode-ete',
-                        default=default_data_path_config["periode-ete"], type=Tuple[str],
+    parser.add_argument('--periode-ete', nargs=2,
+                        default=default_data_path_config["periode-ete"], type=str,
                         help="Dates sous forme de string au format ['mois_jour', 'mois_jour'] "
                              "definissant la période d'été. (default: %(default)s)\n"
                              "Summer period between two dates. (default: %(default)s)")
@@ -154,7 +154,7 @@ if __name__ == "__main__":
         output_path=default_data_path_config["output-path"],
         input_file_name=default_data_path_config["input-file-name"],
         calendrier_scolaire_file_name=default_data_path_config["calendrier-scolaire-file-name"],
-        periode_ete=["07_01", "08_31"],
+        periode_ete=DEFAULT_PERIODE_ETE,
         list_journees_exceptionnelles=None,
 
         n_thread=5,

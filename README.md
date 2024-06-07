@@ -61,6 +61,7 @@ offre_realisee
     --input-path=<chemin-relatif-du-dossier-des-donnees-en-entree>
     --output-path=<chemin-relatif-du-dossier-des-donnees-en-sortie>
     --input-file-name=<nom-du-fichier-de-donnees-en-entree>
+    --periode-ete 07_01 08_31
     --calendrier-scolaire-file-name=<nom-du-fichier-de-référentiel-du-calendrier-scolaire>
     --list-journees-exceptionnelles YYYY-MM-DD YYYY-MM-DD YYYY-MM-DD
     --n-thread=<nombre-de-thread-d'execution-parallèle>
@@ -78,11 +79,11 @@ Par défaut la qualité de service est calculé par jour et agrégée par pério
 
 ```console
 $ offre_realisee -h
-
 usage: offre_realisee [-h] [--mesure | --no-mesure] [--aggregation | --no-aggregation] [--ponctualite | --no-ponctualite]
                       [--regularite | --no-regularite] --data-path DATA_PATH --start-date START_DATE --end-date END_DATE
                       [--input-path INPUT_PATH] [--output-path OUTPUT_PATH] [--input-file-name INPUT_FILE_NAME]
-                      [--calendrier-scolaire-file-name CALENDRIER_SCOLAIRE_FILE_NAME] [--n-thread N_THREAD]
+                      [--calendrier-scolaire-file-name CALENDRIER_SCOLAIRE_FILE_NAME] [--periode-ete PERIODE_ETE PERIODE_ETE]
+                      [--list-journees-exceptionnelles [LIST_JOURNEES_EXCEPTIONNELLES ...]] [--n-thread N_THREAD]
 
 Calcul de la qualite de service.
 Compute qs
@@ -125,7 +126,7 @@ options:
   --calendrier-scolaire-file-name CALENDRIER_SCOLAIRE_FILE_NAME
                         Nom du fichier du referentiel du calendrier scolaire. (default: calendrier_scolaire.parquet)
                         School calendar parquet file name. (default: calendrier_scolaire.parquet)
-  --periode-ete PERIODE_ETE
+  --periode-ete PERIODE_ETE PERIODE_ETE
                         Dates sous forme de string au format ['mois_jour', 'mois_jour'] definissant la période d'été. (default: ('07_01', '08_31'))
                         Summer period between two dates. (default: ('07_01', '08_31'))
   --list-journees-exceptionnelles [LIST_JOURNEES_EXCEPTIONNELLES ...]
