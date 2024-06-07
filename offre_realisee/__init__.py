@@ -24,7 +24,7 @@ default_data_path_config = {
 
 
 def compute_qs(
-    calendrier_scolaire: bool,
+    telecharge_calendrier_scolaire: bool,
     mesure: bool,
     aggregation: bool,
     ponctualite: bool,
@@ -48,7 +48,7 @@ def compute_qs(
         calendrier_scolaire_file_name=calendrier_scolaire_file_name
     )
 
-    if calendrier_scolaire:
+    if telecharge_calendrier_scolaire:
         calendrier_scolaire_api_handler = CalendrierScolaireApiHandler()
         download_calendrier_scolaire(calendrier_scolaire_api_handler, file_system_handler)
 
@@ -78,7 +78,7 @@ def main():  # noqa
         formatter_class=argparse.RawTextHelpFormatter
     )
 
-    parser.add_argument('--calendrier_scolaire', default=False, action=argparse.BooleanOptionalAction,
+    parser.add_argument('--telecharge-calendrier-scolaire', default=False, action=argparse.BooleanOptionalAction,
                         help="Télécharge le calendrier scolaire.\n"
                              " (Valeur par défaut: %(default)s)\n"
                              "Download holidays.")
@@ -147,7 +147,7 @@ def main():  # noqa
 
 if __name__ == "__main__":
     compute_qs(
-        calendrier_scolaire=False,
+        telecharge_calendrier_scolaire=False,
         mesure=True,
         aggregation=True,
         ponctualite=True,
