@@ -11,6 +11,13 @@ API_ROUTE = ("https://data.education.gouv.fr/api/explore/v2.0/catalog/datasets/f
 
 class CalendrierScolaireApiHandler(CalendrierScolaireSourceHandler):
     def get_calendrier_scolaire(self) -> pd.DataFrame:
+        """Téléchargement des données de calendrier scolaire.
+
+        Returns
+        -------
+        df : DataFrame
+            DataFrame du calendrier scolaire.
+        """
         return pd.read_csv(API_ROUTE, sep=API_SEP,
                            usecols=[CalendrierScolaireColumns.zones, CalendrierScolaireColumns.start_date,
                                     CalendrierScolaireColumns.end_date, CalendrierScolaireColumns.population,
