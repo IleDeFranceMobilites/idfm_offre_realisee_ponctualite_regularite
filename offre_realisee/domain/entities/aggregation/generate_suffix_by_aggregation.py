@@ -48,6 +48,14 @@ def generate_suffix_by_aggregation(
                 x.strftime('%Y_saturday_') + get_period_name(x, df_calendrier_scolaire, periode_ete)
             )
         ),
+        AggregationLevel.by_period_weekdays_window: lambda x: (
+            x.strftime('sunday_or_holiday_') + get_period_name(x, df_calendrier_scolaire, periode_ete)
+            if (x.weekday() == 6) or calendrier.is_holiday(x.date())
+            else (
+                x.strftime('week_') + get_period_name(x, df_calendrier_scolaire, periode_ete) if x.weekday() < 5 else
+                x.strftime('saturday_') + get_period_name(x, df_calendrier_scolaire, periode_ete)
+            )
+        ),
         AggregationLevel.by_year_weekdays: lambda x: (
             x.strftime('%Y_week') if x.weekday() < 5 else x.strftime('%Y_weekend')
         )

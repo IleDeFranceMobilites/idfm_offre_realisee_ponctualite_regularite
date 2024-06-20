@@ -4,7 +4,8 @@ import pandas as pd
 
 from offre_realisee.config.aggregation_config import AggregationLevel
 from offre_realisee.domain.entities.aggregation.generate_date_aggregation_lists import generate_date_aggregation_lists
-from offre_realisee.domain.entities.aggregation.generate_suffix_by_aggregation import IDF_TIMEZONE, generate_suffix_by_aggregation
+from offre_realisee.domain.entities.aggregation.generate_suffix_by_aggregation import (
+    IDF_TIMEZONE, generate_suffix_by_aggregation)
 
 
 def test_generate_date_aggregation_lists():
@@ -157,6 +158,43 @@ def test_generate_date_aggregation_lists_test_values_by_period_weekdays():
                                    datetime(2023, 9, 12, 0, 0)],
         '2023_saturday_plein_trafic': [datetime(2023, 9, 9, 0, 0)],
         '2023_sunday_or_holiday_plein_trafic': [datetime(2023, 9, 10, 0, 0)]
+    }
+
+    # When
+    result = generate_date_aggregation_lists(date_range, aggregation_level, suffix_by_agg)
+
+    # Then
+    assert result.items() == expected_result.items()
+
+
+def test_generate_date_aggregation_lists_test_values_by_period_weekdays_window():
+    # Given
+    date_range = (datetime(2023, 8, 20), datetime(2023, 9, 12))
+    aggregation_level = AggregationLevel.by_period_weekdays_window
+    suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
+        'description': ['Vacances'],
+        'start_date': [
+            IDF_TIMEZONE.localize(datetime(2023, 9, 1))
+        ],
+        'end_date': [
+            IDF_TIMEZONE.localize(datetime(2023, 9, 4))
+        ]
+    }))
+
+    expected_result = {
+        'sunday_or_holiday_ete': [datetime(2023, 8, 20, 0, 0), datetime(2023, 8, 27, 0, 0)],
+        'week_ete': [datetime(2023, 8, 21, 0, 0), datetime(2023, 8, 22, 0, 0), datetime(2023, 8, 23, 0, 0),
+                     datetime(2023, 8, 24, 0, 0), datetime(2023, 8, 25, 0, 0), datetime(2023, 8, 28, 0, 0),
+                     datetime(2023, 8, 29, 0, 0), datetime(2023, 8, 30, 0, 0), datetime(2023, 8, 31, 0, 0)],
+        'saturday_ete': [datetime(2023, 8, 26, 0, 0)],
+        'week_vacances_scolaires': [datetime(2023, 9, 1, 0, 0)],
+        'saturday_vacances_scolaires': [datetime(2023, 9, 2, 0, 0)],
+        'sunday_or_holiday_vacances_scolaires': [datetime(2023, 9, 3, 0, 0)],
+        'week_plein_trafic': [datetime(2023, 9, 4, 0, 0), datetime(2023, 9, 5, 0, 0), datetime(2023, 9, 6, 0, 0),
+                              datetime(2023, 9, 7, 0, 0), datetime(2023, 9, 8, 0, 0), datetime(2023, 9, 11, 0, 0),
+                              datetime(2023, 9, 12, 0, 0)],
+        'saturday_plein_trafic': [datetime(2023, 9, 9, 0, 0)],
+        'sunday_or_holiday_plein_trafic': [datetime(2023, 9, 10, 0, 0)]
     }
 
     # When
