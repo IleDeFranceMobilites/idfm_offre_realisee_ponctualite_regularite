@@ -4,6 +4,7 @@ class AggregationLevel:
     by_year = "by_year"
     by_period = "by_period"
     by_period_weekdays = "by_period_weekdays"
+    by_period_weekdays_window = "by_period_weekdays_window"
     by_year_weekdays = "by_year_weekdays"
 
 
