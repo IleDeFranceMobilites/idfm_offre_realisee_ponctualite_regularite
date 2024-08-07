@@ -1,7 +1,6 @@
 from datetime import datetime
 from collections import defaultdict
 from functools import partial
-from typing import Tuple
 
 import pandas as pd
 from multiprocess import Pool
@@ -69,13 +68,13 @@ def create_mesure_qs_regularite(
 
     df_stat_regularite = stat_compliance_score_regularite(df_concat_regularite, theorique_passages_by_lignes,
                                                           any_high_frequency_on_lignes)
-    file_system_handler.save_mesure_qs(
-        df_stat_regularite, date, AggregationLevel.by_day, MesureType.regularite, suffix_by_agg
+    file_system_handler.save_daily_mesure_qs(
+        df_stat_regularite, date, MesureType.regularite, suffix_by_agg
     )
 
 
 def create_mesure_qs_regularite_date_range(
-        file_system_handler: FileSystemHandler, date_range: Tuple[datetime, datetime],
+        file_system_handler: FileSystemHandler, date_range: tuple[datetime, datetime],
         n_thread: int = NUMBER_OF_PARALLEL_PROCESS
 ) -> None:
     """Appelle la fonction create_mesure_qs_regularite sur une plage de date, en parallélisant les calculs.

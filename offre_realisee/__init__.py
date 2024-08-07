@@ -1,7 +1,7 @@
 import argparse
 from datetime import datetime
 import logging
-from typing import Optional, Tuple
+from typing import Optional
 
 from offre_realisee.config.aggregation_config import DEFAULT_PERIODE_ETE, AggregationLevel
 from offre_realisee.config.file_extensions import FileExtensions
@@ -37,7 +37,7 @@ def compute_qs(
     output_path: str,
     input_file_name: str,
     calendrier_scolaire_file_name: str,
-    periode_ete: Tuple[str],
+    periode_ete: tuple[str],
     list_journees_exceptionnelles: Optional[list[datetime]],
     n_thread: 1,
 ) -> None:

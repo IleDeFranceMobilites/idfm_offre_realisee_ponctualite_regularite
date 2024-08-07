@@ -1,4 +1,3 @@
-from typing import Dict
 import pandas as pd
 from offre_realisee.config.offre_realisee_config import MesureRegularite, ComplianceType
 
@@ -8,8 +7,8 @@ _SI_VALUES_SET = {
 }
 
 
-def stat_compliance_score_regularite(df: pd.DataFrame, n_theorique_by_lignes: Dict[str, int],
-                                     any_high_frequency_on_lignes: Dict[str, bool]) -> pd.DataFrame:
+def stat_compliance_score_regularite(df: pd.DataFrame, n_theorique_by_lignes: dict[str, int],
+                                     any_high_frequency_on_lignes: dict[str, bool]) -> pd.DataFrame:
     """Calcule le taux de conformité pour la régularité pour les lignes hautes fréquences (= les lignes qui contiennent
     au moins un arrêt haute fréquence sur la période analysée).
     La formule de calcul du taux de conformité est :

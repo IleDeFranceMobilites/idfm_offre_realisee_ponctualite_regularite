@@ -1,10 +1,9 @@
 from datetime import timedelta
-from typing import Dict
 
 import numpy as np
 from offre_realisee.config.offre_realisee_config import FrequenceType, ComplianceType, MesureType
 
-_ThresholdType = Dict[FrequenceType, timedelta]
+_ThresholdType = dict[FrequenceType, timedelta]
 
 
 class FrequencyThreshold:
