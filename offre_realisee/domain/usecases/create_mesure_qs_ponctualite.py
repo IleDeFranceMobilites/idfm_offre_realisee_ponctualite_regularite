@@ -56,8 +56,8 @@ def create_mesure_qs_ponctualite(file_system_handler: FileSystemHandler, date: d
             df_concat_ponctualite = pd.concat([df_concat_ponctualite, score_by_stop_ponctualite], ignore_index=True)
 
     df_stat_ponctualite = stat_compliance_score_ponctualite(df_concat_ponctualite)
-    file_system_handler.save_mesure_qs(
-        df_stat_ponctualite, date, AggregationLevel.by_day, MesureType.ponctualite, suffix_by_agg
+    file_system_handler.save_daily_mesure_qs(
+        df_stat_ponctualite, date, MesureType.ponctualite, suffix_by_agg
     )
 
 

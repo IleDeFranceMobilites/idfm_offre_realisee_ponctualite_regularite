@@ -68,8 +68,8 @@ def create_mesure_qs_regularite(
 
     df_stat_regularite = stat_compliance_score_regularite(df_concat_regularite, theorique_passages_by_lignes,
                                                           any_high_frequency_on_lignes)
-    file_system_handler.save_mesure_qs(
-        df_stat_regularite, date, AggregationLevel.by_day, MesureType.regularite, suffix_by_agg
+    file_system_handler.save_daily_mesure_qs(
+        df_stat_regularite, date, MesureType.regularite, suffix_by_agg
     )
 
 

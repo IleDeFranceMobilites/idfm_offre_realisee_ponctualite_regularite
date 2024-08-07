@@ -52,7 +52,7 @@ def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: tupl
 
         df_all_mesure = pd.concat(mesure_list)
         df_aggregated = aggregate_df(df_all_mesure, MESURE_TYPE[mesure_type])
-        file_system_handler.save_mesure_qs(df_aggregated, date_list[0], aggregation_level, mesure_type, suffix_by_agg)
+        file_system_handler.save_mesure_qs_by_aggregation(df_aggregated, date_list[0], aggregation_level, mesure_type, suffix_by_agg)
 
 
 def aggregate_df(df_all_mesure: pd.DataFrame, mesure: Mesure) -> pd.DataFrame:
