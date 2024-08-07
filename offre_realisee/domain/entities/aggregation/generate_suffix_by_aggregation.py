@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Tuple
 from pytz import timezone
 
 import pandas as pd
@@ -12,7 +11,7 @@ from offre_realisee.config.aggregation_config import (
 IDF_TIMEZONE = timezone('Europe/Paris')
 
 
-def get_period_name(date: datetime, df_calendrier_scolaire: pd.DataFrame, periode_ete: Tuple[str]):
+def get_period_name(date: datetime, df_calendrier_scolaire: pd.DataFrame, periode_ete: tuple[str]):
 
     if date.strftime("%m_%d") >= periode_ete[0] and date.strftime("%m_%d") <= periode_ete[1]:
         return PeriodeName.ete
@@ -30,7 +29,7 @@ def get_period_name(date: datetime, df_calendrier_scolaire: pd.DataFrame, period
 
 
 def generate_suffix_by_aggregation(
-    df_calendrier_scolaire: pd.DataFrame, periode_ete: Tuple[str] = DEFAULT_PERIODE_ETE
+    df_calendrier_scolaire: pd.DataFrame, periode_ete: tuple[str] = DEFAULT_PERIODE_ETE
 ) -> dict:
     calendrier = France()
 

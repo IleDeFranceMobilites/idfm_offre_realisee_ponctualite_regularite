@@ -1,5 +1,4 @@
 import abc
-from typing import Dict
 
 
 class MesureType:
@@ -128,7 +127,7 @@ class MesureRegularite(Mesure):
     ]
 
 
-MESURE_TYPE: Dict[MesureType, Mesure] = {
+MESURE_TYPE: dict[MesureType, Mesure] = {
     MesureType.ponctualite: MesurePonctualite,
     MesureType.regularite: MesureRegularite,
 }

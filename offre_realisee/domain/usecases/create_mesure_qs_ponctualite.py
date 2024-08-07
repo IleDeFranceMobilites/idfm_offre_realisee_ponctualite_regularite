@@ -1,6 +1,5 @@
 from datetime import datetime
 from functools import partial
-from typing import Tuple
 
 import pandas as pd
 from multiprocess import Pool
@@ -63,7 +62,7 @@ def create_mesure_qs_ponctualite(file_system_handler: FileSystemHandler, date: d
 
 
 def create_mesure_qs_ponctualite_date_range(
-        file_system_handler: FileSystemHandler, date_range: Tuple[datetime, datetime],
+        file_system_handler: FileSystemHandler, date_range: tuple[datetime, datetime],
         n_thread: int = NUMBER_OF_PARALLEL_PROCESS
 ) -> None:
     """Appelle la fonction create_mesure_qs_ponctualite sur une plage de date, en parallélisant les calculs.

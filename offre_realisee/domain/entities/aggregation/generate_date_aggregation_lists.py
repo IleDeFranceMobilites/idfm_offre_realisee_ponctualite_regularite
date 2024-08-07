@@ -1,14 +1,14 @@
 from collections import defaultdict
 from datetime import datetime, timedelta
-from typing import Dict, List, Tuple, Optional, Callable
+from typing import Optional
 
 from offre_realisee.config.aggregation_config import AggregationLevel
 
 
 def generate_date_aggregation_lists(
-        date_range: Tuple[datetime, datetime], aggregation_level: AggregationLevel,
-        suffix_by_agg: Dict[AggregationLevel, Callable], list_journees_exceptionnelles: Optional[List[datetime]] = None
-) -> Dict[str, List[datetime]]:
+        date_range: tuple[datetime, datetime], aggregation_level: AggregationLevel,
+        suffix_by_agg: dict[AggregationLevel, callable], list_journees_exceptionnelles: Optional[list[datetime]] = None
+) -> dict[str, list[datetime]]:
     """Liste toutes les dates de la plage de date donnée avec leur suffix d'agrégation.
 
     Parameters
@@ -28,7 +28,7 @@ def generate_date_aggregation_lists(
         Dictionnaire avec en clé le suffix de l'aggrégation (%Y pour by_year, %Y_%M pour by_month, ...) et en valeur
         une liste de date en datetime.
     """
-    dict_date_lists: Dict[str, List[datetime]] = defaultdict(list)
+    dict_date_lists: dict[str, list[datetime]] = defaultdict(list)
     suffix_generator = suffix_by_agg[aggregation_level]
 
     if list_journees_exceptionnelles is None:

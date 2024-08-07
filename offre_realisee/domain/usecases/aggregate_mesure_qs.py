@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Tuple, Optional
+from typing import Optional
 
 import pandas as pd
 
@@ -12,10 +12,10 @@ from offre_realisee.domain.entities.aggregation.generate_date_aggregation_lists 
 from offre_realisee.domain.port.file_system_handler import FileSystemHandler
 
 
-def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: Tuple[datetime, datetime],
+def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: tuple[datetime, datetime],
                         aggregation_level: AggregationLevel, mesure_type: MesureType,
-                        periode_ete: Tuple[str] = DEFAULT_PERIODE_ETE,
-                        list_journees_exceptionnelles: Optional[List[datetime]] = None,) -> None:
+                        periode_ete: tuple[str] = DEFAULT_PERIODE_ETE,
+                        list_journees_exceptionnelles: Optional[list[datetime]] = None,) -> None:
     """Agrège les mesures journalières de la qualité de service et les sauvegarde selon les spécifications fournies.
 
     Agrège les dates contenu dans la plage de données date_range en fonction du type de mesure: ponctualité ou
@@ -43,7 +43,7 @@ def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: Tupl
 
     for suffix, date_list in dict_date_lists.items():
         logger.info(f"Processing {mesure_type} aggregation: {suffix}")
-        mesure_list: List[pd.DataFrame] = []
+        mesure_list: list[pd.DataFrame] = []
 
         for date_to_agg in date_list:
             df = file_system_handler.get_daily_mesure_qs(date=date_to_agg, mesure_type=mesure_type,

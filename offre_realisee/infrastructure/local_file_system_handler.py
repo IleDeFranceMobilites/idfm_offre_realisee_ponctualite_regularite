@@ -1,6 +1,5 @@
 import os
 from datetime import datetime
-from typing import Dict, Callable
 
 import pandas as pd
 
@@ -68,12 +67,48 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
 
         return df_offre_realisee
 
-    def save_mesure_qs(
+    def _save_mesure_qs(
             self, df_mesure_qs: pd.DataFrame, date: datetime,
             aggregation_level: AggregationLevel, mesure_type: MesureType,
-            suffix_by_agg: Dict[AggregationLevel, Callable]
+            suffix_by_agg: dict[AggregationLevel, callable]
     ) -> None:
-        """Sauvegarde du DataFrame de mesure de Qualité de Service (QS).
+        mesure_qs = MESURE_TYPE[mesure_type]
+
+        folder_path = os.path.join(self.data_path, self.output_path, aggregation_level, mesure_type)
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path, exist_ok=True)
+
+        suffix = suffix_by_agg[aggregation_level](date)
+        file_path = os.path.join(folder_path, f"mesure_{mesure_type}_{suffix}" + FileExtensions.csv)
+
+        logger.info(f"Writing a dataframe of shape {df_mesure_qs.shape} in {file_path}")
+        df_mesure_qs[mesure_qs.column_order].to_csv(file_path)
+
+    def save_daily_mesure_qs(
+            self, df_mesure_qs: pd.DataFrame, date: datetime, mesure_type: MesureType,
+            suffix_by_agg: dict[AggregationLevel, callable]
+    ) -> None:
+        """Sauvegarde du DataFrame de mesure de Qualité de Service (QS) par jour.
+
+        Parameters
+        ----------
+        df_mesure_qs : DataFrame
+            DataFrame que nous voulons sauvegarder.
+        date : datetime
+            Date des données de mesure QS.
+        mesure_type : MesureType
+            Le type de mesure (ponctualite, regularite).
+        suffix_by_agg: Dict[AggregationLevel, Callable]
+            Dictionnaire de fonction de génération de suffix basé sur la date et le calendrier scolaire.
+        """
+        self._save_mesure_qs(df_mesure_qs, date, AggregationLevel.by_day, mesure_type, suffix_by_agg)
+
+    def save_mesure_qs_by_aggregation(
+            self, df_mesure_qs: pd.DataFrame, date: datetime,
+            aggregation_level: AggregationLevel, mesure_type: MesureType,
+            suffix_by_agg: dict[AggregationLevel, callable]
+    ) -> None:
+        """Sauvegarde du DataFrame de mesure de Qualité de Service (QS) par aggrégation.
 
         Parameters
         ----------
@@ -88,20 +123,10 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
         suffix_by_agg: Dict[AggregationLevel, Callable]
             Dictionnaire de fonction de génération de suffix basé sur la date et le calendrier scolaire.
         """
-        mesure_qs = MESURE_TYPE[mesure_type]
-
-        folder_path = os.path.join(self.data_path, self.output_path, aggregation_level, mesure_type)
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path, exist_ok=True)
-
-        suffix = suffix_by_agg[aggregation_level](date)
-        file_path = os.path.join(folder_path, f"mesure_{mesure_type}_{suffix}" + FileExtensions.csv)
-
-        logger.info(f"Writing a dataframe of shape {df_mesure_qs.shape} in {file_path}")
-        df_mesure_qs[mesure_qs.column_order].to_csv(file_path)
+        self._save_mesure_qs(df_mesure_qs, date, aggregation_level, mesure_type, suffix_by_agg)
 
     def get_daily_mesure_qs(self, date: datetime, mesure_type: MesureType,
-                            suffix_by_agg: Dict[AggregationLevel, Callable]) -> pd.DataFrame:
+                            suffix_by_agg: dict[AggregationLevel, callable]) -> pd.DataFrame:
         """Récupération des données de mesure QS par jour.
 
         Parameters
