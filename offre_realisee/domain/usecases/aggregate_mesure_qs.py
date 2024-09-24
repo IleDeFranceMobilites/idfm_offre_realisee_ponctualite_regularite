@@ -6,7 +6,8 @@ import pandas as pd
 from offre_realisee.domain.entities.aggregation.generate_suffix_by_aggregation import generate_suffix_by_aggregation
 from offre_realisee.config.logger import logger
 from offre_realisee.config.aggregation_config import DEFAULT_PERIODE_ETE, AggregationLevel
-from offre_realisee.config.offre_realisee_config import MesureType, Mesure, MESURE_TYPE
+from offre_realisee.config.offre_realisee_config import (MesureType, Mesure, MESURE_TYPE, MesurePonctualite,
+                                                         MesureRegularite)
 from offre_realisee.domain.entities.aggregation.generate_date_aggregation_lists import (
     generate_date_aggregation_lists)
 from offre_realisee.domain.port.file_system_handler import FileSystemHandler
@@ -50,9 +51,16 @@ def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: tupl
                                                          suffix_by_agg=suffix_by_agg)
             mesure_list.append(df)
 
-        df_all_mesure = pd.concat(mesure_list)
+        if len(mesure_list) != 0:
+            df_all_mesure = pd.concat(mesure_list)
+        elif mesure_type == MesureType.ponctualite:
+            df_all_mesure = pd.DataFrame(columns=MesurePonctualite.column_order)
+        else:
+            df_all_mesure = pd.DataFrame(columns=MesureRegularite.column_order)
         df_aggregated = aggregate_df(df_all_mesure, MESURE_TYPE[mesure_type])
-        file_system_handler.save_mesure_qs_by_aggregation(df_aggregated, date_list[0], aggregation_level, mesure_type, suffix_by_agg)
+        file_system_handler.save_mesure_qs_by_aggregation(
+            df_aggregated, date_list[0], aggregation_level, mesure_type, suffix_by_agg
+        )
 
 
 def aggregate_df(df_all_mesure: pd.DataFrame, mesure: Mesure) -> pd.DataFrame:
