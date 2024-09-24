@@ -53,11 +53,11 @@ def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: tupl
 
         if len(mesure_list) != 0:
             df_all_mesure = pd.concat(mesure_list)
+            df_aggregated = aggregate_df(df_all_mesure, MESURE_TYPE[mesure_type])
         elif mesure_type == MesureType.ponctualite:
-            df_all_mesure = pd.DataFrame(columns=MesurePonctualite.column_order)
+            df_aggregated = pd.DataFrame(columns=MesurePonctualite.column_order)
         else:
-            df_all_mesure = pd.DataFrame(columns=MesureRegularite.column_order)
-        df_aggregated = aggregate_df(df_all_mesure, MESURE_TYPE[mesure_type])
+            df_aggregated = pd.DataFrame(columns=MesureRegularite.column_order)
         file_system_handler.save_mesure_qs_by_aggregation(
             df_aggregated, date_list[0], aggregation_level, mesure_type, suffix_by_agg
         )
