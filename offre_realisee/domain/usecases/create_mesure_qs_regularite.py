@@ -6,7 +6,6 @@ import pandas as pd
 from multiprocess import Pool
 
 from offre_realisee.config.logger import logger
-from offre_realisee.config.aggregation_config import AggregationLevel
 from offre_realisee.config.input_config import InputColumns
 from offre_realisee.config.offre_realisee_config import MesureType
 from offre_realisee.domain.entities.drop_stop_without_real_time import drop_stop_without_real_time
@@ -40,7 +39,13 @@ def create_mesure_qs_regularite(
     """
 
     logger.info(f'Process: {date.strftime("%Y-%m-%d")}')
-    df_offre_realisee = file_system_handler.get_daily_offre_realisee(date=date)
+
+    try:
+        df_offre_realisee = file_system_handler.get_daily_offre_realisee(date=date)
+    except FileNotFoundError:
+        logger.info(f'No data to process for {date.strftime("%Y-%m-%d")}')
+        return
+
     df_calendrier_scolaire = file_system_handler.get_calendrier_scolaire()
     suffix_by_agg = generate_suffix_by_aggregation(df_calendrier_scolaire)
 
