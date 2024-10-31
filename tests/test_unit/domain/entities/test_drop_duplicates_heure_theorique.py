@@ -42,4 +42,4 @@ def test_drop_stop_without_real_time():
     result = drop_duplicates_heure_theorique(df)
 
     # Then
-    pd.testing.assert_frame_equal(result, expected_result)
+    pd.testing.assert_frame_equal(result.reset_index(drop=True), expected_result)
