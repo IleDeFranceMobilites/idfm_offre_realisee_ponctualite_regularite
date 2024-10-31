@@ -7,6 +7,7 @@ from multiprocess import Pool
 from offre_realisee.config.logger import logger
 from offre_realisee.config.input_config import InputColumns
 from offre_realisee.config.offre_realisee_config import MesureType
+from offre_realisee.domain.entities.drop_duplicates_heure_theorique import drop_duplicates_heure_theorique
 from offre_realisee.domain.entities.drop_stop_without_real_time import drop_stop_without_real_time
 from offre_realisee.domain.entities.add_frequency import add_frequency
 from offre_realisee.domain.entities.ponctualite.stat_compliance_score_ponctualite import (
@@ -40,6 +41,8 @@ def create_mesure_qs_ponctualite(file_system_handler: FileSystemHandler, date: d
     except FileNotFoundError:
         logger.info(f'No data to process for {date.strftime("%Y-%m-%d")}')
         return
+
+    df_offre_realisee = drop_duplicates_heure_theorique(df_offre_realisee)
 
     df_calendrier_scolaire = file_system_handler.get_calendrier_scolaire()
     suffix_by_agg = generate_suffix_by_aggregation(df_calendrier_scolaire)
