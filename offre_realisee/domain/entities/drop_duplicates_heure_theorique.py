@@ -22,7 +22,7 @@ def drop_duplicates_heure_theorique(df_offre_realisee: pd.DataFrame) -> pd.DataF
     """
     df_offre_realisee = df_offre_realisee.sort_values(by=InputColumns.heure_reelle)
     df_offre_realisee = df_offre_realisee.drop_duplicates(subset=[
-        InputColumns.ligne, InputColumns.jour, InputColumns.sens, InputColumns.arret, InputColumns.is_terminus,
+        InputColumns.ligne, InputColumns.sens, InputColumns.arret, InputColumns.is_terminus,
         InputColumns.heure_theorique
     ])
 

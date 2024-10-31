@@ -26,7 +26,6 @@ def test_drop_stop_without_real_time():
 
     expected_result = pd.DataFrame({
         InputColumns.ligne: ['A', 'A', 'A'],
-        InputColumns.jour: ['2024-01-01', '2024-01-01', '2024-01-01'],
         InputColumns.sens: [1, 0, 1],
         InputColumns.arret: [1, 2, 3],
         InputColumns.is_terminus: [True, False, True],
