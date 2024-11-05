@@ -61,9 +61,6 @@ def test_create_mesure_qs_regularite(file_system_fixture):
     suffix_by_agg = generate_suffix_by_aggregation(df_calendrier_scolaire)
     suffix = suffix_by_agg[AggregationLevel.by_day](date)
 
-    result_clean = os.listdir(RESULT_PATH)
-    assert f"mesure_{MesureType.regularite}_{suffix}" + FileExtensions.csv in result_clean
-
     expected_result = pd.read_csv(EXPECTED_FILE)
     result = pd.read_csv(os.path.join(RESULT_PATH, f"mesure_{MesureType.regularite}_{suffix}" + FileExtensions.csv))
 
@@ -89,9 +86,6 @@ def test_create_mesure_qs_regularite_donnees_dupliquees(file_system_fixture):
     df_calendrier_scolaire = local_file_system_handler.get_calendrier_scolaire()
     suffix_by_agg = generate_suffix_by_aggregation(df_calendrier_scolaire)
     suffix = suffix_by_agg[AggregationLevel.by_day](date)
-
-    result_clean = os.listdir(RESULT_PATH)
-    assert f"mesure_{MesureType.regularite}_{suffix}" + FileExtensions.csv in result_clean
 
     expected_result = pd.read_csv(EXPECTED_FILE)
     result = pd.read_csv(os.path.join(RESULT_PATH, f"mesure_{MesureType.regularite}_{suffix}" + FileExtensions.csv))
