@@ -70,7 +70,7 @@ def test_create_mesure_qs(file_system_fixture):
     pd.testing.assert_frame_equal(result, expected_result)
 
 
-def test_create_mesure_qs_donnee_dupliquee(file_system_fixture):
+def test_create_mesure_qs_donnees_dupliquees(file_system_fixture):
     # Given
     local_file_system_handler = LocalFileSystemHandler(
         data_path=TEST_DATA_PATH,
