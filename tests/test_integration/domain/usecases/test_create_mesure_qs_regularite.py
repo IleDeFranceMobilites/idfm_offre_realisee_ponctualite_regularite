@@ -2,6 +2,7 @@ import os
 import shutil
 from datetime import datetime
 
+import pandas as pd
 import pytest
 
 from offre_realisee.config.file_extensions import FileExtensions
@@ -17,18 +18,27 @@ TEST_DATA_PATH_CONFIG = {
     'input_path': 'input',
     'output_path': 'output',
     'input_file_name': f'offre_realisee{FileExtensions.parquet}',
+    'duplicated_input_file_name': f'offre_realisee_dupliquee{FileExtensions.parquet}',
     'calendrier_scolaire_file_name': f'calendrier_scolaire{FileExtensions.parquet}'
 }
 
 START_DATE = datetime(2023, 9, 27)
 END_DATE = datetime(2023, 9, 28)
 
+EXPECTED_FILE = os.path.join(
+    TEST_DATA_PATH, 'expected_data',
+    f"mesure_{MesureType.regularite}_{START_DATE.strftime('%Y_%m_%d')}{FileExtensions.csv}"
+)
+
+RESULT_PATH = os.path.join(
+    TEST_DATA_PATH, TEST_DATA_PATH_CONFIG['output_path'],
+    AggregationLevel.by_day, MesureType.regularite
+)
 
 @pytest.fixture
 def file_system_fixture():
     yield
-    shutil.rmtree(os.path.join(TEST_DATA_PATH, TEST_DATA_PATH_CONFIG['output_path'],
-                               AggregationLevel.by_day, MesureType.regularite))
+    shutil.rmtree(RESULT_PATH)
 
 
 def test_create_mesure_qs_regularite(file_system_fixture):
@@ -51,12 +61,36 @@ def test_create_mesure_qs_regularite(file_system_fixture):
     suffix_by_agg = generate_suffix_by_aggregation(df_calendrier_scolaire)
     suffix = suffix_by_agg[AggregationLevel.by_day](date)
 
-    result_clean = os.listdir(
-        os.path.join(
-            TEST_DATA_PATH, TEST_DATA_PATH_CONFIG['output_path'], AggregationLevel.by_day, MesureType.regularite
-        )
+    expected_result = pd.read_csv(EXPECTED_FILE)
+    result = pd.read_csv(os.path.join(RESULT_PATH, f"mesure_{MesureType.regularite}_{suffix}" + FileExtensions.csv))
+
+    pd.testing.assert_frame_equal(result, expected_result)
+
+
+def test_create_mesure_qs_regularite_donnees_dupliquees(file_system_fixture):
+    # Given
+    local_file_system_handler = LocalFileSystemHandler(
+        data_path=TEST_DATA_PATH,
+        input_path=TEST_DATA_PATH_CONFIG['input_path'],
+        output_path=TEST_DATA_PATH_CONFIG['output_path'],
+        input_file_name=TEST_DATA_PATH_CONFIG['duplicated_input_file_name'],
+        calendrier_scolaire_file_name=TEST_DATA_PATH_CONFIG['calendrier_scolaire_file_name'],
     )
-    assert f"mesure_{MesureType.regularite}_{suffix}" + FileExtensions.csv in result_clean
+
+    date = START_DATE
+
+    # When
+    create_mesure_qs_regularite(local_file_system_handler, date)
+
+    # Assert
+    df_calendrier_scolaire = local_file_system_handler.get_calendrier_scolaire()
+    suffix_by_agg = generate_suffix_by_aggregation(df_calendrier_scolaire)
+    suffix = suffix_by_agg[AggregationLevel.by_day](date)
+
+    expected_result = pd.read_csv(EXPECTED_FILE)
+    result = pd.read_csv(os.path.join(RESULT_PATH, f"mesure_{MesureType.regularite}_{suffix}" + FileExtensions.csv))
+
+    pd.testing.assert_frame_equal(result, expected_result)
 
 
 def test_create_mesure_qs_regularite_date_range(file_system_fixture):
