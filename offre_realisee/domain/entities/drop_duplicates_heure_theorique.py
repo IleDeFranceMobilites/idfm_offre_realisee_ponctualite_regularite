@@ -20,10 +20,11 @@ def drop_duplicates_heure_theorique(df_offre_realisee: pd.DataFrame) -> pd.DataF
     df_offre_realisee : DataFrame
         DataFrame dédupliqué.
     """
-    df_offre_realisee = df_offre_realisee.sort_values(by=InputColumns.heure_reelle)
-    df_offre_realisee = df_offre_realisee.drop_duplicates(subset=[
-        InputColumns.ligne, InputColumns.sens, InputColumns.arret, InputColumns.is_terminus,
-        InputColumns.heure_theorique
-    ])
+    mask = df_offre_realisee[InputColumns.heure_theorique].notnull()
 
-    return df_offre_realisee
+    df_offre_realisee_not_null = df_offre_realisee[mask].sort_values(by=InputColumns.heure_reelle).drop_duplicates(
+        subset=[InputColumns.ligne, InputColumns.sens, InputColumns.arret, InputColumns.is_terminus,
+                InputColumns.heure_theorique]
+    )
+
+    return pd.concat([df_offre_realisee_not_null, df_offre_realisee[~mask]])
