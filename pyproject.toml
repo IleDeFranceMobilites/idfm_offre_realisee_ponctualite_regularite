@@ -4,16 +4,16 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "idfm-qualite-de-service-calculateur"
-version = "1.6.0"
+version = "1.6.1"
 description = "Calculateur de qualité de service basé sur les données d'offre réalisées"
 readme = "README.md"
 license = {file = "LICENSE"}
 dependencies = [
-    'pandas >= 2.0.0',
-    'pyarrow >= 15.0.0',
-    'scipy >= 1.11.3',
+    'pandas >= 2.2.3',
+    'pyarrow >= 17.0.0',
+    'scipy >= 1.14.1',
     'workalendar == 17.0.0',
-    'multiprocess >= 0.70.16',
+    'multiprocess >= 0.70.17',
 ]
 maintainers = [
   {name = "Ile de France Mobilitees", email = "github@iledefrance-mobilites.fr"}

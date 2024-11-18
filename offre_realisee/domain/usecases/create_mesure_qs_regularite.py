@@ -24,7 +24,7 @@ NUMBER_OF_PARALLEL_PROCESS = 6
 
 
 def create_mesure_qs_regularite(
-        file_system_handler: FileSystemHandler, date: datetime
+        file_system_handler: FileSystemHandler, date: datetime, dsp: str = ""
 ):
     """Crée et sauvegarde les mesures de qualité de service de type régularité.
 
@@ -37,14 +37,16 @@ def create_mesure_qs_regularite(
         Gestionnaire du système de fichiers.
     date : datetime
         Date pour laquelle les mesures de qualité de service doivent être calculées.
+    dsp : str
+        DSP pour laquelle les mesures de qualité de service doivent être calculées, par défaut à "".
     """
 
     logger.info(f'Process: {date.strftime("%Y-%m-%d")}')
 
     try:
-        df_offre_realisee = file_system_handler.get_daily_offre_realisee(date=date)
+        df_offre_realisee = file_system_handler.get_daily_offre_realisee(date=date, dsp=dsp)
     except FileNotFoundError:
-        logger.info(f'No data to process for {date.strftime("%Y-%m-%d")}')
+        logger.info(f'No data to process for {date.strftime("%Y-%m-%d")}, for dsp {dsp}')
         return
 
     df_offre_realisee = drop_duplicates_heure_theorique(df_offre_realisee)
@@ -77,12 +79,13 @@ def create_mesure_qs_regularite(
     df_stat_regularite = stat_compliance_score_regularite(df_concat_regularite, theorique_passages_by_lignes,
                                                           any_high_frequency_on_lignes)
     file_system_handler.save_daily_mesure_qs(
-        df_stat_regularite, date, MesureType.regularite, suffix_by_agg
+        df_mesure_qs=df_stat_regularite, date=date, dsp=dsp,
+        mesure_type=MesureType.regularite, suffix_by_agg=suffix_by_agg
     )
 
 
 def create_mesure_qs_regularite_date_range(
-        file_system_handler: FileSystemHandler, date_range: tuple[datetime, datetime],
+        file_system_handler: FileSystemHandler, date_range: tuple[datetime, datetime], dsp: str = "",
         n_thread: int = NUMBER_OF_PARALLEL_PROCESS
 ) -> None:
     """Appelle la fonction create_mesure_qs_regularite sur une plage de date, en parallélisant les calculs.
@@ -93,6 +96,8 @@ def create_mesure_qs_regularite_date_range(
         Gestionnaire du système de fichiers.
     date_range : datetime
         Dates de début et de fin pour laquelle les mesures de qualité de service doivent être calculées.
+    dsp : str
+        DSP pour laquelle les mesures de qualité de service doivent être calculées.
     n_thread: int
         Nombre de processus en parallèle.
     """
@@ -100,8 +105,8 @@ def create_mesure_qs_regularite_date_range(
 
     create_mesure_qs_regularite_partial = partial(
         create_mesure_qs_regularite,
-        file_system_handler
+        file_system_handler=file_system_handler, dsp=dsp
     )
 
     with Pool(processes=n_thread) as pool:
-        pool.map(create_mesure_qs_regularite_partial, date_range_list)
+        pool.map(lambda date: create_mesure_qs_regularite_partial(date=date), date_range_list)

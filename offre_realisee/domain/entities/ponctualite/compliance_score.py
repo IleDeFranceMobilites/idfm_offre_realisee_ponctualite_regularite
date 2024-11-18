@@ -60,7 +60,7 @@ def score(freq: FrequenceType, matrix: np.ndarray, is_terminus: np.ndarray,
         - ComplianceType.situation_inacceptable_absence (-999000): Pas de données.
     """
     matrix_score = np.empty(matrix.shape)
-    matrix_score[:] = np.NaN
+    matrix_score[:] = np.nan
 
     # Calcul de la compliance des arrêts
     matrix_score[

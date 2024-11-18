@@ -6,6 +6,7 @@ class InputColumns:
     is_terminus = 'IS_TERMINUS'
     heure_theorique = 'HEURE_THEORIQUE'
     heure_reelle = 'HEURE_REELLE'
+    dsp = 'DSP'
 
     # column_types = {
     #     ligne: 'string',

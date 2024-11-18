@@ -33,6 +33,7 @@ def compute_qs(
     data_path: str,
     start_date: datetime,
     end_date: datetime,
+    dsp: str,
     input_path: str,
     output_path: str,
     input_file_name: str,
@@ -113,6 +114,10 @@ def main():  # noqa
                         help="Dernière date à traiter. Doit être au format : YYYY-MM-DD\n"
                         "Last date to process. Must be in format: YYYY-MM-DD")
 
+    parser.add_argument('--dsp', required=False, type=str,
+                        help="DSP à calculer si elle existe.\n"
+                        "DSP to process.")
+
     parser.add_argument('--input-path', default=default_data_path_config["input-path"], type=str,
                         help="Chemin relatif par rapport au 'data-path' vers le dossier d'entrée des données."
                         " (Valeur par défaut: %(default)s)\n"
@@ -162,6 +167,7 @@ if __name__ == "__main__":
         data_path="./data",
         start_date=datetime.strptime("2023-01-01", "%Y-%m-%d"),
         end_date=datetime.strptime("2023-01-02", "%Y-%m-%d"),
+        dsp="",
         input_path=default_data_path_config["input-path"],
         output_path=default_data_path_config["output-path"],
         input_file_name=default_data_path_config["input-file-name"],

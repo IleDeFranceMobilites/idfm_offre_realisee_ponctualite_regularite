@@ -93,7 +93,7 @@ def compute_cost_matrix(df_by_stop: pd.DataFrame, heure_reelle_col: np.ndarray) 
     next_theorique_interval = df_by_stop[MesurePonctualite.difference_theorique].to_numpy()
     is_terminus = df_by_stop[MesurePonctualite.is_terminus].to_numpy()
 
-    matrix = np.full(matrix_timedelta.shape, np.NaN)
+    matrix = np.full(matrix_timedelta.shape, np.nan)
 
     mask_hf = df_by_stop[MesurePonctualite.frequence] == FrequenceType.haute_frequence
     matrix[mask_hf] = score(
