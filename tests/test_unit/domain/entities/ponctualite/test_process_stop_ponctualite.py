@@ -11,7 +11,7 @@ def test_process_stop_ponctualite():
     df_by_stop = pd.DataFrame(
         {
             MesurePonctualite.frequence: [
-                FrequenceType.haute_frequence, FrequenceType.haute_frequence, np.NaN, FrequenceType.basse_frequence,
+                FrequenceType.haute_frequence, FrequenceType.haute_frequence, np.nan, FrequenceType.basse_frequence,
                 FrequenceType.haute_frequence, FrequenceType.basse_frequence, FrequenceType.haute_frequence,
                 FrequenceType.haute_frequence],
             MesurePonctualite.heure_theorique: [

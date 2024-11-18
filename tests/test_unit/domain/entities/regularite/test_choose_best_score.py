@@ -89,7 +89,7 @@ def test_select_closest_defined_time_result_closer_to_sup():
         MesureRegularite.resultat_inf: [ComplianceType.compliant],
         MesureRegularite.resultat_sup: [ComplianceType.semi_compliant[MesureType.regularite]]
     })
-    df[MesureRegularite.resultat] = np.NaN
+    df[MesureRegularite.resultat] = np.nan
 
     expected_result = ComplianceType.semi_compliant[MesureType.regularite]
 
@@ -109,7 +109,7 @@ def test_select_closest_defined_time_result_closer_to_inf():
         MesureRegularite.resultat_inf: [ComplianceType.compliant],
         MesureRegularite.resultat_sup: [ComplianceType.semi_compliant[MesureType.regularite]]
     })
-    df[MesureRegularite.resultat] = np.NaN
+    df[MesureRegularite.resultat] = np.nan
 
     expected_result = ComplianceType.compliant
 
@@ -129,7 +129,7 @@ def test_select_closest_defined_time_result_inf_undefined():
         MesureRegularite.resultat_inf: [ComplianceType.compliant],
         MesureRegularite.resultat_sup: [ComplianceType.semi_compliant[MesureType.regularite]]
     })
-    df[MesureRegularite.resultat] = np.NaN
+    df[MesureRegularite.resultat] = np.nan
 
     expected_result = ComplianceType.semi_compliant[MesureType.regularite]
 
@@ -149,7 +149,7 @@ def test_select_closest_defined_time_result_sup_undefined():
         MesureRegularite.resultat_inf: [ComplianceType.compliant],
         MesureRegularite.resultat_sup: [ComplianceType.semi_compliant[MesureType.regularite]]
     })
-    df[MesureRegularite.resultat] = np.NaN
+    df[MesureRegularite.resultat] = np.nan
 
     expected_result = ComplianceType.compliant
 
@@ -169,7 +169,7 @@ def test_select_closest_defined_time_result_both_undefined():
         MesureRegularite.resultat_inf: [ComplianceType.compliant],
         MesureRegularite.resultat_sup: [ComplianceType.semi_compliant[MesureType.regularite]]
     })
-    df[MesureRegularite.resultat] = np.NaN
+    df[MesureRegularite.resultat] = np.nan
 
     # When
     result = select_closest_defined_time_result(df)
@@ -187,7 +187,7 @@ def test_select_closest_defined_time_result_both_as_close():
         MesureRegularite.resultat_inf: [ComplianceType.compliant],
         MesureRegularite.resultat_sup: [ComplianceType.semi_compliant[MesureType.regularite]]
     })
-    df[MesureRegularite.resultat] = np.NaN
+    df[MesureRegularite.resultat] = np.nan
 
     # When
     result = select_closest_defined_time_result(df)
@@ -203,7 +203,7 @@ def test_select_best_score_if_equals():
         MesureRegularite.resultat_sup: [
             ComplianceType.semi_compliant[MesureType.regularite],
             ComplianceType.situation_inacceptable_faible_frequence],
-        MesureRegularite.resultat: [ComplianceType.semi_compliant[MesureType.regularite], np.NaN]
+        MesureRegularite.resultat: [ComplianceType.semi_compliant[MesureType.regularite], np.nan]
     })
 
     expected_result = pd.DataFrame({
@@ -224,7 +224,7 @@ def test_set_first_record_to_compliant():
     # Given
     df = pd.DataFrame({
         MesureRegularite.heure_reelle: [datetime(2023, 1, 1, 11, 0), datetime(2023, 1, 1, 10, 0)],
-        MesureRegularite.resultat: [ComplianceType.situation_inacceptable_train_de_bus, np.NaN]
+        MesureRegularite.resultat: [ComplianceType.situation_inacceptable_train_de_bus, np.nan]
     })
 
     expected_result = pd.DataFrame({

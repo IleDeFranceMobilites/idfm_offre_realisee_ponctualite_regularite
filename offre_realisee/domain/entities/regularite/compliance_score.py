@@ -154,7 +154,7 @@ def choose_best_score(df: pd.DataFrame) -> pd.DataFrame:
         DataFrame qui contient les scores de conformités finaux et optimisés
     """
     df_score = df.copy()
-    df_score[MesureRegularite.resultat] = np.NaN
+    df_score[MesureRegularite.resultat] = np.nan
 
     df_score = select_closest_defined_time_result(df_score)
     df_score = select_best_score_if_equals(df_score)

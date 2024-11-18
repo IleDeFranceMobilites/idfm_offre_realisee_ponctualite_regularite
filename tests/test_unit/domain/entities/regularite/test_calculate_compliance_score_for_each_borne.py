@@ -57,8 +57,8 @@ def test_calculate_compliance_score_for_each_borne_train_de_bus():
     })
 
     expected_result = pd.DataFrame({
-        MesureRegularite.resultat_inf: [np.NaN, ComplianceType.situation_inacceptable_train_de_bus],
-        MesureRegularite.resultat_sup: [np.NaN, ComplianceType.situation_inacceptable_train_de_bus]
+        MesureRegularite.resultat_inf: [np.nan, ComplianceType.situation_inacceptable_train_de_bus],
+        MesureRegularite.resultat_sup: [np.nan, ComplianceType.situation_inacceptable_train_de_bus]
     })
 
     # When
@@ -78,8 +78,8 @@ def test_calculate_compliance_score_for_each_borne_too_large_interval():
     })
 
     expected_result = pd.DataFrame({
-        MesureRegularite.resultat_inf: [np.NaN, ComplianceType.situation_inacceptable_faible_frequence],
-        MesureRegularite.resultat_sup: [np.NaN, np.NaN]
+        MesureRegularite.resultat_inf: [np.nan, ComplianceType.situation_inacceptable_faible_frequence],
+        MesureRegularite.resultat_sup: [np.nan, np.nan]
     })
 
     # When
