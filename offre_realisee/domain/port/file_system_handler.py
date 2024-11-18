@@ -25,13 +25,15 @@ class FileSystemHandler(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_daily_offre_realisee(self, date: datetime) -> pd.DataFrame:
+    def get_daily_offre_realisee(self, date: datetime, dsp: str) -> pd.DataFrame:
         """Récupération des données d'offre réalisée pour une date.
 
         Parameters
         ----------
         date : datetime
             Date pour laquelle nous voulons les données d'offre théorique.
+        dsp : str
+            DSP pour laquelle les mesures de qualité de service doivent être calculées, par défaut à "".
 
         Returns
         -------
@@ -42,7 +44,7 @@ class FileSystemHandler(abc.ABC):
 
     @abc.abstractmethod
     def save_daily_mesure_qs(
-        self, df_mesure_qs: pd.DataFrame, date: datetime, mesure_type: MesureType,
+        self, df_mesure_qs: pd.DataFrame, date: datetime, dsp: str, mesure_type: MesureType,
         suffix_by_agg: dict[AggregationLevel, callable]
     ) -> None:
         """Sauvegarde du DataFrame de mesure de Qualité de Service (QS).
@@ -53,6 +55,8 @@ class FileSystemHandler(abc.ABC):
             DataFrame que nous voulons sauvegarder.
         date : datetime
             Date des données de mesure QS.
+        dsp : str
+            DSP des données de mesure QS.
         mesure_type : MesureType
             Le type de mesure (ponctualite, regularite).
         suffix_by_agg: Dict[AggregationLevel, Callable]
@@ -62,7 +66,7 @@ class FileSystemHandler(abc.ABC):
 
     @abc.abstractmethod
     def save_mesure_qs_by_aggregation(
-        self, df_mesure_qs: pd.DataFrame, date: datetime,
+        self, df_mesure_qs: pd.DataFrame, date: datetime, dsp: str,
         aggregation_level: AggregationLevel, mesure_type: MesureType,
         suffix_by_agg: dict[AggregationLevel, callable]
     ) -> None:
@@ -74,6 +78,8 @@ class FileSystemHandler(abc.ABC):
             DataFrame que nous voulons sauvegarder.
         date : datetime
             Date des données de mesure QS.
+        dsp : str
+            DSP des données de mesure QS.
         aggregation_level : AggregationLevel
             Niveau d'aggrégation de la mesure QS (by_day, by_week, by_year, ...).
         mesure_type : MesureType
@@ -84,7 +90,7 @@ class FileSystemHandler(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_daily_mesure_qs(self, date: datetime, mesure_type: MesureType,
+    def get_daily_mesure_qs(self, date: datetime, dsp: str, mesure_type: MesureType,
                             suffix_by_agg: dict[AggregationLevel, callable]) -> pd.DataFrame:
         """Récupération des données de mesure QS par jour.
 
@@ -92,6 +98,8 @@ class FileSystemHandler(abc.ABC):
         ----------
         date : datetime
             Date des données de mesure QS.
+        dsp : str
+            DSP des données de mesure QS.
         mesure_type : MesureType
             Le type de mesure (ponctualite, regularite).
         suffix_by_agg: Dict[AggregationLevel, Callable]

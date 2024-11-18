@@ -55,7 +55,7 @@ def test_create_mesure_qs_ponctualite(file_system_fixture):
     date = START_DATE
 
     # When
-    create_mesure_qs_ponctualite(local_file_system_handler, date)
+    create_mesure_qs_ponctualite(file_system_handler=local_file_system_handler, date=date)
 
     # Assert
     df_calendrier_scolaire = local_file_system_handler.get_calendrier_scolaire()
@@ -108,7 +108,8 @@ def test_create_mesure_qs_ponctualite_date_range(file_system_fixture):
     date_range = (start_date, end_date)
 
     # When
-    create_mesure_qs_ponctualite_date_range(local_file_system_handler, date_range, 2)
+    create_mesure_qs_ponctualite_date_range(
+        file_system_handler=local_file_system_handler, date_range=date_range, n_thread=2)
 
     # Assert
     df_calendrier_scolaire = local_file_system_handler.get_calendrier_scolaire()
