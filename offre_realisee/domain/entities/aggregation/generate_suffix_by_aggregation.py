@@ -29,7 +29,7 @@ def get_period_name(date: datetime, df_calendrier_scolaire: pd.DataFrame, period
 
 
 def generate_suffix_by_aggregation(
-    df_calendrier_scolaire: pd.DataFrame, periode_ete: tuple[str] = DEFAULT_PERIODE_ETE
+    df_calendrier_scolaire: pd.DataFrame, periode_ete: tuple[str] = DEFAULT_PERIODE_ETE, window_name: str = ""
 ) -> dict:
     calendrier = France()
 
@@ -48,16 +48,20 @@ def generate_suffix_by_aggregation(
             )
         ),
         AggregationLevel.by_period_weekdays_window: lambda x: (
-            x.strftime('sunday_or_holiday_') + get_period_name(x, df_calendrier_scolaire, periode_ete)
+            window_name + x.strftime('sunday_or_holiday_') + get_period_name(x, df_calendrier_scolaire, periode_ete)
             if (x.weekday() == 6) or calendrier.is_holiday(x.date())
             else (
-                x.strftime('week_') + get_period_name(x, df_calendrier_scolaire, periode_ete) if x.weekday() < 5 else
-                x.strftime('saturday_') + get_period_name(x, df_calendrier_scolaire, periode_ete)
+                window_name + x.strftime('week_') + get_period_name(x, df_calendrier_scolaire, periode_ete)
+                if x.weekday() < 5
+                else (
+                    window_name + x.strftime('saturday_') + get_period_name(x, df_calendrier_scolaire, periode_ete)
+                )
             )
         ),
         AggregationLevel.by_year_weekdays: lambda x: (
             x.strftime('%Y_week') if x.weekday() < 5 else x.strftime('%Y_weekend')
-        )
+        ),
+        AggregationLevel.by_window: lambda _: window_name,
     }
 
     return suffix_by_agg

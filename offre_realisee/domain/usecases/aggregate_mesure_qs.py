@@ -13,10 +13,11 @@ from offre_realisee.domain.entities.aggregation.generate_date_aggregation_lists 
 from offre_realisee.domain.port.file_system_handler import FileSystemHandler
 
 
-def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: tuple[datetime, datetime],
+def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: tuple[datetime, datetime], dsp: str,
                         aggregation_level: AggregationLevel, mesure_type: MesureType,
                         periode_ete: tuple[str] = DEFAULT_PERIODE_ETE,
-                        list_journees_exceptionnelles: Optional[list[datetime]] = None,) -> None:
+                        list_journees_exceptionnelles: Optional[list[datetime]] = None,
+                        window_name: str = "") -> None:
     """Agrège les mesures journalières de la qualité de service et les sauvegarde selon les spécifications fournies.
 
     Agrège les dates contenu dans la plage de données date_range en fonction du type de mesure: ponctualité ou
@@ -28,18 +29,24 @@ def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: tupl
         Gestionnaire du système de fichiers.
     date_range : Tuple[datetime, datetime]
         Plage de dates pour l'agrégation.
+    dsp : str
+        DSP à agréger.
     aggregation_level : AggregationLevel
         Niveau d'agrégation des données.
     mesure_type : MesureType
         Type de mesure à agréger (ponctualite ou regularite).
     list_journees_exceptionnelles : Optional[List[datetime]]
-        La liste des journées exceptionnelles à excluse (ex: émeutes, grèves...). Par défaut, cette liste est vide.
+        La liste des journées exceptionnelles à exclure (ex: émeutes, grèves...). Par défaut, cette liste est vide.
+    window_name : Optional[str]
+        Nom de la fenêtre d'aggregation, optionnel par défaut égal à ""
     """
 
     df_calendrier_scolaire = file_system_handler.get_calendrier_scolaire()
-    suffix_by_agg = generate_suffix_by_aggregation(df_calendrier_scolaire, periode_ete)
+    suffix_by_agg = generate_suffix_by_aggregation(
+        df_calendrier_scolaire=df_calendrier_scolaire, periode_ete=periode_ete, window_name=window_name)
     dict_date_lists = generate_date_aggregation_lists(
-        date_range, aggregation_level, suffix_by_agg, list_journees_exceptionnelles
+        date_range=date_range, aggregation_level=aggregation_level, suffix_by_agg=suffix_by_agg,
+        list_journees_exceptionnelles=list_journees_exceptionnelles
     )
 
     for suffix, date_list in dict_date_lists.items():
@@ -47,7 +54,7 @@ def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: tupl
         mesure_list: list[pd.DataFrame] = []
 
         for date_to_agg in date_list:
-            df = file_system_handler.get_daily_mesure_qs(date=date_to_agg, mesure_type=mesure_type,
+            df = file_system_handler.get_daily_mesure_qs(date=date_to_agg, dsp=dsp, mesure_type=mesure_type,
                                                          suffix_by_agg=suffix_by_agg)
             mesure_list.append(df)
 
@@ -59,7 +66,8 @@ def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: tupl
         else:
             df_aggregated = pd.DataFrame(columns=MesureRegularite.column_order)
         file_system_handler.save_mesure_qs_by_aggregation(
-            df_aggregated, date_list[0], aggregation_level, mesure_type, suffix_by_agg
+            df_mesure_qs=df_aggregated, date=date_list[0], dsp=dsp,
+            aggregation_level=aggregation_level, mesure_type=mesure_type, suffix_by_agg=suffix_by_agg
         )
 
 

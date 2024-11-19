@@ -61,7 +61,7 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
         """
         filters = [[(InputColumns.jour, 'in', {date.strftime("%Y-%m-%d")})]]
         if dsp:
-            filters[0].append([(InputColumns.dsp, 'in', dsp)])
+            filters[0].append((InputColumns.dsp, 'in', dsp))
         df_offre_realisee = self.read_offre_realisee(
             columns=[InputColumns.ligne, InputColumns.arret,
                      InputColumns.sens, InputColumns.heure_theorique,

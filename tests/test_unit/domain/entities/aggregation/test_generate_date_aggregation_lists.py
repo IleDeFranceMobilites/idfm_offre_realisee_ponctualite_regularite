@@ -204,6 +204,44 @@ def test_generate_date_aggregation_lists_test_values_by_period_weekdays_window()
     assert result.items() == expected_result.items()
 
 
+def test_generate_date_aggregation_lists_test_values_by_period_weekdays_window_w_name():
+    # Given
+    date_range = (datetime(2023, 8, 20), datetime(2023, 9, 12))
+    aggregation_level = AggregationLevel.by_period_weekdays_window
+    suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
+        'description': ['Vacances'],
+        'start_date': [
+            IDF_TIMEZONE.localize(datetime(2023, 9, 1))
+        ],
+        'end_date': [
+            IDF_TIMEZONE.localize(datetime(2023, 9, 4))
+        ]
+    }), window_name="test_window_")
+
+    expected_result = {
+        'test_window_sunday_or_holiday_ete': [datetime(2023, 8, 20, 0, 0), datetime(2023, 8, 27, 0, 0)],
+        'test_window_week_ete': [datetime(2023, 8, 21, 0, 0), datetime(2023, 8, 22, 0, 0), datetime(2023, 8, 23, 0, 0),
+                     datetime(2023, 8, 24, 0, 0), datetime(2023, 8, 25, 0, 0), datetime(2023, 8, 28, 0, 0),
+                     datetime(2023, 8, 29, 0, 0), datetime(2023, 8, 30, 0, 0), datetime(2023, 8, 31, 0, 0)],
+        'test_window_saturday_ete': [datetime(2023, 8, 26, 0, 0)],
+        'test_window_week_vacances_scolaires': [datetime(2023, 9, 1, 0, 0)],
+        'test_window_saturday_vacances_scolaires': [datetime(2023, 9, 2, 0, 0)],
+        'test_window_sunday_or_holiday_vacances_scolaires': [datetime(2023, 9, 3, 0, 0)],
+        'test_window_week_plein_trafic': [
+            datetime(2023, 9, 4, 0, 0), datetime(2023, 9, 5, 0, 0), datetime(2023, 9, 6, 0, 0),
+            datetime(2023, 9, 7, 0, 0), datetime(2023, 9, 8, 0, 0), datetime(2023, 9, 11, 0, 0),
+            datetime(2023, 9, 12, 0, 0)],
+        'test_window_saturday_plein_trafic': [datetime(2023, 9, 9, 0, 0)],
+        'test_window_sunday_or_holiday_plein_trafic': [datetime(2023, 9, 10, 0, 0)]
+    }
+
+    # When
+    result = generate_date_aggregation_lists(date_range, aggregation_level, suffix_by_agg)
+
+    # Then
+    assert result.items() == expected_result.items()
+
+
 def test_generate_date_aggregation_lists_test_values_by_period_ferie():
     # Given
     date_range = (datetime(2023, 5, 1), datetime(2023, 5, 18))
@@ -255,6 +293,32 @@ def test_generate_date_aggregation_lists_test_values_except_journees_exceptionne
         "2023_weekend": [datetime(2023, 1, 1), datetime(2023, 1, 7)],
         "2023_week": [datetime(2023, 1, 2), datetime(2023, 1, 3), datetime(2023, 1, 4),
                       datetime(2023, 1, 6)]
+    }
+
+    # When
+    result = generate_date_aggregation_lists(date_range, aggregation_level, suffix_by_agg,
+                                             list_journees_exceptionnelles)
+
+    # Then
+    assert result.items() == expected_result.items()
+
+
+def test_generate_date_aggregation_lists_by_window():
+    # Given
+    date_range = (datetime(2023, 1, 1), datetime(2023, 1, 7))
+    aggregation_level = AggregationLevel.by_window
+    suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
+        'description': [],
+        'start_date': [],
+        'end_date': []
+    }), window_name='test_window')
+    list_journees_exceptionnelles = [datetime(2023, 1, 5)]
+
+    expected_result = {
+        "test_window": [
+            datetime(2023, 1, 1), datetime(2023, 1, 2), datetime(2023, 1, 3),
+            datetime(2023, 1, 4), datetime(2023, 1, 6), datetime(2023, 1, 7)
+        ]
     }
 
     # When
