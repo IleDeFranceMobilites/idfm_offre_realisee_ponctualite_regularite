@@ -51,6 +51,15 @@ Les valeurs suivantes peuvent être modifiées en fonction de la structure de vo
 - input-file-name (Valeur par défaut: "offre_realisee.parquet")
 - calendrier-scolaire-file-namee (Valeur par défaut: "calendrier_scolaire.parquet")
 
+#### Format des données
+Certaines colonnes doivent être présente dans les fichiers d'entrée :
+- LIGNE : Identifiant unique de ligne (idéalement égale à l'identifiant dans [le référentiel ILICO](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://data.iledefrance-mobilites.fr/api/v2/catalog/datasets/referentiels-lignes-arrets-offre-netex/attachments/referentiel_des_lignes_netex_v1_pdf&ved=2ahUKEwjiyveh8OCKAxUTR6QEHY-UNCEQFnoECA4QAQ&usg=AOvVaw1Q8OgKhgRHN2Ao_Yyw8Lcr))
+- SENS : Sens du déplacement sur la ligne (0 ou 1)
+- ARRET : Identifiant unique de l'arrêt sur la ligne (idéalement égale à l'identifiant dans [le referentiel ICAR](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://data.iledefrance-mobilites.fr/api/v2/catalog/datasets/referentiels-lignes-arrets-offre-netex/attachments/referentiel_des_arrets_netex_v1_pdf&ved=2ahUKEwiyz6Wi8eCKAxWOT6QEHdTUPKIQFnoECBMQAQ&usg=AOvVaw1NZUNibX1nfLt94B3-txG3))
+- HEURE_THEORIQUE : Heure de passage théorique
+- HEURE_REELLE : Heure de passage réalisée
+- IS_TERMINUS : Indique si l'arrêt correspond à un terminus ou non (Booléen)
+
 
 #### Exemple d'execution
 ```console
