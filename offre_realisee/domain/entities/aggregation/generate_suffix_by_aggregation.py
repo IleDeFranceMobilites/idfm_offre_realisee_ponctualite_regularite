@@ -19,8 +19,14 @@ def get_period_name(date: datetime, df_calendrier_scolaire: pd.DataFrame, period
     df_filtered = df_calendrier_scolaire[df_calendrier_scolaire[
         CalendrierScolaireColumns.description].str.startswith('Vacances')]
     row = df_filtered[
-        (pd.to_datetime(df_filtered[CalendrierScolaireColumns.start_date]) <= IDF_TIMEZONE.localize(date)) &
-        (pd.to_datetime(df_filtered[CalendrierScolaireColumns.end_date]) > IDF_TIMEZONE.localize(date))
+        (
+            pd.to_datetime(df_filtered[CalendrierScolaireColumns.start_date]).dt.tz_localize(IDF_TIMEZONE)
+            <= IDF_TIMEZONE.localize(date)
+        ) &
+        (
+            pd.to_datetime(df_filtered[CalendrierScolaireColumns.end_date]).dt.tz_localize(IDF_TIMEZONE)
+            > IDF_TIMEZONE.localize(date)
+        )
     ]
     if row.empty:
         return PeriodeName.plein_trafic

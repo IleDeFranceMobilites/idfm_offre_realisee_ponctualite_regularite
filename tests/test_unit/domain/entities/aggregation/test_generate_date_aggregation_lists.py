@@ -113,8 +113,8 @@ def test_generate_date_aggregation_lists_test_values_by_period():
     aggregation_level = AggregationLevel.by_period
     suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
         'description': ['Vacances'],
-        'start_date': [IDF_TIMEZONE.localize(datetime(2023, 9, 1))],
-        'end_date': [IDF_TIMEZONE.localize(datetime(2023, 9, 4))]
+        'start_date': [datetime(2023, 9, 1)],
+        'end_date': [datetime(2023, 9, 4)]
     }))
 
     expected_result = {
@@ -137,10 +137,10 @@ def test_generate_date_aggregation_lists_test_values_by_period_weekdays():
     suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
         'description': ['Vacances'],
         'start_date': [
-            IDF_TIMEZONE.localize(datetime(2023, 9, 1))
+            datetime(2023, 9, 1)
         ],
         'end_date': [
-            IDF_TIMEZONE.localize(datetime(2023, 9, 4))
+            datetime(2023, 9, 4)
         ]
     }))
 
@@ -174,10 +174,10 @@ def test_generate_date_aggregation_lists_test_values_by_period_weekdays_window()
     suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
         'description': ['Vacances'],
         'start_date': [
-            IDF_TIMEZONE.localize(datetime(2023, 9, 1))
+            datetime(2023, 9, 1)
         ],
         'end_date': [
-            IDF_TIMEZONE.localize(datetime(2023, 9, 4))
+            datetime(2023, 9, 4)
         ]
     }))
 
@@ -211,10 +211,10 @@ def test_generate_date_aggregation_lists_test_values_by_period_weekdays_window_w
     suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
         'description': ['Vacances'],
         'start_date': [
-            IDF_TIMEZONE.localize(datetime(2023, 9, 1))
+            datetime(2023, 9, 1)
         ],
         'end_date': [
-            IDF_TIMEZONE.localize(datetime(2023, 9, 4))
+            datetime(2023, 9, 4)
         ]
     }), window_name="test_window_")
 
@@ -248,8 +248,8 @@ def test_generate_date_aggregation_lists_test_values_by_period_ferie():
     aggregation_level = AggregationLevel.by_period_weekdays
     suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
         'description': ['Vacances'],
-        'start_date': [IDF_TIMEZONE.localize(datetime(2023, 4, 23))],
-        'end_date': [IDF_TIMEZONE.localize(datetime(2023, 5, 9))]
+        'start_date': [datetime(2023, 4, 23)],
+        'end_date': [datetime(2023, 5, 9)]
     }))
     list_journees_exceptionnelles = []
 
