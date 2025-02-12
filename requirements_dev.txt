@@ -1,8 +1,8 @@
-pytest==7.3.1
-vulture==2.7
-flake8==6.0.0
-safety==2.3.5
-bandit==1.7.7
+pytest==8.3.4
+vulture==2.14
+flake8==7.1.1
+safety==3.2.14
+bandit==1.8.2
 flake8-print==5.0.0
-pre-commit==3.3.3
-yamllint==1.32.0
+pre-commit==4.1.0
+yamllint==1.35.1
