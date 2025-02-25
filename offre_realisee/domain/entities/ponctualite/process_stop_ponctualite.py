@@ -49,7 +49,8 @@ def process_stop_ponctualite(df_by_stop: pd.DataFrame) -> pd.DataFrame:
     df_by_stop.loc[theorique_indices, MesurePonctualite.resultat] = cost_matrix[reelle_indices, theorique_indices]
 
     # Associe toutes les heures réelles aux meilleurs heures théoriques possible
-    df_by_stop.loc[theorique_indices, MesurePonctualite.heure_reelle] = heure_reelle_col_copy[reelle_indices]
+    df_by_stop.loc[theorique_indices, MesurePonctualite.heure_reelle] = pd.to_datetime(
+        heure_reelle_col_copy[reelle_indices], utc=True)
 
     # Remplace les passages aberrants par des passages non assignés
     df_by_stop.loc[

@@ -16,7 +16,7 @@ def generate_date_aggregation_lists(
     date_range : Tuple[datetime, datetime]
         Tuple de deux dates, une date de début et une de fin.
     aggregation_level : AggregationLevel
-        Niveau de l'aggrégation (by_day, by_month, by_year, ...)
+        Niveau de l'aggrégation (by_month, by_year, ...)
     suffix_by_agg: Dict[AggregationLevel, Callable]
         Dictionnaire de fonction de génération de suffix basé sur la date et le calendrier scolaire.
     list_journees_exceptionnelles : Optional[List[datetime]]
@@ -25,7 +25,7 @@ def generate_date_aggregation_lists(
     Returns
     -------
     dict_date_lists : Dict[str, List[datetime]]
-        Dictionnaire avec en clé le suffix de l'aggrégation (%Y pour by_year, %Y_%M pour by_month, ...) et en valeur
+        Dictionnaire avec en clé le suffix de l'aggrégation (%Y pour by_year, %Y_%m pour by_month, ...) et en valeur
         une liste de date en datetime.
     """
     dict_date_lists: dict[str, list[datetime]] = defaultdict(list)

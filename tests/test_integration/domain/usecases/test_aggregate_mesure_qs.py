@@ -81,11 +81,11 @@ def test_def_aggregate_mesure_qs_ponctualite_journees_exceptionnelles(file_syste
                         list_journees_exceptionnelles, window_name)
 
     # Assert
-    result = pd.read_csv(os.path.join(RESULT_PATH, aggregation_level, mesure_type,
-                                      f"mesure_{mesure_type}_2023" + FileExtensions.csv))
+    result = pd.read_csv(
+        os.path.join(RESULT_PATH, aggregation_level, mesure_type, f"mesure_{mesure_type}_2023" + FileExtensions.csv))
 
-    expected_result = pd.read_csv(os.path.join(RESULT_PATH, AggregationLevel.by_day, mesure_type,
-                                      f"mesure_{mesure_type}_2023_10_01" + FileExtensions.csv))
+    expected_result = pd.read_csv(
+        os.path.join(RESULT_PATH, mesure_type, f"mesure_{mesure_type}_2023_10_01" + FileExtensions.csv))
 
     pd.testing.assert_frame_equal(result, expected_result)
 

@@ -34,7 +34,6 @@ def generate_suffix_by_aggregation(
     calendrier = France()
 
     suffix_by_agg = {
-        AggregationLevel.by_day: lambda x: x.strftime('%Y_%m_%d'),
         AggregationLevel.by_month: lambda x: x.strftime('%Y_%m'),
         AggregationLevel.by_year: lambda x: x.strftime('%Y'),
         AggregationLevel.by_period: lambda x: x.strftime('%Y_') + get_period_name(
