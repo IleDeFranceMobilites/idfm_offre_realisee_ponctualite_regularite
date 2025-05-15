@@ -24,8 +24,26 @@ class FileSystemHandler(abc.ABC):
         """
         pass
 
+    # @abc.abstractmethod
+    # def get_daily_ligne_offre_realisee(self, date: datetime, ligne: str) -> pd.DataFrame:
+    #     """Récupération des données d'offre réalisée pour une date.
+
+    #     Parameters
+    #     ----------
+    #     date : datetime
+    #         Date pour laquelle nous voulons les données d'offre théorique.
+    #     ligne : str
+    #         Ligne pour laquelle les mesures de qualité de service doivent être calculées.
+
+    #     Returns
+    #     -------
+    #     df : DataFrame
+    #         DataFrame d'offre réalisée.
+    #     """
+    #     pass
+
     @abc.abstractmethod
-    def get_daily_offre_realisee(self, date: datetime, dsp: str) -> pd.DataFrame:
+    def get_daily_offre_realisee(self, date: datetime, dsp: str = "", ligne: str = "") -> pd.DataFrame:
         """Récupération des données d'offre réalisée pour une date.
 
         Parameters
@@ -34,6 +52,8 @@ class FileSystemHandler(abc.ABC):
             Date pour laquelle nous voulons les données d'offre théorique.
         dsp : str
             DSP pour laquelle les mesures de qualité de service doivent être calculées, par défaut à "".
+        ligne : str
+            Ligne pour laquelle les mesures de qualité de service doivent être calculées, par défaut à "".
 
         Returns
         -------

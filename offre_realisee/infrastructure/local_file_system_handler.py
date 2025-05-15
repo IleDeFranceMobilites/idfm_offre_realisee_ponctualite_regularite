@@ -44,7 +44,7 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
         logger.info(f"Reading input data from: {file_path}")
         return pd.read_parquet(file_path, **kwargs)
 
-    def get_daily_offre_realisee(self, date: datetime, dsp: str) -> pd.DataFrame:
+    def get_daily_offre_realisee(self, date: datetime, dsp: str = "", ligne: str = "") -> pd.DataFrame:
         """Récupération des données d'offre réalisée pour une date.
 
         Parameters
@@ -53,6 +53,8 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
             Date pour laquelle nous voulons les données d'offre théorique.
         dsp : str
             DSP pour laquelle les mesures de qualité de service doivent être calculées, par défaut à "".
+        ligne : str
+            Ligne pour laquelle les mesures de qualité de service doivent être calculées, par défaut à "".
 
         Returns
         -------
@@ -62,6 +64,8 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
         filters = [[(InputColumns.jour, 'in', {date.strftime("%Y-%m-%d")})]]
         if dsp:
             filters[0].append((InputColumns.dsp, 'in', dsp))
+        if ligne:
+            filters[0].append((InputColumns.ligne, 'in', ligne))
         df_offre_realisee = self.read_offre_realisee(
             columns=[InputColumns.ligne, InputColumns.arret,
                      InputColumns.sens, InputColumns.heure_theorique,

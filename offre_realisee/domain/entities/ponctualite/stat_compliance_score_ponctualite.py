@@ -69,7 +69,7 @@ def stat_situation_inacceptable(df: pd.DataFrame) -> pd.DataFrame:
     return df_si
 
 
-def stat_compliance_score_ponctualite(df: pd.DataFrame) -> pd.DataFrame:
+def stat_compliance_score_ponctualite(df: pd.DataFrame, metadata_cols: list[str] = []) -> pd.DataFrame:
     """Génère les statistiques de conformité pour les données de ponctualité.
 
     Cette fonction prend un DataFrame avec les scores de conformtié et calcule les statistiques liées à ces données.
@@ -85,6 +85,8 @@ def stat_compliance_score_ponctualite(df: pd.DataFrame) -> pd.DataFrame:
     ----------
     df : DataFrame
         DataFrame contenant les données par arrêt, leur score de conformité et le nombre de SI.
+    metadata_cols: list[str]
+        Colonnes contenant des méta informations invariables par lignes qui doivent être conservées, par défaut à [].
 
     Returns
     -------
@@ -93,7 +95,7 @@ def stat_compliance_score_ponctualite(df: pd.DataFrame) -> pd.DataFrame:
     """
     df_si = stat_situation_inacceptable(df)
 
-    df = df.groupby([MesurePonctualite.ligne])[MesurePonctualite.resultat].agg([
+    df = df.groupby([MesurePonctualite.ligne] + metadata_cols)[MesurePonctualite.resultat].agg([
         (MesurePonctualite.nombre_theorique, 'count'),
         (MesurePonctualite.nombre_reel, lambda x: x.isin(_ASSIGNED_VALUES_SET).sum()),
         (MesurePonctualite.score_de_conformite, lambda x: x[~x.isin(_SI_VALUES_SET)].sum())
