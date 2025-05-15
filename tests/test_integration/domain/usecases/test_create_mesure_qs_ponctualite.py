@@ -6,9 +6,7 @@ import pandas as pd
 import pytest
 
 from offre_realisee.config.file_extensions import FileExtensions
-from offre_realisee.config.aggregation_config import AggregationLevel
 from offre_realisee.config.offre_realisee_config import MesureType
-from offre_realisee.domain.entities.aggregation.generate_suffix_by_aggregation import generate_suffix_by_aggregation
 from offre_realisee.domain.usecases.create_mesure_qs_ponctualite import (create_mesure_qs_ponctualite,
                                                                          create_mesure_qs_ponctualite_date_range)
 from tests.test_data import TEST_DATA_PATH
@@ -31,8 +29,7 @@ EXPECTED_FILE = os.path.join(
 )
 
 RESULT_PATH = os.path.join(
-    TEST_DATA_PATH, TEST_DATA_PATH_CONFIG['output_path'],
-    AggregationLevel.by_day, MesureType.ponctualite
+    TEST_DATA_PATH, TEST_DATA_PATH_CONFIG['output_path'], MesureType.ponctualite
 )
 
 
@@ -58,11 +55,9 @@ def test_create_mesure_qs_ponctualite(file_system_fixture):
     create_mesure_qs_ponctualite(file_system_handler=local_file_system_handler, date=date)
 
     # Assert
-    df_calendrier_scolaire = local_file_system_handler.get_calendrier_scolaire()
-    suffix = generate_suffix_by_aggregation(df_calendrier_scolaire)[AggregationLevel.by_day](date)
-
     expected_result = pd.read_csv(EXPECTED_FILE)
-    result = pd.read_csv(os.path.join(RESULT_PATH, f"mesure_{MesureType.ponctualite}_{suffix}" + FileExtensions.csv))
+    result = pd.read_csv(
+        os.path.join(RESULT_PATH, f"mesure_{MesureType.ponctualite}_{date.strftime('%Y_%m_%d')}" + FileExtensions.csv))
 
     pd.testing.assert_frame_equal(result, expected_result)
 
@@ -83,11 +78,9 @@ def test_create_mesure_qs_ponctualite_donnees_dupliquees(file_system_fixture):
     create_mesure_qs_ponctualite(local_file_system_handler, date)
 
     # Assert
-    df_calendrier_scolaire = local_file_system_handler.get_calendrier_scolaire()
-    suffix = generate_suffix_by_aggregation(df_calendrier_scolaire)[AggregationLevel.by_day](date)
-
     expected_result = pd.read_csv(EXPECTED_FILE)
-    result = pd.read_csv(os.path.join(RESULT_PATH, f"mesure_{MesureType.ponctualite}_{suffix}" + FileExtensions.csv))
+    result = pd.read_csv(
+        os.path.join(RESULT_PATH, f"mesure_{MesureType.ponctualite}_{date.strftime('%Y_%m_%d')}" + FileExtensions.csv))
 
     pd.testing.assert_frame_equal(result, expected_result)
 
@@ -112,12 +105,7 @@ def test_create_mesure_qs_ponctualite_date_range(file_system_fixture):
         file_system_handler=local_file_system_handler, date_range=date_range, n_thread=2)
 
     # Assert
-    df_calendrier_scolaire = local_file_system_handler.get_calendrier_scolaire()
-    suffix_by_agg = generate_suffix_by_aggregation(df_calendrier_scolaire)
-    start_date_suffix = suffix_by_agg[AggregationLevel.by_day](start_date)
-    end_date_suffix = suffix_by_agg[AggregationLevel.by_day](end_date)
-
     result_clean = os.listdir(RESULT_PATH)
 
-    assert f"mesure_{MesureType.ponctualite}_{start_date_suffix}" + FileExtensions.csv in result_clean
-    assert f"mesure_{MesureType.ponctualite}_{end_date_suffix}" + FileExtensions.csv in result_clean
+    assert f"mesure_{MesureType.ponctualite}_{start_date.strftime('%Y_%m_%d')}" + FileExtensions.csv in result_clean
+    assert f"mesure_{MesureType.ponctualite}_{end_date.strftime('%Y_%m_%d')}" + FileExtensions.csv in result_clean

@@ -15,7 +15,6 @@ from offre_realisee.domain.entities.regularite.stat_compliance_score_regularite 
     stat_compliance_score_regularite)
 from offre_realisee.domain.entities.regularite.process_stop_regularite import process_stop_regularite
 from offre_realisee.domain.port.file_system_handler import FileSystemHandler
-from offre_realisee.domain.entities.aggregation.generate_suffix_by_aggregation import generate_suffix_by_aggregation
 
 from offre_realisee.config.offre_realisee_config import MesureRegularite, FrequenceType
 
@@ -51,9 +50,6 @@ def create_mesure_qs_regularite(
 
     df_offre_realisee = drop_duplicates_heure_theorique(df_offre_realisee)
 
-    df_calendrier_scolaire = file_system_handler.get_calendrier_scolaire()
-    suffix_by_agg = generate_suffix_by_aggregation(df_calendrier_scolaire)
-
     df_offre_realisee = drop_stop_without_real_time(df_offre_realisee)
     df_grouped = df_offre_realisee.groupby(by=[
         InputColumns.ligne, InputColumns.sens, InputColumns.arret
@@ -79,8 +75,7 @@ def create_mesure_qs_regularite(
     df_stat_regularite = stat_compliance_score_regularite(df_concat_regularite, theorique_passages_by_lignes,
                                                           any_high_frequency_on_lignes)
     file_system_handler.save_daily_mesure_qs(
-        df_mesure_qs=df_stat_regularite, date=date, dsp=dsp,
-        mesure_type=MesureType.regularite, suffix_by_agg=suffix_by_agg
+        df_mesure_qs=df_stat_regularite, date=date, dsp=dsp, mesure_type=MesureType.regularite
     )
 
 

@@ -54,8 +54,7 @@ def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: tupl
         mesure_list: list[pd.DataFrame] = []
 
         for date_to_agg in date_list:
-            df = file_system_handler.get_daily_mesure_qs(date=date_to_agg, dsp=dsp, mesure_type=mesure_type,
-                                                         suffix_by_agg=suffix_by_agg)
+            df = file_system_handler.get_daily_mesure_qs(date=date_to_agg, dsp=dsp, mesure_type=mesure_type)
             mesure_list.append(df)
 
         if len(mesure_list) != 0:

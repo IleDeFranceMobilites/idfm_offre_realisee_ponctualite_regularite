@@ -1,5 +1,4 @@
 class AggregationLevel:
-    by_day = "by_day"
     by_month = "by_month"
     by_year = "by_year"
     by_period = "by_period"
