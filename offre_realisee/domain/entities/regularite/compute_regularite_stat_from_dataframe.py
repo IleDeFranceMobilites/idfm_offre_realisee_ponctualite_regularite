@@ -14,13 +14,17 @@ import pandas as pd
 from collections import defaultdict
 
 
-def compute_regularite_stat_from_dataframe(df_offre_realisee: pd.DataFrame) -> pd.DataFrame:
+def compute_regularite_stat_from_dataframe(
+    df_offre_realisee: pd.DataFrame, metadata_cols: list[str] = [],
+) -> pd.DataFrame:
     """Calcule les statistiques de régularité à partir d'un DataFrame d'offre réalisée.
 
     Parameters
     ----------
     df_offre_realisee : DataFrame
         DataFrame contenant les données d'offre réalisée.
+    metadata_cols: list[str]
+        Colonnes contenant des méta informations invariables par lignes qui doivent être conservées, par défaut à [].
     """
     df_offre_realisee = drop_duplicates_heure_theorique(df_offre_realisee)
 
@@ -47,4 +51,4 @@ def compute_regularite_stat_from_dataframe(df_offre_realisee: pd.DataFrame) -> p
             any_high_frequency_on_lignes[ligne] = True
 
     return stat_compliance_score_regularite(
-        df_concat_regularite, theorique_passages_by_lignes, any_high_frequency_on_lignes)
+        df_concat_regularite, theorique_passages_by_lignes, any_high_frequency_on_lignes, metadata_cols=metadata_cols)

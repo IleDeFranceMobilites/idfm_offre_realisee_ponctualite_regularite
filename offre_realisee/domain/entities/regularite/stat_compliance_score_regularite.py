@@ -7,8 +7,10 @@ _SI_VALUES_SET = {
 }
 
 
-def stat_compliance_score_regularite(df: pd.DataFrame, n_theorique_by_lignes: dict[str, int],
-                                     any_high_frequency_on_lignes: dict[str, bool]) -> pd.DataFrame:
+def stat_compliance_score_regularite(
+    df: pd.DataFrame,
+    n_theorique_by_lignes: dict[str, int], any_high_frequency_on_lignes: dict[str, bool], metadata_cols: list[str] = []
+) -> pd.DataFrame:
     """Calcule le taux de conformité pour la régularité pour les lignes hautes fréquences (= les lignes qui contiennent
     au moins un arrêt haute fréquence sur la période analysée).
     La formule de calcul du taux de conformité est :
@@ -26,6 +28,8 @@ def stat_compliance_score_regularite(df: pd.DataFrame, n_theorique_by_lignes: di
     any_high_frequency_on_lignes : dict
         Dictionnaire qui contient les lignes en clé et True en valeur si la ligne contient au moins un arrêt haute
         fréquence sur la période analysée, False sinon
+    metadata_cols: list[str]
+        Colonnes contenant des méta informations invariables par lignes qui doivent être conservées, par défaut à [].
 
     Returns
     ----------
@@ -38,7 +42,7 @@ def stat_compliance_score_regularite(df: pd.DataFrame, n_theorique_by_lignes: di
     df = df[df[MesureRegularite.ligne].apply(lambda x: any_high_frequency_on_lignes[x])]
 
     # Aggregate stops results by lignes
-    df = df.groupby([MesureRegularite.ligne])[MesureRegularite.resultat].agg([
+    df = df.groupby([MesureRegularite.ligne] + metadata_cols)[MesureRegularite.resultat].agg([
         (MesureRegularite.nombre_reel, 'count'),
         (MesureRegularite.score_de_conformite, lambda x: x[~x.isin(_SI_VALUES_SET)].sum()),
         (

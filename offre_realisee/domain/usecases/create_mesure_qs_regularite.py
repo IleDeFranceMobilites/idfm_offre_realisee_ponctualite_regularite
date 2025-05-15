@@ -15,7 +15,8 @@ NUMBER_OF_PARALLEL_PROCESS = 6
 
 
 def create_mesure_qs_regularite(
-        file_system_handler: FileSystemHandler, date: datetime, dsp: str = "", ligne: str = ""
+        file_system_handler: FileSystemHandler,
+        date: datetime, dsp: str = "", ligne: str = "", metadata_cols: list[str] = [],
 ):
     """Crée et sauvegarde les mesures de qualité de service de type régularité.
 
@@ -32,6 +33,8 @@ def create_mesure_qs_regularite(
         DSP pour laquelle les mesures de qualité de service doivent être calculées, par défaut à "".
     ligne : str
         Ligne pour laquelle les mesures de qualité de service doivent être calculées, par défaut à "".
+    metadata_cols: list[str]
+        Colonnes contenant des méta informations invariables par lignes qui doivent être conservées, par défaut à [].
     """
 
     logger.info(f'Process: {date.strftime("%Y-%m-%d")}')
@@ -42,14 +45,16 @@ def create_mesure_qs_regularite(
         logger.info(f'No data to process for {date.strftime("%Y-%m-%d")}, for dsp {dsp}')
         return
 
-    df_stat_regularite = compute_regularite_stat_from_dataframe(df_offre_realisee)
+    df_stat_regularite = compute_regularite_stat_from_dataframe(
+        df_offre_realisee=df_offre_realisee, metadata_cols=metadata_cols)
     file_system_handler.save_daily_mesure_qs(
         df_mesure_qs=df_stat_regularite, date=date, dsp=dsp, mesure_type=MesureType.regularite
     )
 
 
 def create_mesure_qs_regularite_date_range(
-        file_system_handler: FileSystemHandler, date_range: tuple[datetime, datetime], dsp: str = "", ligne: str = "",
+        file_system_handler: FileSystemHandler,
+        date_range: tuple[datetime, datetime], dsp: str = "", ligne: str = "", metadata_cols: list[str] = [],
         n_thread: int = NUMBER_OF_PARALLEL_PROCESS
 ) -> None:
     """Appelle la fonction create_mesure_qs_regularite sur une plage de date, en parallélisant les calculs.
@@ -71,7 +76,7 @@ def create_mesure_qs_regularite_date_range(
 
     create_mesure_qs_regularite_partial = partial(
         create_mesure_qs_regularite,
-        file_system_handler=file_system_handler, dsp=dsp, ligne=ligne
+        file_system_handler=file_system_handler, dsp=dsp, ligne=ligne, metadata_cols=metadata_cols,
     )
 
     with Pool(processes=n_thread) as pool:

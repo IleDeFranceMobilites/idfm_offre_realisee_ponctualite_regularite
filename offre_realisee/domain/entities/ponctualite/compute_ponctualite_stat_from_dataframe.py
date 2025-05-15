@@ -11,13 +11,22 @@ from offre_realisee.domain.entities.ponctualite.stat_compliance_score_ponctualit
 import pandas as pd
 
 
-def compute_ponctualite_stat_from_dataframe(df_offre_realisee: pd.DataFrame) -> pd.DataFrame:
+def compute_ponctualite_stat_from_dataframe(
+    df_offre_realisee: pd.DataFrame, metadata_cols: list[str] = []
+) -> pd.DataFrame:
     """Calcule les statistiques de ponctualité à partir d'un DataFrame d'offre réalisée.
 
     Parameters
     ----------
     df_offre_realisee : DataFrame
         DataFrame contenant les données d'offre réalisée.
+    metadata_cols: list[str]
+        Colonnes contenant des méta informations invariables par lignes qui doivent être conservées, par défaut à [].
+
+    Returns
+    -------
+    df : DataFrame
+        DataFrame contenant les statistiques de conformité pour chaque ligne.
     """
     df_offre_realisee = drop_duplicates_heure_theorique(df_offre_realisee)
 
@@ -37,4 +46,4 @@ def compute_ponctualite_stat_from_dataframe(df_offre_realisee: pd.DataFrame) -> 
         if not score_by_stop_ponctualite.empty:
             df_concat_ponctualite = pd.concat([df_concat_ponctualite, score_by_stop_ponctualite], ignore_index=True)
 
-    return stat_compliance_score_ponctualite(df_concat_ponctualite)
+    return stat_compliance_score_ponctualite(df=df_concat_ponctualite, metadata_cols=metadata_cols)
