@@ -23,12 +23,12 @@ RESULT_PATH = os.path.join(TEST_DATA_PATH, TEST_DATA_PATH_CONFIG['output_path'])
 
 
 @pytest.fixture
-def file_system_fixture_by_year():
+def file_system_rm_agg_by_year_fixture():
     yield
     shutil.rmtree(os.path.join(RESULT_PATH, AggregationLevel.by_year))
 
 
-def test_def_aggregate_mesure_qs_ponctualite_by_year(file_system_fixture_by_year):
+def test_def_aggregate_mesure_qs_ponctualite_by_year(file_system_rm_agg_by_year_fixture):
     # Given
     local_file_system_handler = LocalFileSystemHandler(
         data_path=TEST_DATA_PATH,
@@ -59,7 +59,7 @@ def test_def_aggregate_mesure_qs_ponctualite_by_year(file_system_fixture_by_year
     pd.testing.assert_frame_equal(result, expected_result)
 
 
-def test_def_aggregate_mesure_qs_ponctualite_journees_exceptionnelles(file_system_fixture_by_year):
+def test_def_aggregate_mesure_qs_ponctualite_journees_exceptionnelles(file_system_rm_agg_by_year_fixture):
     # Given
     local_file_system_handler = LocalFileSystemHandler(
         data_path=TEST_DATA_PATH,
@@ -91,12 +91,12 @@ def test_def_aggregate_mesure_qs_ponctualite_journees_exceptionnelles(file_syste
 
 
 @pytest.fixture
-def file_system_fixture_by_month():
+def file_system_rm_agg_by_month_fixture():
     yield
     shutil.rmtree(os.path.join(RESULT_PATH, AggregationLevel.by_month))
 
 
-def test_def_aggregate_mesure_qs_ponctualite_by_month(file_system_fixture_by_month):
+def test_def_aggregate_mesure_qs_ponctualite_by_month(file_system_rm_agg_by_month_fixture):
     # Given
     local_file_system_handler = LocalFileSystemHandler(
         data_path=TEST_DATA_PATH,
@@ -125,12 +125,12 @@ def test_def_aggregate_mesure_qs_ponctualite_by_month(file_system_fixture_by_mon
 
 
 @pytest.fixture
-def file_system_fixture_by_periode():
+def file_system_rm_agg_by_periode_fixture():
     yield
     shutil.rmtree(os.path.join(RESULT_PATH, AggregationLevel.by_period))
 
 
-def test_def_aggregate_mesure_qs_regularite_by_periode(file_system_fixture_by_periode):
+def test_def_aggregate_mesure_qs_regularite_by_periode(file_system_rm_agg_by_periode_fixture):
     # Given
     local_file_system_handler = LocalFileSystemHandler(
         data_path=TEST_DATA_PATH,
