@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>compliance_score &#8212; Documentation Offre realisee qualite de service 1.1.4</title>
+    <title>compute_ponctualite_stat_from_dataframe &#8212; Documentation Offre realisee qualite de service 1.1.4</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
@@ -15,8 +15,8 @@
     <script src="../../../_static/translations.js?v=e6b791cb"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Recherche" href="../../../search.html" />
-    <link rel="next" title="Aggregation" href="../aggregation/aggregation.html" />
-    <link rel="prev" title="process_stop_ponctualite" href="process_stop_ponctualite.html" />
+    <link rel="next" title="stat_compliance_score_ponctualite" href="stat_compliance_score_ponctualite.html" />
+    <link rel="prev" title="Ponctualité" href="ponctualite.html" />
    
   <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
@@ -34,35 +34,25 @@
 
           <div class="body" role="main">
             
-  <section id="module-offre_realisee.domain.entities.ponctualite.compliance_score">
-<span id="compliance-score"></span><h1>compliance_score<a class="headerlink" href="#module-offre_realisee.domain.entities.ponctualite.compliance_score" title="Lien vers cette rubrique">¶</a></h1>
+  <section id="module-offre_realisee.domain.entities.ponctualite.compute_ponctualite_stat_from_dataframe">
+<span id="compute-ponctualite-stat-from-dataframe"></span><h1>compute_ponctualite_stat_from_dataframe<a class="headerlink" href="#module-offre_realisee.domain.entities.ponctualite.compute_ponctualite_stat_from_dataframe" title="Lien vers cette rubrique">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="offre_realisee.domain.entities.ponctualite.compliance_score.score">
-<span class="sig-prename descclassname"><span class="pre">offre_realisee.domain.entities.ponctualite.compliance_score.</span></span><span class="sig-name descname"><span class="pre">score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FrequenceType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_terminus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_theorique_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#offre_realisee.domain.entities.ponctualite.compliance_score.score" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Calcul des scores de conformité pour la ponctualité.</p>
+<dt class="sig sig-object py" id="offre_realisee.domain.entities.ponctualite.compute_ponctualite_stat_from_dataframe.compute_ponctualite_stat_from_dataframe">
+<span class="sig-prename descclassname"><span class="pre">offre_realisee.domain.entities.ponctualite.compute_ponctualite_stat_from_dataframe.</span></span><span class="sig-name descname"><span class="pre">compute_ponctualite_stat_from_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_offre_realisee</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.domain.entities.ponctualite.compute_ponctualite_stat_from_dataframe.compute_ponctualite_stat_from_dataframe" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Calcule les statistiques de ponctualité à partir d’un DataFrame d’offre réalisée.</p>
 <section id="parameters">
 <h2>Parameters<a class="headerlink" href="#parameters" title="Lien vers cette rubrique">¶</a></h2>
 <dl class="simple">
-<dt>freq<span class="classifier">FrequenceType</span></dt><dd><p>La fréquence de notre ligne (HF: Haute Frequence, BF: Basse Frequence).</p>
+<dt>df_offre_realisee<span class="classifier">DataFrame</span></dt><dd><p>DataFrame contenant les données d’offre réalisée.</p>
 </dd>
-<dt>matrix<span class="classifier">ndarray</span></dt><dd><p>Matrice d’entrée contenant les deltas de temps entre les valeurs réelles et théoriques.</p>
-</dd>
-<dt>is_terminus<span class="classifier">ndarray</span></dt><dd><p>Tableau de booléen indiquant si un arrêt est un terminus d’arrivée ou non.</p>
-</dd>
-<dt>next_theorique_interval<span class="classifier">ndarray</span></dt><dd><p>Tableau contenant les intervalles de temps avec le prochain passage théorique.</p>
+<dt>metadata_cols: list[str]</dt><dd><p>Colonnes contenant des méta informations invariables par lignes qui doivent être conservées, par défaut à [].</p>
 </dd>
 </dl>
 </section>
 <section id="returns">
 <h2>Returns<a class="headerlink" href="#returns" title="Lien vers cette rubrique">¶</a></h2>
 <dl class="simple">
-<dt>matrix_score<span class="classifier">ndarray</span></dt><dd><p>Matrice contenant les scores de conformité:
-- ComplianceType.compliant (1).
-- ComplianceType.semi_compliant (0.75 en haute frequence, 0.5 en basse frequence).
-- ComplianceType.not_compliant (0.25 en haute frequence, 0 en basse frequence).
-- ComplianceType.situation_inacceptable_retard (-1000000): En retard.
-- ComplianceType.situation_inacceptable_avance (-999900): En avance.
-- ComplianceType.situation_inacceptable_absence (-999000): Pas de données.</p>
+<dt>df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame contenant les statistiques de conformité pour chaque ligne.</p>
 </dd>
 </dl>
 </section>
@@ -113,8 +103,8 @@
   <li><a href="../../domain.html">Domaine</a><ul>
   <li><a href="../entities.html">Entités</a><ul>
   <li><a href="ponctualite.html">Ponctualité</a><ul>
-      <li>Previous: <a href="process_stop_ponctualite.html" title="Chapitre précédent">process_stop_ponctualite</a></li>
-      <li>Next: <a href="../aggregation/aggregation.html" title="Chapitre suivant">Aggregation</a></li>
+      <li>Previous: <a href="ponctualite.html" title="Chapitre précédent">Ponctualité</a></li>
+      <li>Next: <a href="stat_compliance_score_ponctualite.html" title="Chapitre suivant">stat_compliance_score_ponctualite</a></li>
   </ul></li>
   </ul></li>
   </ul></li>
@@ -141,7 +131,7 @@
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
-      <a href="../../../_sources/domain/entities/ponctualite/compliance_score.rst.txt"
+      <a href="../../../_sources/domain/entities/ponctualite/compute_ponctualite_stat_from_dataframe.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
