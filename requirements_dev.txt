@@ -1,7 +1,8 @@
 pytest==8.3.4
 vulture==2.14
 flake8==7.1.1
-safety==3.2.14
+safety==3.0.1
+marshmallow==3.26.1 # required version lower than 4.0.0 for safety
 bandit==1.8.2
 flake8-print==5.0.0
 pre-commit==4.1.0
