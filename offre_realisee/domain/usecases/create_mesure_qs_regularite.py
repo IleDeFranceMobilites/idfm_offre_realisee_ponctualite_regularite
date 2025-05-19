@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from functools import partial
 
 import pandas as pd
@@ -16,7 +16,7 @@ NUMBER_OF_PARALLEL_PROCESS = 6
 
 def create_mesure_qs_regularite(
         file_system_handler: FileSystemHandler,
-        date: datetime, dsp: str = "", ligne: str = "", metadata_cols: list[str] = [],
+        date: date, dsp: str = "", ligne: str = "", metadata_cols: list[str] = [],
 ):
     """Crée et sauvegarde les mesures de qualité de service de type régularité.
 
@@ -27,7 +27,7 @@ def create_mesure_qs_regularite(
     ----------
     file_system_handler : FileSystemHandler
         Gestionnaire du système de fichiers.
-    date : datetime
+    date : date
         Date pour laquelle les mesures de qualité de service doivent être calculées.
     dsp : str
         DSP pour laquelle les mesures de qualité de service doivent être calculées, par défaut à "".
@@ -54,7 +54,7 @@ def create_mesure_qs_regularite(
 
 def create_mesure_qs_regularite_date_range(
         file_system_handler: FileSystemHandler,
-        date_range: tuple[datetime, datetime], dsp: str = "", ligne: str = "", metadata_cols: list[str] = [],
+        date_range: tuple[date, date], dsp: str = "", ligne: str = "", metadata_cols: list[str] = [],
         n_thread: int = NUMBER_OF_PARALLEL_PROCESS
 ) -> None:
     """Appelle la fonction create_mesure_qs_regularite sur une plage de date, en parallélisant les calculs.
@@ -63,7 +63,7 @@ def create_mesure_qs_regularite_date_range(
     ----------
     file_system_handler : FileSystemHandler
         Gestionnaire du système de fichiers.
-    date_range : datetime
+    date_range : date
         Dates de début et de fin pour laquelle les mesures de qualité de service doivent être calculées.
     dsp : str
         DSP pour laquelle les mesures de qualité de service doivent être calculées, par défaut à "".

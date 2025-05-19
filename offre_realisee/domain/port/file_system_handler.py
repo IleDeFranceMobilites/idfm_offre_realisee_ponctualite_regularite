@@ -1,5 +1,6 @@
 import abc
-from datetime import datetime
+from typing import Callable
+from datetime import date
 
 import pandas as pd
 
@@ -24,31 +25,13 @@ class FileSystemHandler(abc.ABC):
         """
         pass
 
-    # @abc.abstractmethod
-    # def get_daily_ligne_offre_realisee(self, date: datetime, ligne: str) -> pd.DataFrame:
-    #     """Récupération des données d'offre réalisée pour une date.
-
-    #     Parameters
-    #     ----------
-    #     date : datetime
-    #         Date pour laquelle nous voulons les données d'offre théorique.
-    #     ligne : str
-    #         Ligne pour laquelle les mesures de qualité de service doivent être calculées.
-
-    #     Returns
-    #     -------
-    #     df : DataFrame
-    #         DataFrame d'offre réalisée.
-    #     """
-    #     pass
-
     @abc.abstractmethod
-    def get_daily_offre_realisee(self, date: datetime, dsp: str = "", ligne: str = "") -> pd.DataFrame:
+    def get_daily_offre_realisee(self, date: date, dsp: str = "", ligne: str = "") -> pd.DataFrame:
         """Récupération des données d'offre réalisée pour une date.
 
         Parameters
         ----------
-        date : datetime
+        date : date
             Date pour laquelle nous voulons les données d'offre théorique.
         dsp : str
             DSP pour laquelle les mesures de qualité de service doivent être calculées, par défaut à "".
@@ -64,7 +47,7 @@ class FileSystemHandler(abc.ABC):
 
     @abc.abstractmethod
     def save_daily_mesure_qs(
-        self, df_mesure_qs: pd.DataFrame, date: datetime, dsp: str, mesure_type: MesureType
+        self, df_mesure_qs: pd.DataFrame, date: date, dsp: str, mesure_type: MesureType
     ) -> None:
         """Sauvegarde du DataFrame de mesure de Qualité de Service (QS).
 
@@ -72,7 +55,7 @@ class FileSystemHandler(abc.ABC):
         ----------
         df_mesure_qs : DataFrame
             DataFrame que nous voulons sauvegarder.
-        date : datetime
+        date : date
             Date des données de mesure QS.
         dsp : str
             DSP des données de mesure QS.
@@ -83,9 +66,9 @@ class FileSystemHandler(abc.ABC):
 
     @abc.abstractmethod
     def save_mesure_qs_by_aggregation(
-        self, df_mesure_qs: pd.DataFrame, date: datetime, dsp: str,
+        self, df_mesure_qs: pd.DataFrame, date: date, dsp: str,
         aggregation_level: AggregationLevel, mesure_type: MesureType,
-        suffix_by_agg: dict[AggregationLevel, callable]
+        suffix_by_agg: dict[AggregationLevel, Callable]
     ) -> None:
         """Sauvegarde du DataFrame de mesure de Qualité de Service (QS).
 
@@ -93,12 +76,12 @@ class FileSystemHandler(abc.ABC):
         ----------
         df_mesure_qs : DataFrame
             DataFrame que nous voulons sauvegarder.
-        date : datetime
+        date : date
             Date des données de mesure QS.
         dsp : str
             DSP des données de mesure QS.
         aggregation_level : AggregationLevel
-            Niveau d'aggrégation de la mesure QS (by_week, by_year, ...).
+            Niveau d’agrégation de la mesure QS (by_week, by_year, ...).
         mesure_type : MesureType
             Le type de mesure (ponctualite, regularite).
         suffix_by_agg: Dict[AggregationLevel, Callable]
@@ -107,13 +90,13 @@ class FileSystemHandler(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_daily_mesure_qs(self, date: datetime, dsp: str, mesure_type: MesureType,
-                            suffix_by_agg: dict[AggregationLevel, callable]) -> pd.DataFrame:
+    def get_daily_mesure_qs(self, date: date, dsp: str, mesure_type: MesureType,
+                            suffix_by_agg: dict[AggregationLevel, Callable]) -> pd.DataFrame:
         """Récupération des données de mesure QS par jour.
 
         Parameters
         ----------
-        date : datetime
+        date : date
             Date des données de mesure QS.
         dsp : str
             DSP des données de mesure QS.

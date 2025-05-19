@@ -42,7 +42,10 @@ def compute_regularite_stat_from_dataframe(
         df_by_stop = add_frequency(df_by_stop)
 
         logger.debug('Regularite')
-        score_by_stop_regularite = process_stop_regularite(df_by_stop)
+        score_by_stop_regularite = process_stop_regularite(
+            df_by_stop=df_by_stop,
+            metadata_cols=[MesureRegularite.ligne, MesureRegularite.sens, MesureRegularite.arret] + metadata_cols
+        )
         if not score_by_stop_regularite.empty:
             df_concat_regularite = pd.concat([df_concat_regularite, score_by_stop_regularite], ignore_index=True)
             theorique_passages_by_lignes[ligne] += df_by_stop[InputColumns.heure_theorique].notna().sum()

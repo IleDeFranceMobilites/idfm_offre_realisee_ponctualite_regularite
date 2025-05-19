@@ -72,8 +72,8 @@ def stat_situation_inacceptable(df: pd.DataFrame) -> pd.DataFrame:
 def stat_compliance_score_ponctualite(df: pd.DataFrame, metadata_cols: list[str] = []) -> pd.DataFrame:
     """Génère les statistiques de conformité pour les données de ponctualité.
 
-    Cette fonction prend un DataFrame avec les scores de conformtié et calcule les statistiques liées à ces données.
-    Elle renvoit un DataFrame contenant :
+    Cette fonction prend un DataFrame avec les scores de conformité et calcule les statistiques liées à ces données.
+    Elle renvoie un DataFrame contenant :
     - Le nombre de passage théoriques.
     - Le nombre de passages réelles assignées à une valeur théorique.
     - La somme des scores de conformité.

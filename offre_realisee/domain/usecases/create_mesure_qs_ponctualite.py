@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from functools import partial
 
 import pandas as pd
@@ -11,12 +11,12 @@ from offre_realisee.domain.entities.ponctualite.compute_ponctualite_stat_from_da
     compute_ponctualite_stat_from_dataframe)
 
 
-NUMBER_OF_PARALLEL_PROCESS = 6
+NUMBER_OF_PARALLEL_PROCESS: int = 6
 
 
 def create_mesure_qs_ponctualite(
     file_system_handler: FileSystemHandler,
-    date: datetime, dsp: str = "", ligne: str = "", metadata_cols: list[str] = []
+    date: date, dsp: str = "", ligne: str = "", metadata_cols: list[str] = []
 ) -> None:
     """Crée et sauvegarde les mesures de qualité de service de type ponctualité.
 
@@ -27,7 +27,7 @@ def create_mesure_qs_ponctualite(
     ----------
     file_system_handler : FileSystemHandler
         Gestionnaire du système de fichiers.
-    date : datetime
+    date : date
         Date pour laquelle les mesures de qualité de service doivent être calculées.
     dsp : str
         DSP pour laquelle les mesures de qualité de service doivent être calculées, par défaut à "".
@@ -54,7 +54,7 @@ def create_mesure_qs_ponctualite(
 
 def create_mesure_qs_ponctualite_date_range(
         file_system_handler: FileSystemHandler,
-        date_range: tuple[datetime, datetime], dsp: str = "", ligne: str = "", metadata_cols: list[str] = [],
+        date_range: tuple[date, date], dsp: str = "", ligne: str = "", metadata_cols: list[str] = [],
         n_thread: int = NUMBER_OF_PARALLEL_PROCESS
 ) -> None:
     """Appelle la fonction create_mesure_qs_ponctualite sur une plage de date, en parallélisant les calculs.

@@ -8,7 +8,7 @@ from offre_realisee.domain.entities.regularite.matching_heure_theorique_reelle_r
     matching_heure_theorique_reelle_regularite)
 
 
-def process_stop_regularite(df_by_stop: pd.DataFrame):
+def process_stop_regularite(df_by_stop: pd.DataFrame, metadata_cols: list[str] = []) -> pd.DataFrame:
     """Calcule le score de conformité pour tous les passages d'un arrêt sur la période analysée.
     Les étapes de calcul sont les suivantes :
     1. Association d'un passage à l'heure réelle à 2 passages à l'heure théorique (inf.=précédent, sup.=suivant)
@@ -19,6 +19,8 @@ def process_stop_regularite(df_by_stop: pd.DataFrame):
     ----------
     df_by_stop : DataFrame
         DataFrame qui contient les données de passages réels et théoriques pour un arrêt sur toute la période analysée
+    metadata_cols: list[str]
+        Colonnes contenant des méta informations invariables par lignes qui doivent être conservées, par défaut à [].
 
     Returns
     ----------
@@ -43,8 +45,7 @@ def process_stop_regularite(df_by_stop: pd.DataFrame):
 
     df_score = choose_best_score(df_score)
 
-    df_score[MesureRegularite.ligne] = df_by_stop[MesureRegularite.ligne].unique()[0]
-    df_score[MesureRegularite.sens] = df_by_stop[MesureRegularite.sens].unique()[0]
-    df_score[MesureRegularite.arret] = df_by_stop[MesureRegularite.arret].unique()[0]
+    for metadata_column in metadata_cols:
+        df_score[metadata_column] = df_by_stop[metadata_column].unique()[0]
 
     return df_score
