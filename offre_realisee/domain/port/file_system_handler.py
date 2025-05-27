@@ -66,7 +66,7 @@ class FileSystemHandler(abc.ABC):
 
     @abc.abstractmethod
     def save_error_mesure_qs(
-            self, df_mesure_qs: pd.DataFrame, date: date, mesure_type: MesureType, dsp: str, ligne: str, operateur: str
+            self, df_mesure_qs: pd.DataFrame, date: date, mesure_type: MesureType, dsp: str, ligne: str
     ) -> None:
         """Sauvegarde du DataFrame de mesure de Qualité de Service (QS) en erreur.
 
@@ -82,8 +82,6 @@ class FileSystemHandler(abc.ABC):
             DSP des données de mesure QS.
         ligne : str
             Ligne des données de mesure QS
-        operateur : str
-            Operateur des données de mesure QS
         """
         pass
 

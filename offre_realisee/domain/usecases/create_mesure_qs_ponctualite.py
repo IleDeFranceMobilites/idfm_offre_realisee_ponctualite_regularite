@@ -45,11 +45,10 @@ def create_mesure_qs_ponctualite(
     except FileNotFoundError:
         logger.info(f'No data to process for {date.strftime("%Y-%m-%d")} with dsp: [{dsp}] and ligne: [{ligne}]')
         return
-    if df_offre_realisee[InputColumns.heure_theorique].isna().all():
-        operateur = df_offre_realisee[InputColumns.operateur].unique()[0]
+    if (df_offre_realisee[InputColumns.heure_theorique].isna().all() or
+            df_offre_realisee[InputColumns.sens].isna().any()):
         file_system_handler.save_error_mesure_qs(
-            df_mesure_qs=df_offre_realisee, date=date, mesure_type=MesureType.ponctualite, dsp=dsp, ligne=ligne,
-            operateur=operateur)
+            df_mesure_qs=df_offre_realisee, date=date, mesure_type=MesureType.ponctualite, dsp=dsp, ligne=ligne)
     else:
         df_stat_ponctualite = compute_ponctualite_stat_from_dataframe(
             df_offre_realisee=df_offre_realisee, metadata_cols=metadata_cols)
