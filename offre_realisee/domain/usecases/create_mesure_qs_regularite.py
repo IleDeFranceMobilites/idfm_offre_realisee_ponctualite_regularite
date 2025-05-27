@@ -47,6 +47,12 @@ def create_mesure_qs_regularite(
 
     df_stat_regularite = compute_regularite_stat_from_dataframe(
         df_offre_realisee=df_offre_realisee, metadata_cols=metadata_cols)
+
+    # Si le dataframe ne contient pas suffisament de données pour calculer de la régulartié, on ne sauvegarde rien
+    if df_stat_regularite.empty:
+        logger.info(f'No data to save on regularity for {date.strftime("%Y-%m-%d")}, for dsp {dsp} and ligne {ligne}')
+        return
+
     file_system_handler.save_daily_mesure_qs(
         df_mesure_qs=df_stat_regularite, date=date, dsp=dsp, mesure_type=MesureType.regularite
     )

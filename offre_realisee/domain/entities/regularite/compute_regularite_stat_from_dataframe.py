@@ -52,6 +52,7 @@ def compute_regularite_stat_from_dataframe(
 
         if any(df_by_stop[MesureRegularite.frequence] == FrequenceType.haute_frequence):
             any_high_frequency_on_lignes[ligne] = True
-
+    if df_concat_regularite.empty:
+        return pd.DataFrame()
     return stat_compliance_score_regularite(
         df_concat_regularite, theorique_passages_by_lignes, any_high_frequency_on_lignes, metadata_cols=metadata_cols)
