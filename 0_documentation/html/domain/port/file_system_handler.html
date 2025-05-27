@@ -149,11 +149,32 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="offre_realisee.domain.port.file_system_handler.FileSystemHandler.save_error_mesure_qs">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_error_mesure_qs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_mesure_qs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesure_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MesureType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ligne</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#offre_realisee.domain.port.file_system_handler.FileSystemHandler.save_error_mesure_qs" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Sauvegarde du DataFrame de mesure de Qualité de Service (QS) en erreur.</p>
+<section id="id12">
+<h2>Parameters<a class="headerlink" href="#id12" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df_mesure_qs<span class="classifier">DataFrame</span></dt><dd><p>DataFrame que nous voulons sauvegarder.</p>
+</dd>
+<dt>date<span class="classifier">date</span></dt><dd><p>Date des données de mesure QS.</p>
+</dd>
+<dt>mesure_type<span class="classifier">MesureType</span></dt><dd><p>Le type de mesure (ponctualite, regularite).</p>
+</dd>
+<dt>dsp<span class="classifier">str</span></dt><dd><p>DSP des données de mesure QS.</p>
+</dd>
+<dt>ligne<span class="classifier">str</span></dt><dd><p>Ligne des données de mesure QS</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="offre_realisee.domain.port.file_system_handler.FileSystemHandler.save_mesure_qs_by_aggregation">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_mesure_qs_by_aggregation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_mesure_qs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregation_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AggregationLevel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesure_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MesureType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix_by_agg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">AggregationLevel</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#offre_realisee.domain.port.file_system_handler.FileSystemHandler.save_mesure_qs_by_aggregation" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Sauvegarde du DataFrame de mesure de Qualité de Service (QS).</p>
-<section id="id12">
-<h2>Parameters<a class="headerlink" href="#id12" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id13">
+<h2>Parameters<a class="headerlink" href="#id13" title="Lien vers cette rubrique">¶</a></h2>
 <dl class="simple">
 <dt>df_mesure_qs<span class="classifier">DataFrame</span></dt><dd><p>DataFrame que nous voulons sauvegarder.</p>
 </dd>
