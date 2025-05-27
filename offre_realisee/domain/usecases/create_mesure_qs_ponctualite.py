@@ -4,6 +4,7 @@ from functools import partial
 import pandas as pd
 from multiprocess import Pool
 
+from offre_realisee.config.input_config import InputColumns
 from offre_realisee.config.logger import logger
 from offre_realisee.config.offre_realisee_config import MesureType
 from offre_realisee.domain.port.file_system_handler import FileSystemHandler
@@ -44,12 +45,16 @@ def create_mesure_qs_ponctualite(
     except FileNotFoundError:
         logger.info(f'No data to process for {date.strftime("%Y-%m-%d")} with dsp: [{dsp}] and ligne: [{ligne}]')
         return
-
-    df_stat_ponctualite = compute_ponctualite_stat_from_dataframe(
-        df_offre_realisee=df_offre_realisee, metadata_cols=metadata_cols)
-    file_system_handler.save_daily_mesure_qs(
-        df_mesure_qs=df_stat_ponctualite, date=date, dsp=dsp, mesure_type=MesureType.ponctualite
-    )
+    if (df_offre_realisee[InputColumns.heure_theorique].isna().all() or
+            df_offre_realisee[InputColumns.sens].isna().any()):
+        file_system_handler.save_error_mesure_qs(
+            df_mesure_qs=df_offre_realisee, date=date, mesure_type=MesureType.ponctualite, dsp=dsp, ligne=ligne)
+    else:
+        df_stat_ponctualite = compute_ponctualite_stat_from_dataframe(
+            df_offre_realisee=df_offre_realisee, metadata_cols=metadata_cols)
+        file_system_handler.save_daily_mesure_qs(
+            df_mesure_qs=df_stat_ponctualite, date=date, dsp=dsp, mesure_type=MesureType.ponctualite
+        )
 
 
 def create_mesure_qs_ponctualite_date_range(

@@ -65,6 +65,27 @@ class FileSystemHandler(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def save_error_mesure_qs(
+            self, df_mesure_qs: pd.DataFrame, date: date, mesure_type: MesureType, dsp: str, ligne: str
+    ) -> None:
+        """Sauvegarde du DataFrame de mesure de Qualité de Service (QS) en erreur.
+
+        Parameters
+        ----------
+        df_mesure_qs : DataFrame
+            DataFrame que nous voulons sauvegarder.
+        date : date
+            Date des données de mesure QS.
+        mesure_type : MesureType
+            Le type de mesure (ponctualite, regularite).
+        dsp : str
+            DSP des données de mesure QS.
+        ligne : str
+            Ligne des données de mesure QS
+        """
+        pass
+
+    @abc.abstractmethod
     def save_mesure_qs_by_aggregation(
         self, df_mesure_qs: pd.DataFrame, date: date, dsp: str,
         aggregation_level: AggregationLevel, mesure_type: MesureType,
