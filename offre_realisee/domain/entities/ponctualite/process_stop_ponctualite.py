@@ -4,6 +4,8 @@ from scipy.optimize import linear_sum_assignment
 
 from offre_realisee.config.offre_realisee_config import MesurePonctualite, FrequenceType, ComplianceType
 from offre_realisee.domain.entities.ponctualite.compliance_score import score
+from offre_realisee.domain.entities.ponctualite.pandas_datetime_series_to_unix_timestamp_seconds import (
+    pandas_datetime_series_to_unix_timestamp_seconds)
 from numpy import set_printoptions
 
 set_printoptions(suppress=True)
@@ -24,20 +26,22 @@ def process_stop_ponctualite(df_by_stop: pd.DataFrame) -> pd.DataFrame:
     Returns
     -------
     df_by_stop :  DataFrame
-        DataFrame contenant l'assignement optimal des valeurs théoriques/réelles ainsi que le score de conformité
+        DataFrame contenant l'agencement optimal des valeurs théoriques/réelles ainsi que le score de conformité
         associé.
     """
     # On extrait la colonne d'heures réelles, en conservant les valeurs NaN pour pouvoir les associer de manière
     # optimale aux heures théoriques dans la matrice de coût.
 
-    heure_reelle_col_copy = df_by_stop[MesurePonctualite.heure_reelle].to_numpy()
+    heure_reelle_col_copy = df_by_stop[MesurePonctualite.heure_reelle].copy()
 
     df_by_stop = (
         df_by_stop.dropna(subset=[MesurePonctualite.heure_theorique])
         .sort_values(by=[MesurePonctualite.heure_theorique]).reset_index(drop=True)
     )
     df_by_stop[MesurePonctualite.difference_theorique] = (
-        df_by_stop[MesurePonctualite.heure_theorique].diff(1).shift(-1).astype('object'))
+        pandas_datetime_series_to_unix_timestamp_seconds(df_by_stop[MesurePonctualite.heure_theorique])
+        .diff(1).shift(-1)
+    )
 
     # Calcul de la pénalité associée à chaque paires théorique/réelle possible
     cost_matrix = compute_cost_matrix(df_by_stop, heure_reelle_col_copy)
@@ -50,7 +54,7 @@ def process_stop_ponctualite(df_by_stop: pd.DataFrame) -> pd.DataFrame:
 
     # Associe toutes les heures réelles aux meilleurs heures théoriques possible
     df_by_stop.loc[theorique_indices, MesurePonctualite.heure_reelle] = pd.to_datetime(
-        heure_reelle_col_copy[reelle_indices], utc=True)
+        heure_reelle_col_copy.to_numpy()[reelle_indices], utc=True)
 
     # Remplace les passages aberrants par des passages non assignés
     df_by_stop.loc[
@@ -65,15 +69,15 @@ def process_stop_ponctualite(df_by_stop: pd.DataFrame) -> pd.DataFrame:
     return df_by_stop.drop([MesurePonctualite.difference_theorique], axis=1)
 
 
-def compute_cost_matrix(df_by_stop: pd.DataFrame, heure_reelle_col: np.ndarray) -> np.ndarray:
+def compute_cost_matrix(df_by_stop: pd.DataFrame, heure_reelle_col: pd.Series) -> np.ndarray:
     """Traite les données de ponctualité par arrêts et génère le scores de conformité.
 
     Parameters
     ----------
     df_by_stop : DataFrame
         DataFrame contenant les données de ponctualité par arrêt.
-    heure_reelle_col : ndarray
-        Le type de franquence de la ligne (HF: Haute Fréquence, BF: Basse Fréquence).
+    heure_reelle_col : pd.Series
+        Série contenant les heures réelles des passages.
 
     Returns
     -------
@@ -87,8 +91,8 @@ def compute_cost_matrix(df_by_stop: pd.DataFrame, heure_reelle_col: np.ndarray) 
         - ComplianceType.situation_inacceptable_absence (-999000): Pas de données.
     """
     matrix_timedelta = np.subtract.outer(
-        heure_reelle_col,
-        df_by_stop[MesurePonctualite.heure_theorique].to_numpy()
+        pandas_datetime_series_to_unix_timestamp_seconds(heure_reelle_col).to_numpy(),
+        pandas_datetime_series_to_unix_timestamp_seconds(df_by_stop[MesurePonctualite.heure_theorique]).to_numpy()
     ).T
 
     next_theorique_interval = df_by_stop[MesurePonctualite.difference_theorique].to_numpy()
