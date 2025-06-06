@@ -19,7 +19,7 @@ def calculate_compliance_score_for_each_borne(df_with_interval: pd.DataFrame) ->
     ----------
     df_with_interval : DataFrame
         DataFrame qui contient, pour un arrêt, tous les intervalles (différence entre le passage p et le passage
-        précédent p-1) de passages rééls (=différence réelle) et théoriques (=différence théorique)
+        précédent p-1) de passages réels (=différence réelle) et théoriques (=différence théorique)
 
     Returns
     ----------
@@ -27,32 +27,30 @@ def calculate_compliance_score_for_each_borne(df_with_interval: pd.DataFrame) ->
         DataFrame qui contient les scores de conformité calculés en fonction de la différence réelle et théorique (cf.
         tableau des scores de conformité pour la régularité de la notice)
     """
-    df_with_score = df_with_interval.copy()
+    timedelta_train_de_bus = timedelta(seconds=90)
+    timedelta_borne_haute_compliant = timedelta(minutes=2)
 
     for borne in [Borne.inf, Borne.sup]:
-        df_with_score.loc[
-            (df_with_score[MesureRegularite.difference_reelle] < timedelta(seconds=90)),
-            MesureRegularite.resultat + borne] = ComplianceType.situation_inacceptable_train_de_bus
+        diff_reelle = df_with_interval[MesureRegularite.difference_reelle]
+        diff_theorique_borne = df_with_interval[MesureRegularite.difference_theorique + borne]
 
-        df_with_score.loc[
-            (df_with_score[MesureRegularite.difference_reelle] >= timedelta(seconds=90)) &
-            (df_with_score[MesureRegularite.difference_reelle] <= (
-                    df_with_score[MesureRegularite.difference_theorique + borne] + timedelta(minutes=2))),
-            MesureRegularite.resultat + borne] = ComplianceType.compliant
+        conditions = [
+            diff_reelle < timedelta_train_de_bus,
+            diff_reelle <= (diff_theorique_borne + timedelta_borne_haute_compliant),
+            diff_reelle <= diff_theorique_borne * 2,
+            diff_reelle > diff_theorique_borne * 2
+        ]
+        choices = [
+            ComplianceType.situation_inacceptable_train_de_bus,
+            ComplianceType.compliant,
+            ComplianceType.semi_compliant[MesureType.regularite],
+            ComplianceType.situation_inacceptable_faible_frequence,
+        ]
+        df_with_interval[MesureRegularite.resultat + borne] = np.select(
+            conditions, choices, default=np.nan
+        )
 
-        df_with_score.loc[
-            (df_with_score[MesureRegularite.difference_reelle] > (
-                    df_with_score[MesureRegularite.difference_theorique + borne] + timedelta(minutes=2))) &
-            (df_with_score[MesureRegularite.difference_reelle] <= df_with_score[
-                MesureRegularite.difference_theorique + borne] * 2), MesureRegularite.resultat + borne
-        ] = ComplianceType.semi_compliant[MesureType.regularite]
-
-        df_with_score.loc[
-            (df_with_score[MesureRegularite.difference_reelle] > df_with_score[
-                MesureRegularite.difference_theorique + borne] * 2), MesureRegularite.resultat + borne
-        ] = ComplianceType.situation_inacceptable_faible_frequence
-
-    return df_with_score
+    return df_with_interval
 
 
 def select_closest_defined_time_result(df_score: pd.DataFrame) -> pd.DataFrame:
@@ -105,9 +103,9 @@ def select_best_score_if_equals(df_score: pd.DataFrame) -> pd.DataFrame:
         passages dont les 2 intervalles sont égaux
     """
     df_result_is_not_set = df_score[MesureRegularite.resultat].isna()
-    df_score.loc[df_result_is_not_set, MesureRegularite.resultat] = df_score.loc[df_result_is_not_set].apply(
-        lambda row: max(row[MesureRegularite.resultat_inf], row[MesureRegularite.resultat_sup]),
-        axis=1
+    df_score.loc[df_result_is_not_set, MesureRegularite.resultat] = np.maximum(
+        df_score.loc[df_result_is_not_set, MesureRegularite.resultat_inf],
+        df_score.loc[df_result_is_not_set, MesureRegularite.resultat_sup]
     )
 
     return df_score
