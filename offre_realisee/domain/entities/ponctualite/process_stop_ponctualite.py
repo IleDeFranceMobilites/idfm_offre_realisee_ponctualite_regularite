@@ -26,7 +26,7 @@ def process_stop_ponctualite(df_by_stop: pd.DataFrame) -> pd.DataFrame:
     Returns
     -------
     df_by_stop :  DataFrame
-        DataFrame contenant l'assignement optimal des valeurs théoriques/réelles ainsi que le score de conformité
+        DataFrame contenant l'agencement optimal des valeurs théoriques/réelles ainsi que le score de conformité
         associé.
     """
     # On extrait la colonne d'heures réelles, en conservant les valeurs NaN pour pouvoir les associer de manière
@@ -69,15 +69,15 @@ def process_stop_ponctualite(df_by_stop: pd.DataFrame) -> pd.DataFrame:
     return df_by_stop.drop([MesurePonctualite.difference_theorique], axis=1)
 
 
-def compute_cost_matrix(df_by_stop: pd.DataFrame, heure_reelle_col: np.ndarray) -> np.ndarray:
+def compute_cost_matrix(df_by_stop: pd.DataFrame, heure_reelle_col: pd.Series) -> np.ndarray:
     """Traite les données de ponctualité par arrêts et génère le scores de conformité.
 
     Parameters
     ----------
     df_by_stop : DataFrame
         DataFrame contenant les données de ponctualité par arrêt.
-    heure_reelle_col : ndarray
-        Le type de fréquence de la ligne (HF: Haute Fréquence, BF: Basse Fréquence).
+    heure_reelle_col : pd.Series
+        Série contenant les heures réelles des passages.
 
     Returns
     -------
