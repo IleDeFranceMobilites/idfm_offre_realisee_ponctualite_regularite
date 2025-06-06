@@ -8,28 +8,28 @@ _ThresholdType = dict[FrequenceType, timedelta]
 
 class FrequencyThreshold:
     lower_si: _ThresholdType = {
-        FrequenceType.basse_frequence: timedelta(minutes=-1),
-        FrequenceType.haute_frequence: timedelta(minutes=-1)
+        FrequenceType.basse_frequence: timedelta(minutes=-1).total_seconds(),
+        FrequenceType.haute_frequence: timedelta(minutes=-1).total_seconds(),
     }
     compliance: _ThresholdType = {
-        FrequenceType.basse_frequence: timedelta(minutes=5),
-        FrequenceType.haute_frequence: timedelta(minutes=3)
+        FrequenceType.basse_frequence: timedelta(minutes=5).total_seconds(),
+        FrequenceType.haute_frequence: timedelta(minutes=3).total_seconds(),
     }
     semi_compliance: _ThresholdType = {
-        FrequenceType.basse_frequence: timedelta(minutes=10),
-        FrequenceType.haute_frequence: timedelta(minutes=6)
+        FrequenceType.basse_frequence: timedelta(minutes=10).total_seconds(),
+        FrequenceType.haute_frequence: timedelta(minutes=6).total_seconds(),
     }
     upper_si: _ThresholdType = {
-        FrequenceType.basse_frequence: timedelta(minutes=15),
-        FrequenceType.haute_frequence: timedelta(minutes=12)
+        FrequenceType.basse_frequence: timedelta(minutes=15).total_seconds(),
+        FrequenceType.haute_frequence: timedelta(minutes=12).total_seconds(),
     }
     late_train: _ThresholdType = {
-        FrequenceType.basse_frequence: timedelta(minutes=60),
-        FrequenceType.haute_frequence: timedelta(minutes=60)
+        FrequenceType.basse_frequence: timedelta(minutes=60).total_seconds(),
+        FrequenceType.haute_frequence: timedelta(minutes=60).total_seconds(),
     }
     early_train: _ThresholdType = {
-        FrequenceType.basse_frequence: timedelta(minutes=-60),
-        FrequenceType.haute_frequence: timedelta(minutes=-60)
+        FrequenceType.basse_frequence: timedelta(minutes=-60).total_seconds(),
+        FrequenceType.haute_frequence: timedelta(minutes=-60).total_seconds(),
     }
 
 

@@ -1,17 +1,19 @@
 from datetime import timedelta
 
 import numpy as np
-import pandas as pd
 
 from offre_realisee.domain.entities.ponctualite.compliance_score import score
 from offre_realisee.config.offre_realisee_config import FrequenceType, ComplianceType, MesureType
 
 
 def test_score_bf():
-    matrix_bf = np.array([[timedelta(minutes=3), timedelta(minutes=-1), timedelta(minutes=-2), timedelta(minutes=5)],
-                          [timedelta(minutes=6), timedelta(minutes=7), timedelta(minutes=10), timedelta(minutes=11)]])
+    matrix_bf = np.array(
+        [[timedelta(minutes=3).total_seconds(), timedelta(minutes=-1).total_seconds(),
+          timedelta(minutes=-2).total_seconds(), timedelta(minutes=5).total_seconds()],
+         [timedelta(minutes=6).total_seconds(), timedelta(minutes=7).total_seconds(),
+          timedelta(minutes=10).total_seconds(), timedelta(minutes=11).total_seconds()]])
     is_terminus_bf = np.array([False, False])
-    next_theorique_interval = [[timedelta(minutes=4)], [pd.NaT]]
+    next_theorique_interval = [[timedelta(minutes=4).total_seconds()], [np.nan]]
 
     expected_result = np.array([
         [
@@ -36,10 +38,13 @@ def test_score_bf():
 
 
 def test_score_hf():
-    matrix_hf = np.array([[timedelta(minutes=3), timedelta(minutes=-1), timedelta(minutes=-2), timedelta(minutes=5)],
-                          [timedelta(minutes=6), timedelta(minutes=7), timedelta(minutes=10), timedelta(minutes=11)]])
+    matrix_hf = np.array(
+        [[timedelta(minutes=3).total_seconds(), timedelta(minutes=-1).total_seconds(),
+          timedelta(minutes=-2).total_seconds(), timedelta(minutes=5).total_seconds()],
+         [timedelta(minutes=6).total_seconds(), timedelta(minutes=7).total_seconds(),
+          timedelta(minutes=10).total_seconds(), timedelta(minutes=11).total_seconds()]])
     is_terminus_hf = np.array([False, False])
-    next_theorique_interval = [[timedelta(minutes=4)], [pd.NaT]]
+    next_theorique_interval = [[timedelta(minutes=4).total_seconds()], [np.nan]]
 
     expected_result = np.array([
         [
