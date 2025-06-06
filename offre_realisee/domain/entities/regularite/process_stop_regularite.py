@@ -46,6 +46,6 @@ def process_stop_regularite(df_by_stop: pd.DataFrame, metadata_cols: list[str] =
     df_score = choose_best_score(df_score)
 
     for metadata_column in metadata_cols:
-        df_score[metadata_column] = df_by_stop[metadata_column].unique()[0]
+        df_score[metadata_column] = df_by_stop[metadata_column].iloc[0]
 
     return df_score
