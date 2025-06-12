@@ -91,10 +91,10 @@ Par défaut la qualité de service est calculé par jour et agrégée par pério
 ```console
 $ offre_realisee -h
 usage: offre_realisee [-h] [--telecharge-calendrier-scolaire | --no-telecharge-calendrier-scolaire] [--mesure | --no-mesure]
-                      [--aggregation | --no-aggregation] [--ponctualite | --no-ponctualite] [--regularite | --no-regularite]
-                      --data-path DATA_PATH --start-date START_DATE --end-date END_DATE [--input-path INPUT_PATH]
-                      [--output-path OUTPUT_PATH] [--input-file-name INPUT_FILE_NAME]
-                      [--calendrier-scolaire-file-name CALENDRIER_SCOLAIRE_FILE_NAME] [--periode-ete PERIODE_ETE PERIODE_ETE]
+                      [--aggregation | --no-aggregation] [--ponctualite | --no-ponctualite] [--regularite | --no-regularite] --data-path
+                      DATA_PATH --start-date START_DATE --end-date END_DATE [--input-path INPUT_PATH] [--output-path OUTPUT_PATH]
+                      [--input-file-name INPUT_FILE_NAME] [--calendrier-scolaire-file-name CALENDRIER_SCOLAIRE_FILE_NAME]
+                      [--periode-ete-start-date PERIODE_ETE_START_DATE] [--periode-ete-end-date PERIODE_ETE_END_DATE]
                       [--list-journees-exceptionnelles [LIST_JOURNEES_EXCEPTIONNELLES ...]] [--n-thread N_THREAD]
 
 Calcul de la qualite de service.
@@ -105,23 +105,23 @@ options:
   --telecharge-calendrier-scolaire, --no-telecharge-calendrier-scolaire
                         Télécharge le calendrier scolaire.
                          (Valeur par défaut: False)
-                        Download holidays. (default: False)
+                        Download holidays.
   --mesure, --no-mesure
                         Calcule la mesure par jour.
                          (Valeur par défaut: True)
-                        Compute mesure by day. (default: True)
+                        Compute mesure by day.
   --aggregation, --no-aggregation
                         Calcule l'agrégation des données journalières.
                          (Valeur par défaut: True)
-                        Compute aggregation of daily mesures. (default: True)
+                        Compute aggregation of daily mesures.
   --ponctualite, --no-ponctualite
                         Calcule les statistiques (mesure ou aggregation) sur la ponctualité.
                          (Valeur par défaut: True)
-                        Compute stats on ponctualite. (default: True)
+                        Compute stats on ponctualite.
   --regularite, --no-regularite
                         Calcule les statistiques (mesure ou aggregation) sur la régularité.
                          (Valeur par défaut: True)
-                        Compute stats on regularite. (default: True)
+                        Compute stats on regularite.
   --data-path DATA_PATH
                         Chemin vers le dossier racine des données.
                         Path to the root folder of your data.
@@ -142,9 +142,12 @@ options:
   --calendrier-scolaire-file-name CALENDRIER_SCOLAIRE_FILE_NAME
                         Nom du fichier du referentiel du calendrier scolaire. (default: calendrier_scolaire.parquet)
                         School calendar parquet file name. (default: calendrier_scolaire.parquet)
-  --periode-ete PERIODE_ETE PERIODE_ETE
-                        Dates sous forme de string au format ['mois_jour', 'mois_jour'] definissant la période d'été. (default: ('07_01', '08_31'))
-                        Summer period between two dates. (default: ('07_01', '08_31'))
+  --periode-ete-start-date PERIODE_ETE_START_DATE
+                        Première date de la periode d'été. Doit être au format : YYYY-MM-DD
+                        Summer first date. Must be in format: YYYY-MM-DD
+  --periode-ete-end-date PERIODE_ETE_END_DATE
+                        Dernière date de la periode d'été. Doit être au format : YYYY-MM-DD
+                        Summer last date. Must be in format: YYYY-MM-DD
   --list-journees-exceptionnelles [LIST_JOURNEES_EXCEPTIONNELLES ...]
                         Liste des dates des journées exceptionnelles à exclure des calculs agrégés. (Valeur par défaut: None)
                         Datetime list of exceptionnal days to exclude. (default: None)

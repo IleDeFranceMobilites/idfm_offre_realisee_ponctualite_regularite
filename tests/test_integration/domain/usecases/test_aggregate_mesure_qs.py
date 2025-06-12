@@ -1,12 +1,12 @@
 import os
 import shutil
-from datetime import datetime
+from datetime import date
 from typing import Optional
 
 import pandas as pd
 import pytest
 
-from offre_realisee import AggregationLevel, MesureType, DEFAULT_PERIODE_ETE, LocalFileSystemHandler, \
+from offre_realisee import AggregationLevel, MesureType, LocalFileSystemHandler, \
     aggregate_mesure_qs, FileExtensions
 from tests.test_data import TEST_DATA_PATH
 
@@ -37,12 +37,12 @@ def test_def_aggregate_mesure_qs_ponctualite_by_year(file_system_rm_agg_by_year_
         input_file_name=TEST_DATA_PATH_CONFIG['input_file_name'],
         calendrier_scolaire_file_name=TEST_DATA_PATH_CONFIG['calendrier_scolaire_file_name']
     )
-    date_range: tuple[datetime, datetime] = (datetime(2023, 9, 30), datetime(2023, 10, 1))
+    date_range: tuple[date, date] = (date(2023, 9, 30), date(2023, 10, 1))
     dsp: str = ''
     aggregation_level: AggregationLevel = AggregationLevel.by_year
     mesure_type: MesureType = MesureType.ponctualite
-    periode_ete: tuple[str] = DEFAULT_PERIODE_ETE
-    list_journees_exceptionnelles: Optional[list[datetime]] = None
+    periode_ete: tuple[str] = (date(2023, 7, 1), date(2023, 8, 31))
+    list_journees_exceptionnelles: Optional[list[date]] = None
     window_name: str = ""
 
     # When
@@ -68,12 +68,12 @@ def test_def_aggregate_mesure_qs_ponctualite_journees_exceptionnelles(file_syste
         input_file_name=TEST_DATA_PATH_CONFIG['input_file_name'],
         calendrier_scolaire_file_name=TEST_DATA_PATH_CONFIG['calendrier_scolaire_file_name']
     )
-    date_range: tuple[datetime, datetime] = (datetime(2023, 9, 30), datetime(2023, 10, 1))
+    date_range: tuple[date, date] = (date(2023, 9, 30), date(2023, 10, 1))
     dsp: str = ''
     aggregation_level: AggregationLevel = AggregationLevel.by_year
     mesure_type: MesureType = MesureType.ponctualite
-    periode_ete: tuple[str] = DEFAULT_PERIODE_ETE
-    list_journees_exceptionnelles: Optional[list[datetime]] = [datetime(2023, 9, 30)]
+    periode_ete: tuple[str] = (date(2023, 7, 1), date(2023, 8, 31))
+    list_journees_exceptionnelles: Optional[list[date]] = [date(2023, 9, 30)]
     window_name: str = ""
 
     # When
@@ -105,12 +105,12 @@ def test_def_aggregate_mesure_qs_ponctualite_by_month(file_system_rm_agg_by_mont
         input_file_name=TEST_DATA_PATH_CONFIG['input_file_name'],
         calendrier_scolaire_file_name=TEST_DATA_PATH_CONFIG['calendrier_scolaire_file_name']
     )
-    date_range: tuple[datetime, datetime] = (datetime(2023, 9, 30), datetime(2023, 10, 1))
+    date_range: tuple[date, date] = (date(2023, 9, 30), date(2023, 10, 1))
     dsp: str = ''
     aggregation_level: AggregationLevel = AggregationLevel.by_month
     mesure_type: MesureType = MesureType.ponctualite
-    periode_ete: tuple[str] = DEFAULT_PERIODE_ETE
-    list_journees_exceptionnelles: Optional[list[datetime]] = None
+    periode_ete: tuple[str] = (date(2023, 7, 1), date(2023, 8, 31))
+    list_journees_exceptionnelles: Optional[list[date]] = None
     window_name: str = ""
 
     # When
@@ -139,12 +139,12 @@ def test_def_aggregate_mesure_qs_regularite_by_periode(file_system_rm_agg_by_per
         input_file_name=TEST_DATA_PATH_CONFIG['input_file_name'],
         calendrier_scolaire_file_name=TEST_DATA_PATH_CONFIG['calendrier_scolaire_file_name']
     )
-    date_range: tuple[datetime, datetime] = (datetime(2023, 8, 31), datetime(2023, 9, 1))
+    date_range: tuple[date, date] = (date(2023, 8, 31), date(2023, 9, 1))
     dsp: str = ''
     aggregation_level: AggregationLevel = AggregationLevel.by_period
     mesure_type: MesureType = MesureType.regularite
-    periode_ete: tuple[str] = DEFAULT_PERIODE_ETE
-    list_journees_exceptionnelles: Optional[list[datetime]] = None
+    periode_ete: tuple[str] = (date(2023, 7, 1), date(2023, 8, 31))
+    list_journees_exceptionnelles: Optional[list[date]] = None
     window_name: str = ""
 
     # When

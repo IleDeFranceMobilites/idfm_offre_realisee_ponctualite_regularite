@@ -18,6 +18,3 @@ class CalendrierScolaireColumns:
     description = 'description'
     start_date = 'start_date'
     end_date = 'end_date'
-
-
-DEFAULT_PERIODE_ETE = ('07_01', '08_31')

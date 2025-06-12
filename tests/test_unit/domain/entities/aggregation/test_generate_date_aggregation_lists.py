@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 import pandas as pd
 
@@ -7,10 +7,12 @@ from offre_realisee.domain.entities.aggregation.generate_date_aggregation_lists 
 from offre_realisee.domain.entities.aggregation.generate_suffix_by_aggregation import (
     IDF_TIMEZONE, generate_suffix_by_aggregation)
 
+TEST_PERIODE_ETE = (date(2023, 7, 1), date(2023, 8, 31))
+
 
 def test_generate_date_aggregation_lists():
     # Given
-    date_range = (datetime(2023, 1, 1), datetime(2023, 1, 3))
+    date_range = (date(2023, 1, 1), date(2023, 1, 3))
     aggregation_level = AggregationLevel.by_month
     suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
         'description': [],
@@ -18,7 +20,7 @@ def test_generate_date_aggregation_lists():
         'end_date': []
     }))
 
-    expected_result = {"2023_01": [datetime(2023, 1, 1), datetime(2023, 1, 2), datetime(2023, 1, 3)]}
+    expected_result = {"2023_01": [date(2023, 1, 1), date(2023, 1, 2), date(2023, 1, 3)]}
 
     # When
     result = generate_date_aggregation_lists(date_range, aggregation_level, suffix_by_agg)
@@ -29,7 +31,7 @@ def test_generate_date_aggregation_lists():
 
 def test_generate_date_aggregation_lists_test_keys_by_month():
     # Given
-    date_range = (datetime(2023, 1, 1), datetime(2023, 3, 1))
+    date_range = (date(2023, 1, 1), date(2023, 3, 1))
     aggregation_level = AggregationLevel.by_month
     suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
         'description': [],
@@ -48,7 +50,7 @@ def test_generate_date_aggregation_lists_test_keys_by_month():
 
 def test_generate_date_aggregation_lists_test_keys_by_year():
     # Given
-    date_range = (datetime(2023, 1, 1), datetime(2024, 9, 1))
+    date_range = (date(2023, 1, 1), date(2024, 9, 1))
     aggregation_level = AggregationLevel.by_year
     suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
         'description': [],
@@ -67,7 +69,7 @@ def test_generate_date_aggregation_lists_test_keys_by_year():
 
 def test_generate_date_aggregation_lists_test_keys_by_year_weekdays():
     # Given
-    date_range = (datetime(2023, 1, 1), datetime(2024, 9, 1))
+    date_range = (date(2023, 1, 1), date(2024, 9, 1))
     aggregation_level = AggregationLevel.by_year_weekdays
     suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
         'description': [],
@@ -86,7 +88,7 @@ def test_generate_date_aggregation_lists_test_keys_by_year_weekdays():
 
 def test_generate_date_aggregation_lists_test_values_by_year_weekdays():
     # Given
-    date_range = (datetime(2023, 1, 1), datetime(2023, 1, 7))
+    date_range = (date(2023, 1, 1), date(2023, 1, 7))
     aggregation_level = AggregationLevel.by_year_weekdays
     suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
         'description': [],
@@ -95,9 +97,9 @@ def test_generate_date_aggregation_lists_test_values_by_year_weekdays():
     }))
 
     expected_result = {
-        "2023_weekend": [datetime(2023, 1, 1), datetime(2023, 1, 7)],
-        "2023_week": [datetime(2023, 1, 2), datetime(2023, 1, 3), datetime(2023, 1, 4),
-                      datetime(2023, 1, 5), datetime(2023, 1, 6)]
+        "2023_weekend": [date(2023, 1, 1), date(2023, 1, 7)],
+        "2023_week": [date(2023, 1, 2), date(2023, 1, 3), date(2023, 1, 4),
+                      date(2023, 1, 5), date(2023, 1, 6)]
     }
 
     # When
@@ -109,18 +111,18 @@ def test_generate_date_aggregation_lists_test_values_by_year_weekdays():
 
 def test_generate_date_aggregation_lists_test_values_by_period():
     # Given
-    date_range = (datetime(2023, 8, 31), datetime(2023, 9, 4))
+    date_range = (date(2023, 8, 31), date(2023, 9, 4))
     aggregation_level = AggregationLevel.by_period
     suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
         'description': ['Vacances'],
-        'start_date': [IDF_TIMEZONE.localize(datetime(2023, 9, 1))],
-        'end_date': [IDF_TIMEZONE.localize(datetime(2023, 9, 4))]
-    }))
+        'start_date': [datetime(2023, 9, 1, tzinfo=IDF_TIMEZONE)],
+        'end_date': [datetime(2023, 9, 4, tzinfo=IDF_TIMEZONE)]
+    }), periode_ete=TEST_PERIODE_ETE)
 
     expected_result = {
-        "2023_ete": [datetime(2023, 8, 31)],
-        "2023_vacances_scolaires": [datetime(2023, 9, 1), datetime(2023, 9, 2), datetime(2023, 9, 3)],
-        "2023_plein_trafic": [datetime(2023, 9, 4)]
+        "2023_ete": [date(2023, 8, 31)],
+        "2023_vacances_scolaires": [date(2023, 9, 1), date(2023, 9, 2), date(2023, 9, 3)],
+        "2023_plein_trafic": [date(2023, 9, 4)]
     }
 
     # When
@@ -132,32 +134,28 @@ def test_generate_date_aggregation_lists_test_values_by_period():
 
 def test_generate_date_aggregation_lists_test_values_by_period_weekdays():
     # Given
-    date_range = (datetime(2023, 8, 20), datetime(2023, 9, 12))
+    date_range = (date(2023, 8, 20), date(2023, 9, 12))
     aggregation_level = AggregationLevel.by_period_weekdays
     suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
         'description': ['Vacances'],
-        'start_date': [
-            IDF_TIMEZONE.localize(datetime(2023, 9, 1))
-        ],
-        'end_date': [
-            IDF_TIMEZONE.localize(datetime(2023, 9, 4))
-        ]
-    }))
+        'start_date': [datetime(2023, 9, 1, tzinfo=IDF_TIMEZONE)],
+        'end_date': [datetime(2023, 9, 4, tzinfo=IDF_TIMEZONE)]
+    }), periode_ete=TEST_PERIODE_ETE)
 
     expected_result = {
-        '2023_sunday_or_holiday_ete': [datetime(2023, 8, 20, 0, 0), datetime(2023, 8, 27, 0, 0)],
-        '2023_week_ete': [datetime(2023, 8, 21, 0, 0), datetime(2023, 8, 22, 0, 0), datetime(2023, 8, 23, 0, 0),
-                          datetime(2023, 8, 24, 0, 0), datetime(2023, 8, 25, 0, 0), datetime(2023, 8, 28, 0, 0),
-                          datetime(2023, 8, 29, 0, 0), datetime(2023, 8, 30, 0, 0), datetime(2023, 8, 31, 0, 0)],
-        '2023_saturday_ete': [datetime(2023, 8, 26, 0, 0)],
-        '2023_week_vacances_scolaires': [datetime(2023, 9, 1, 0, 0)],
-        '2023_saturday_vacances_scolaires': [datetime(2023, 9, 2, 0, 0)],
-        '2023_sunday_or_holiday_vacances_scolaires': [datetime(2023, 9, 3, 0, 0)],
-        '2023_week_plein_trafic': [datetime(2023, 9, 4, 0, 0), datetime(2023, 9, 5, 0, 0), datetime(2023, 9, 6, 0, 0),
-                                   datetime(2023, 9, 7, 0, 0), datetime(2023, 9, 8, 0, 0), datetime(2023, 9, 11, 0, 0),
-                                   datetime(2023, 9, 12, 0, 0)],
-        '2023_saturday_plein_trafic': [datetime(2023, 9, 9, 0, 0)],
-        '2023_sunday_or_holiday_plein_trafic': [datetime(2023, 9, 10, 0, 0)]
+        '2023_sunday_or_holiday_ete': [date(2023, 8, 20), date(2023, 8, 27)],
+        '2023_week_ete': [date(2023, 8, 21), date(2023, 8, 22), date(2023, 8, 23),
+                          date(2023, 8, 24), date(2023, 8, 25), date(2023, 8, 28),
+                          date(2023, 8, 29), date(2023, 8, 30), date(2023, 8, 31)],
+        '2023_saturday_ete': [date(2023, 8, 26)],
+        '2023_week_vacances_scolaires': [date(2023, 9, 1)],
+        '2023_saturday_vacances_scolaires': [date(2023, 9, 2)],
+        '2023_sunday_or_holiday_vacances_scolaires': [date(2023, 9, 3)],
+        '2023_week_plein_trafic': [date(2023, 9, 4), date(2023, 9, 5), date(2023, 9, 6),
+                                   date(2023, 9, 7), date(2023, 9, 8), date(2023, 9, 11),
+                                   date(2023, 9, 12)],
+        '2023_saturday_plein_trafic': [date(2023, 9, 9)],
+        '2023_sunday_or_holiday_plein_trafic': [date(2023, 9, 10)]
     }
 
     # When
@@ -169,32 +167,28 @@ def test_generate_date_aggregation_lists_test_values_by_period_weekdays():
 
 def test_generate_date_aggregation_lists_test_values_by_period_weekdays_window():
     # Given
-    date_range = (datetime(2023, 8, 20), datetime(2023, 9, 12))
+    date_range = (date(2023, 8, 20), date(2023, 9, 12))
     aggregation_level = AggregationLevel.by_period_weekdays_window
     suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
         'description': ['Vacances'],
-        'start_date': [
-            IDF_TIMEZONE.localize(datetime(2023, 9, 1))
-        ],
-        'end_date': [
-            IDF_TIMEZONE.localize(datetime(2023, 9, 4))
-        ]
-    }))
+        'start_date': [datetime(2023, 9, 1, tzinfo=IDF_TIMEZONE)],
+        'end_date': [datetime(2023, 9, 4, tzinfo=IDF_TIMEZONE)]
+    }), periode_ete=TEST_PERIODE_ETE)
 
     expected_result = {
-        'sunday_or_holiday_ete': [datetime(2023, 8, 20, 0, 0), datetime(2023, 8, 27, 0, 0)],
-        'week_ete': [datetime(2023, 8, 21, 0, 0), datetime(2023, 8, 22, 0, 0), datetime(2023, 8, 23, 0, 0),
-                     datetime(2023, 8, 24, 0, 0), datetime(2023, 8, 25, 0, 0), datetime(2023, 8, 28, 0, 0),
-                     datetime(2023, 8, 29, 0, 0), datetime(2023, 8, 30, 0, 0), datetime(2023, 8, 31, 0, 0)],
-        'saturday_ete': [datetime(2023, 8, 26, 0, 0)],
-        'week_vacances_scolaires': [datetime(2023, 9, 1, 0, 0)],
-        'saturday_vacances_scolaires': [datetime(2023, 9, 2, 0, 0)],
-        'sunday_or_holiday_vacances_scolaires': [datetime(2023, 9, 3, 0, 0)],
-        'week_plein_trafic': [datetime(2023, 9, 4, 0, 0), datetime(2023, 9, 5, 0, 0), datetime(2023, 9, 6, 0, 0),
-                              datetime(2023, 9, 7, 0, 0), datetime(2023, 9, 8, 0, 0), datetime(2023, 9, 11, 0, 0),
-                              datetime(2023, 9, 12, 0, 0)],
-        'saturday_plein_trafic': [datetime(2023, 9, 9, 0, 0)],
-        'sunday_or_holiday_plein_trafic': [datetime(2023, 9, 10, 0, 0)]
+        'sunday_or_holiday_ete': [date(2023, 8, 20), date(2023, 8, 27)],
+        'week_ete': [date(2023, 8, 21), date(2023, 8, 22), date(2023, 8, 23),
+                     date(2023, 8, 24), date(2023, 8, 25), date(2023, 8, 28),
+                     date(2023, 8, 29), date(2023, 8, 30), date(2023, 8, 31)],
+        'saturday_ete': [date(2023, 8, 26)],
+        'week_vacances_scolaires': [date(2023, 9, 1)],
+        'saturday_vacances_scolaires': [date(2023, 9, 2)],
+        'sunday_or_holiday_vacances_scolaires': [date(2023, 9, 3)],
+        'week_plein_trafic': [date(2023, 9, 4), date(2023, 9, 5), date(2023, 9, 6),
+                              date(2023, 9, 7), date(2023, 9, 8), date(2023, 9, 11),
+                              date(2023, 9, 12)],
+        'saturday_plein_trafic': [date(2023, 9, 9)],
+        'sunday_or_holiday_plein_trafic': [date(2023, 9, 10)]
     }
 
     # When
@@ -206,33 +200,29 @@ def test_generate_date_aggregation_lists_test_values_by_period_weekdays_window()
 
 def test_generate_date_aggregation_lists_test_values_by_period_weekdays_window_w_name():
     # Given
-    date_range = (datetime(2023, 8, 20), datetime(2023, 9, 12))
+    date_range = (date(2023, 8, 20), date(2023, 9, 12))
     aggregation_level = AggregationLevel.by_period_weekdays_window
     suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
         'description': ['Vacances'],
-        'start_date': [
-            IDF_TIMEZONE.localize(datetime(2023, 9, 1))
-        ],
-        'end_date': [
-            IDF_TIMEZONE.localize(datetime(2023, 9, 4))
-        ]
-    }), window_name="test_window_")
+        'start_date': [datetime(2023, 9, 1, tzinfo=IDF_TIMEZONE)],
+        'end_date': [datetime(2023, 9, 4, tzinfo=IDF_TIMEZONE)]
+    }), periode_ete=TEST_PERIODE_ETE, window_name="test_window_")
 
     expected_result = {
-        'test_window_sunday_or_holiday_ete': [datetime(2023, 8, 20, 0, 0), datetime(2023, 8, 27, 0, 0)],
-        'test_window_week_ete': [datetime(2023, 8, 21, 0, 0), datetime(2023, 8, 22, 0, 0), datetime(2023, 8, 23, 0, 0),
-                     datetime(2023, 8, 24, 0, 0), datetime(2023, 8, 25, 0, 0), datetime(2023, 8, 28, 0, 0),
-                     datetime(2023, 8, 29, 0, 0), datetime(2023, 8, 30, 0, 0), datetime(2023, 8, 31, 0, 0)],
-        'test_window_saturday_ete': [datetime(2023, 8, 26, 0, 0)],
-        'test_window_week_vacances_scolaires': [datetime(2023, 9, 1, 0, 0)],
-        'test_window_saturday_vacances_scolaires': [datetime(2023, 9, 2, 0, 0)],
-        'test_window_sunday_or_holiday_vacances_scolaires': [datetime(2023, 9, 3, 0, 0)],
+        'test_window_sunday_or_holiday_ete': [date(2023, 8, 20), date(2023, 8, 27)],
+        'test_window_week_ete': [
+            date(2023, 8, 21), date(2023, 8, 22), date(2023, 8, 23), date(2023, 8, 24), date(2023, 8, 25),
+            date(2023, 8, 28), date(2023, 8, 29), date(2023, 8, 30), date(2023, 8, 31)],
+        'test_window_saturday_ete': [date(2023, 8, 26)],
+        'test_window_week_vacances_scolaires': [date(2023, 9, 1)],
+        'test_window_saturday_vacances_scolaires': [date(2023, 9, 2)],
+        'test_window_sunday_or_holiday_vacances_scolaires': [date(2023, 9, 3)],
         'test_window_week_plein_trafic': [
-            datetime(2023, 9, 4, 0, 0), datetime(2023, 9, 5, 0, 0), datetime(2023, 9, 6, 0, 0),
-            datetime(2023, 9, 7, 0, 0), datetime(2023, 9, 8, 0, 0), datetime(2023, 9, 11, 0, 0),
-            datetime(2023, 9, 12, 0, 0)],
-        'test_window_saturday_plein_trafic': [datetime(2023, 9, 9, 0, 0)],
-        'test_window_sunday_or_holiday_plein_trafic': [datetime(2023, 9, 10, 0, 0)]
+            date(2023, 9, 4), date(2023, 9, 5), date(2023, 9, 6),
+            date(2023, 9, 7), date(2023, 9, 8), date(2023, 9, 11),
+            date(2023, 9, 12)],
+        'test_window_saturday_plein_trafic': [date(2023, 9, 9)],
+        'test_window_sunday_or_holiday_plein_trafic': [date(2023, 9, 10)]
     }
 
     # When
@@ -244,31 +234,29 @@ def test_generate_date_aggregation_lists_test_values_by_period_weekdays_window_w
 
 def test_generate_date_aggregation_lists_test_values_by_period_ferie():
     # Given
-    date_range = (datetime(2023, 5, 1), datetime(2023, 5, 18))
+    date_range = (date(2023, 5, 1), date(2023, 5, 18))
     aggregation_level = AggregationLevel.by_period_weekdays
     suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
         'description': ['Vacances'],
-        'start_date': [IDF_TIMEZONE.localize(datetime(2023, 4, 23))],
-        'end_date': [IDF_TIMEZONE.localize(datetime(2023, 5, 9))]
-    }))
+        'start_date': [datetime(2023, 4, 23, tzinfo=IDF_TIMEZONE)],
+        'end_date': [datetime(2023, 5, 9, tzinfo=IDF_TIMEZONE)]
+    }), periode_ete=TEST_PERIODE_ETE)
     list_journees_exceptionnelles = []
 
     expected_result = {
         '2023_sunday_or_holiday_vacances_scolaires': [
-            datetime(2023, 5, 1, 0, 0), datetime(2023, 5, 7, 0, 0), datetime(2023, 5, 8, 0, 0)
+            date(2023, 5, 1), date(2023, 5, 7), date(2023, 5, 8)
         ],
         '2023_week_vacances_scolaires': [
-            datetime(2023, 5, 2, 0, 0), datetime(2023, 5, 3, 0, 0), datetime(2023, 5, 4, 0, 0),
-            datetime(2023, 5, 5, 0, 0)
+            date(2023, 5, 2), date(2023, 5, 3), date(2023, 5, 4), date(2023, 5, 5)
         ],
-        '2023_saturday_vacances_scolaires': [datetime(2023, 5, 6, 0, 0)],
+        '2023_saturday_vacances_scolaires': [date(2023, 5, 6)],
         '2023_week_plein_trafic': [
-            datetime(2023, 5, 9, 0, 0), datetime(2023, 5, 10, 0, 0), datetime(2023, 5, 11, 0, 0),
-            datetime(2023, 5, 12, 0, 0), datetime(2023, 5, 15, 0, 0), datetime(2023, 5, 16, 0, 0),
-            datetime(2023, 5, 17, 0, 0)
+            date(2023, 5, 9), date(2023, 5, 10), date(2023, 5, 11), date(2023, 5, 12),
+            date(2023, 5, 15), date(2023, 5, 16), date(2023, 5, 17)
         ],
-        '2023_saturday_plein_trafic': [datetime(2023, 5, 13, 0, 0)],
-        '2023_sunday_or_holiday_plein_trafic': [datetime(2023, 5, 14, 0, 0), datetime(2023, 5, 18, 0, 0)]}
+        '2023_saturday_plein_trafic': [date(2023, 5, 13)],
+        '2023_sunday_or_holiday_plein_trafic': [date(2023, 5, 14), date(2023, 5, 18)]}
 
     # When
     result = generate_date_aggregation_lists(date_range, aggregation_level, suffix_by_agg,
@@ -280,19 +268,19 @@ def test_generate_date_aggregation_lists_test_values_by_period_ferie():
 
 def test_generate_date_aggregation_lists_test_values_except_journees_exceptionnelles():
     # Given
-    date_range = (datetime(2023, 1, 1), datetime(2023, 1, 7))
+    date_range = (date(2023, 1, 1), date(2023, 1, 7))
     aggregation_level = AggregationLevel.by_year_weekdays
     suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
         'description': [],
         'start_date': [],
         'end_date': []
     }))
-    list_journees_exceptionnelles = [datetime(2023, 1, 5)]
+    list_journees_exceptionnelles = [date(2023, 1, 5)]
 
     expected_result = {
-        "2023_weekend": [datetime(2023, 1, 1), datetime(2023, 1, 7)],
-        "2023_week": [datetime(2023, 1, 2), datetime(2023, 1, 3), datetime(2023, 1, 4),
-                      datetime(2023, 1, 6)]
+        "2023_weekend": [date(2023, 1, 1), date(2023, 1, 7)],
+        "2023_week": [date(2023, 1, 2), date(2023, 1, 3), date(2023, 1, 4),
+                      date(2023, 1, 6)]
     }
 
     # When
@@ -305,19 +293,19 @@ def test_generate_date_aggregation_lists_test_values_except_journees_exceptionne
 
 def test_generate_date_aggregation_lists_by_window():
     # Given
-    date_range = (datetime(2023, 1, 1), datetime(2023, 1, 7))
+    date_range = (date(2023, 1, 1), date(2023, 1, 7))
     aggregation_level = AggregationLevel.by_window
     suffix_by_agg = generate_suffix_by_aggregation(pd.DataFrame({
         'description': [],
         'start_date': [],
         'end_date': []
     }), window_name='test_window')
-    list_journees_exceptionnelles = [datetime(2023, 1, 5)]
+    list_journees_exceptionnelles = [date(2023, 1, 5)]
 
     expected_result = {
         "test_window": [
-            datetime(2023, 1, 1), datetime(2023, 1, 2), datetime(2023, 1, 3),
-            datetime(2023, 1, 4), datetime(2023, 1, 6), datetime(2023, 1, 7)
+            date(2023, 1, 1), date(2023, 1, 2), date(2023, 1, 3),
+            date(2023, 1, 4), date(2023, 1, 6), date(2023, 1, 7)
         ]
     }
 

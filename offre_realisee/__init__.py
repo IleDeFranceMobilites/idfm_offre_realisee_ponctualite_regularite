@@ -1,9 +1,9 @@
 import argparse
-from datetime import datetime
+from datetime import date, datetime
 import logging
 from typing import Optional
 
-from offre_realisee.config.aggregation_config import DEFAULT_PERIODE_ETE, AggregationLevel
+from offre_realisee.config.aggregation_config import AggregationLevel
 from offre_realisee.config.file_extensions import FileExtensions
 from offre_realisee.config.offre_realisee_config import MesureType
 from offre_realisee.domain.usecases.aggregate_mesure_qs import aggregate_mesure_qs
@@ -20,7 +20,8 @@ default_data_path_config = {
     'output-path': 'output',
     'input-file-name': f'offre_realisee{FileExtensions.parquet}',
     'calendrier-scolaire-file-name': f'calendrier_scolaire{FileExtensions.parquet}',
-    'periode-ete': DEFAULT_PERIODE_ETE
+    'periode-ete-start-date': date(2023, 7, 1),
+    'periode-ete-end-date': date(2023, 8, 31),
 }
 
 
@@ -31,15 +32,15 @@ def compute_qs(
     ponctualite: bool,
     regularite: bool,
     data_path: str,
-    start_date: datetime,
-    end_date: datetime,
-    dsp: str,
+    start_date: date,
+    end_date: date,
     input_path: str,
     output_path: str,
     input_file_name: str,
     calendrier_scolaire_file_name: str,
-    periode_ete: tuple[str],
-    list_journees_exceptionnelles: Optional[list[datetime]],
+    periode_ete_start_date: date,
+    periode_ete_end_date: date,
+    list_journees_exceptionnelles: Optional[list[date]],
     n_thread: 1,
 ) -> None:
 
@@ -67,10 +68,10 @@ def compute_qs(
         for aggregation_level in [AggregationLevel.by_period, AggregationLevel.by_period_weekdays]:
             if ponctualite:
                 aggregate_mesure_qs(file_system_handler, date_range, aggregation_level, MesureType.ponctualite,
-                                    periode_ete, list_journees_exceptionnelles)
+                                    (periode_ete_start_date, periode_ete_end_date), list_journees_exceptionnelles)
             if regularite:
                 aggregate_mesure_qs(file_system_handler, date_range, aggregation_level, MesureType.regularite,
-                                    periode_ete, list_journees_exceptionnelles)
+                                    (periode_ete_start_date, periode_ete_end_date), list_journees_exceptionnelles)
 
 
 def main():  # noqa
@@ -107,16 +108,12 @@ def main():  # noqa
                         help="Chemin vers le dossier racine des données.\n"
                         "Path to the root folder of your data.")
 
-    parser.add_argument('--start-date', required=True, type=lambda s: datetime.strptime(s, '%Y-%m-%d'),
+    parser.add_argument('--start-date', required=True, type=lambda s: datetime.strptime(s, '%Y-%m-%d').date(),
                         help="Première date à traiter. Doit être au format : YYYY-MM-DD\n"
                         "First date to process. Must be in format: YYYY-MM-DD")
-    parser.add_argument('--end-date', required=True, type=lambda s: datetime.strptime(s, '%Y-%m-%d'),
+    parser.add_argument('--end-date', required=True, type=lambda s: datetime.strptime(s, '%Y-%m-%d').date(),
                         help="Dernière date à traiter. Doit être au format : YYYY-MM-DD\n"
                         "Last date to process. Must be in format: YYYY-MM-DD")
-
-    parser.add_argument('--dsp', required=False, type=str,
-                        help="DSP à calculer si elle existe.\n"
-                        "DSP to process.")
 
     parser.add_argument('--input-path', default=default_data_path_config["input-path"], type=str,
                         help="Chemin relatif par rapport au 'data-path' vers le dossier d'entrée des données."
@@ -133,14 +130,18 @@ def main():  # noqa
                         default=default_data_path_config["calendrier-scolaire-file-name"], type=str,
                         help="Nom du fichier du referentiel du calendrier scolaire. (default: %(default)s)\n"
                              "School calendar parquet file name. (default: %(default)s)")
-    parser.add_argument('--periode-ete', nargs=2,
-                        default=default_data_path_config["periode-ete"], type=str,
-                        help="Dates sous forme de string au format ['mois_jour', 'mois_jour'] "
-                             "definissant la période d'été. (default: %(default)s)\n"
-                             "Summer period between two dates. (default: %(default)s)")
+
+    parser.add_argument('--periode-ete-start-date', required=False,
+                        type=lambda s: datetime.strptime(s, '%Y-%m-%d').date(),
+                        help="Première date de la periode d'été. Doit être au format : YYYY-MM-DD\n"
+                        "Summer first date. Must be in format: YYYY-MM-DD")
+    parser.add_argument('--periode-ete-end-date', required=False,
+                        type=lambda s: datetime.strptime(s, '%Y-%m-%d').date(),
+                        help="Dernière date de la periode d'été. Doit être au format : YYYY-MM-DD\n"
+                        "Summer last date. Must be in format: YYYY-MM-DD")
 
     parser.add_argument('--list-journees-exceptionnelles', nargs="*", default=[],
-                        type=lambda s: datetime.strptime(s, '%Y-%m-%d'),
+                        type=lambda s: datetime.strptime(s, '%Y-%m-%d').date(),
                         help="Liste des dates des journées exceptionnelles à exclure des calculs agrégés. "
                              "(Valeur par défaut: None)\n"
                         "Datetime list of exceptionnal days to exclude. (default: None)\n")
@@ -165,14 +166,15 @@ if __name__ == "__main__":
         ponctualite=True,
         regularite=True,
         data_path="./data",
-        start_date=datetime.strptime("2023-01-01", "%Y-%m-%d"),
-        end_date=datetime.strptime("2023-01-02", "%Y-%m-%d"),
+        start_date=date(2023, 1, 1),
+        end_date=date(2023, 1, 2),
         dsp="",
         input_path=default_data_path_config["input-path"],
         output_path=default_data_path_config["output-path"],
         input_file_name=default_data_path_config["input-file-name"],
         calendrier_scolaire_file_name=default_data_path_config["calendrier-scolaire-file-name"],
-        periode_ete=DEFAULT_PERIODE_ETE,
+        periode_ete_start_date=default_data_path_config["periode-ete-start-date"],
+        periode_ete_end_date=default_data_path_config["periode-ete-end-date"],
         list_journees_exceptionnelles=None,
 
         n_thread=5,
