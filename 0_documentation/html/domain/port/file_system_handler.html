@@ -61,7 +61,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="offre_realisee.domain.port.file_system_handler.FileSystemHandler.get_daily_mesure_qs">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_daily_mesure_qs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesure_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MesureType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix_by_agg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">AggregationLevel</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.domain.port.file_system_handler.FileSystemHandler.get_daily_mesure_qs" title="Lien vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_daily_mesure_qs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesure_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MesureType</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.domain.port.file_system_handler.FileSystemHandler.get_daily_mesure_qs" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Récupération des données de mesure QS par jour.</p>
 <section id="id3">
 <h2>Parameters<a class="headerlink" href="#id3" title="Lien vers cette rubrique">¶</a></h2>
@@ -74,10 +74,12 @@
 </dd>
 <dt>suffix_by_agg: Dict[AggregationLevel, Callable]</dt><dd><p>Dictionnaire de fonction de génération de suffix basé sur la date et le calendrier scolaire.</p>
 </dd>
+<dt><a href="#id4"><span class="problematic" id="id5">**</span></a>kwargs<span class="classifier">dict</span></dt><dd><p>Options complémentaires de lecture.</p>
+</dd>
 </dl>
 </section>
-<section id="id4">
-<h2>Returns<a class="headerlink" href="#id4" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id6">
+<h2>Returns<a class="headerlink" href="#id6" title="Lien vers cette rubrique">¶</a></h2>
 <dl class="simple">
 <dt>df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame d’offre réalisée par jour.</p>
 </dd>
@@ -89,8 +91,8 @@
 <dt class="sig sig-object py" id="offre_realisee.domain.port.file_system_handler.FileSystemHandler.get_daily_offre_realisee">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_daily_offre_realisee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ligne</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.domain.port.file_system_handler.FileSystemHandler.get_daily_offre_realisee" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Récupération des données d’offre réalisée pour une date.</p>
-<section id="id5">
-<h2>Parameters<a class="headerlink" href="#id5" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id7">
+<h2>Parameters<a class="headerlink" href="#id7" title="Lien vers cette rubrique">¶</a></h2>
 <dl class="simple">
 <dt>date<span class="classifier">date</span></dt><dd><p>Date pour laquelle nous voulons les données d’offre théorique.</p>
 </dd>
@@ -100,8 +102,8 @@
 </dd>
 </dl>
 </section>
-<section id="id6">
-<h2>Returns<a class="headerlink" href="#id6" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id8">
+<h2>Returns<a class="headerlink" href="#id8" title="Lien vers cette rubrique">¶</a></h2>
 <dl class="simple">
 <dt>df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame d’offre réalisée.</p>
 </dd>
@@ -113,15 +115,15 @@
 <dt class="sig sig-object py" id="offre_realisee.domain.port.file_system_handler.FileSystemHandler.read_offre_realisee">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_offre_realisee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.domain.port.file_system_handler.FileSystemHandler.read_offre_realisee" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Récupération des données d’offre réalisée.</p>
-<section id="id7">
-<h2>Parameters<a class="headerlink" href="#id7" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id9">
+<h2>Parameters<a class="headerlink" href="#id9" title="Lien vers cette rubrique">¶</a></h2>
 <dl class="simple">
-<dt><a href="#id8"><span class="problematic" id="id9">**</span></a>kwargs :</dt><dd><p>Keyword arguments supplémentaires passés à la fonction pandas read_parquet.</p>
+<dt><a href="#id10"><span class="problematic" id="id11">**</span></a>kwargs :</dt><dd><p>Keyword arguments supplémentaires passés à la fonction pandas read_parquet.</p>
 </dd>
 </dl>
 </section>
-<section id="id10">
-<h2>Returns<a class="headerlink" href="#id10" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id12">
+<h2>Returns<a class="headerlink" href="#id12" title="Lien vers cette rubrique">¶</a></h2>
 <dl class="simple">
 <dt>df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame d’offre réalisée.</p>
 </dd>
@@ -133,8 +135,8 @@
 <dt class="sig sig-object py" id="offre_realisee.domain.port.file_system_handler.FileSystemHandler.save_daily_mesure_qs">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_daily_mesure_qs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_mesure_qs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesure_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MesureType</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#offre_realisee.domain.port.file_system_handler.FileSystemHandler.save_daily_mesure_qs" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Sauvegarde du DataFrame de mesure de Qualité de Service (QS).</p>
-<section id="id11">
-<h2>Parameters<a class="headerlink" href="#id11" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id13">
+<h2>Parameters<a class="headerlink" href="#id13" title="Lien vers cette rubrique">¶</a></h2>
 <dl class="simple">
 <dt>df_mesure_qs<span class="classifier">DataFrame</span></dt><dd><p>DataFrame que nous voulons sauvegarder.</p>
 </dd>
@@ -152,8 +154,8 @@
 <dt class="sig sig-object py" id="offre_realisee.domain.port.file_system_handler.FileSystemHandler.save_error_mesure_qs">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_error_mesure_qs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_mesure_qs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesure_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MesureType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ligne</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#offre_realisee.domain.port.file_system_handler.FileSystemHandler.save_error_mesure_qs" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Sauvegarde du DataFrame de mesure de Qualité de Service (QS) en erreur.</p>
-<section id="id12">
-<h2>Parameters<a class="headerlink" href="#id12" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id14">
+<h2>Parameters<a class="headerlink" href="#id14" title="Lien vers cette rubrique">¶</a></h2>
 <dl class="simple">
 <dt>df_mesure_qs<span class="classifier">DataFrame</span></dt><dd><p>DataFrame que nous voulons sauvegarder.</p>
 </dd>
@@ -171,22 +173,30 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="offre_realisee.domain.port.file_system_handler.FileSystemHandler.save_mesure_qs_by_aggregation">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_mesure_qs_by_aggregation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_mesure_qs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregation_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AggregationLevel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesure_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MesureType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix_by_agg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">AggregationLevel</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#offre_realisee.domain.port.file_system_handler.FileSystemHandler.save_mesure_qs_by_aggregation" title="Lien vers cette définition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_mesure_qs_by_aggregation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_mesure_qs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">date</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">date</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregation_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AggregationLevel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesure_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MesureType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periode_ete</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_journees_exceptionnelles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">date</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#offre_realisee.domain.port.file_system_handler.FileSystemHandler.save_mesure_qs_by_aggregation" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Sauvegarde du DataFrame de mesure de Qualité de Service (QS).</p>
-<section id="id13">
-<h2>Parameters<a class="headerlink" href="#id13" title="Lien vers cette rubrique">¶</a></h2>
+<section id="id15">
+<h2>Parameters<a class="headerlink" href="#id15" title="Lien vers cette rubrique">¶</a></h2>
 <dl class="simple">
 <dt>df_mesure_qs<span class="classifier">DataFrame</span></dt><dd><p>DataFrame que nous voulons sauvegarder.</p>
 </dd>
-<dt>date<span class="classifier">date</span></dt><dd><p>Date des données de mesure QS.</p>
+<dt>suffix: str</dt><dd><p>Suffix de l’agrégation, par exemple “2024_01” pour une agrégation mensuelle.</p>
 </dd>
-<dt>dsp<span class="classifier">str</span></dt><dd><p>DSP des données de mesure QS.</p>
+<dt>date_range<span class="classifier">Tuple[date, date]</span></dt><dd><p>Plage de dates pour l’agrégation.</p>
 </dd>
-<dt>aggregation_level<span class="classifier">AggregationLevel</span></dt><dd><p>Niveau d’agrégation de la mesure QS (by_week, by_year, …).</p>
+<dt>dsp<span class="classifier">str</span></dt><dd><p>DSP à agréger.</p>
 </dd>
-<dt>mesure_type<span class="classifier">MesureType</span></dt><dd><p>Le type de mesure (ponctualite, regularite).</p>
+<dt>aggregation_level<span class="classifier">AggregationLevel</span></dt><dd><p>Niveau d’agrégation des données.</p>
 </dd>
-<dt>suffix_by_agg: Dict[AggregationLevel, Callable]</dt><dd><p>Dictionnaire de fonction de génération de suffix basé sur la date et le calendrier scolaire.</p>
+<dt>mesure_type<span class="classifier">MesureType</span></dt><dd><p>Type de mesure à agréger (ponctualite ou regularite).</p>
+</dd>
+<dt>periode_ete<span class="classifier">tuple[date, date]</span></dt><dd><p>Période d’été sous forme de tuple (début, fin) - Requis si l’aggregation concerne une period.</p>
+</dd>
+<dt>list_journees_exceptionnelles<span class="classifier">Optional[List[date]]</span></dt><dd><p>La liste des journées exceptionnelles à exclure (ex: émeutes, grèves…). Par défaut, cette liste est vide.</p>
+</dd>
+<dt>window_name<span class="classifier">Optional[str]</span></dt><dd><p>Nom de la fenêtre d’aggregation, optionnel par défaut égal à « « </p>
+</dd>
+<dt><a href="#id16"><span class="problematic" id="id17">**</span></a>kwargs<span class="classifier">dict</span></dt><dd><p>Options complémentaires d’écriture.</p>
 </dd>
 </dl>
 </section>

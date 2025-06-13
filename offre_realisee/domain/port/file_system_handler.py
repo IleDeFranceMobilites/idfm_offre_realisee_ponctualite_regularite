@@ -1,5 +1,4 @@
 import abc
-from typing import Callable
 from datetime import date
 
 import pandas as pd
@@ -86,33 +85,7 @@ class FileSystemHandler(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def save_mesure_qs_by_aggregation(
-        self, df_mesure_qs: pd.DataFrame, date: date, dsp: str,
-        aggregation_level: AggregationLevel, mesure_type: MesureType,
-        suffix_by_agg: dict[AggregationLevel, Callable]
-    ) -> None:
-        """Sauvegarde du DataFrame de mesure de Qualité de Service (QS).
-
-        Parameters
-        ----------
-        df_mesure_qs : DataFrame
-            DataFrame que nous voulons sauvegarder.
-        date : date
-            Date des données de mesure QS.
-        dsp : str
-            DSP des données de mesure QS.
-        aggregation_level : AggregationLevel
-            Niveau d’agrégation de la mesure QS (by_week, by_year, ...).
-        mesure_type : MesureType
-            Le type de mesure (ponctualite, regularite).
-        suffix_by_agg: Dict[AggregationLevel, Callable]
-            Dictionnaire de fonction de génération de suffix basé sur la date et le calendrier scolaire.
-        """
-        pass
-
-    @abc.abstractmethod
-    def get_daily_mesure_qs(self, date: date, dsp: str, mesure_type: MesureType,
-                            suffix_by_agg: dict[AggregationLevel, Callable]) -> pd.DataFrame:
+    def get_daily_mesure_qs(self, date: date, dsp: str, mesure_type: MesureType, **kwargs) -> pd.DataFrame:
         """Récupération des données de mesure QS par jour.
 
         Parameters
@@ -125,11 +98,47 @@ class FileSystemHandler(abc.ABC):
             Le type de mesure (ponctualite, regularite).
         suffix_by_agg: Dict[AggregationLevel, Callable]
             Dictionnaire de fonction de génération de suffix basé sur la date et le calendrier scolaire.
+        **kwargs : dict
+            Options complémentaires de lecture.
 
         Returns
         -------
         df : DataFrame
             DataFrame d'offre réalisée par jour.
+        """
+        pass
+
+    @abc.abstractmethod
+    def save_mesure_qs_by_aggregation(
+        self, df_mesure_qs: pd.DataFrame, suffix: str, date_range: tuple[date, date], dsp: str,
+        aggregation_level: AggregationLevel, mesure_type: MesureType, periode_ete: tuple[str],
+        list_journees_exceptionnelles: list[date], window_name: str = "",
+        **kwargs
+    ) -> None:
+        """Sauvegarde du DataFrame de mesure de Qualité de Service (QS).
+
+        Parameters
+        ----------
+        df_mesure_qs : DataFrame
+            DataFrame que nous voulons sauvegarder.
+        suffix: str
+            Suffix de l'agrégation, par exemple '2024_01' pour une agrégation mensuelle.
+        date_range : Tuple[date, date]
+            Plage de dates pour l'agrégation.
+        dsp : str
+            DSP à agréger.
+        aggregation_level : AggregationLevel
+            Niveau d'agrégation des données.
+        mesure_type : MesureType
+            Type de mesure à agréger (ponctualite ou regularite).
+        periode_ete : tuple[date, date]
+            Période d'été sous forme de tuple (début, fin) - Requis si l'aggregation concerne une period.
+        list_journees_exceptionnelles : Optional[List[date]]
+            La liste des journées exceptionnelles à exclure (ex: émeutes, grèves...). Par défaut, cette liste est vide.
+        window_name : Optional[str]
+            Nom de la fenêtre d'aggregation, optionnel par défaut égal à ""
+        **kwargs : dict
+            Options complémentaires d'écriture.
         """
         pass
 

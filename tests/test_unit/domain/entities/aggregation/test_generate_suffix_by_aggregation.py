@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 import pandas as pd
 
@@ -6,22 +6,22 @@ from offre_realisee.config.aggregation_config import PeriodeName
 from offre_realisee.domain.entities.aggregation.generate_suffix_by_aggregation import IDF_TIMEZONE, get_period_name
 
 
-TEST_PERIODE_ETE = ('07_01', '08_31')
+TEST_PERIODE_ETE = (date(2023, 7, 1), date(2023, 8, 31))
 
 
 def test_get_period_name_plein_trafic():
     # Given
-    date = datetime(2023, 9, 4)
+    test_date = date(2023, 9, 4)
     df_calendrier_scolaire = pd.DataFrame({
         'description': ['Vacances'],
-        'start_date': [IDF_TIMEZONE.localize(datetime(2023, 9, 1))],
-        'end_date': [IDF_TIMEZONE.localize(datetime(2023, 9, 3))]
+        'start_date': [datetime(2023, 9, 1, tzinfo=IDF_TIMEZONE)],
+        'end_date': [datetime(2023, 9, 3, tzinfo=IDF_TIMEZONE)]
     })
 
     expected_result = PeriodeName.plein_trafic
 
     # When
-    result = get_period_name(date, df_calendrier_scolaire, periode_ete=TEST_PERIODE_ETE)
+    result = get_period_name(test_date, df_calendrier_scolaire, periode_ete=TEST_PERIODE_ETE)
 
     # Then
     assert result == expected_result
@@ -29,17 +29,17 @@ def test_get_period_name_plein_trafic():
 
 def test_get_period_name_vacances():
     # Given
-    date = datetime(2023, 9, 2)
+    test_date = date(2023, 9, 2)
     df_calendrier_scolaire = pd.DataFrame({
         'description': ['Vacances'],
-        'start_date': [IDF_TIMEZONE.localize(datetime(2023, 9, 1))],
-        'end_date': [IDF_TIMEZONE.localize(datetime(2023, 9, 3))]
+        'start_date': [datetime(2023, 9, 1, tzinfo=IDF_TIMEZONE)],
+        'end_date': [datetime(2023, 9, 3, tzinfo=IDF_TIMEZONE)]
     })
 
     expected_result = PeriodeName.vacances_scolaires
 
     # When
-    result = get_period_name(date, df_calendrier_scolaire, periode_ete=TEST_PERIODE_ETE)
+    result = get_period_name(test_date, df_calendrier_scolaire, periode_ete=TEST_PERIODE_ETE)
 
     # Then
     assert result == expected_result
@@ -47,17 +47,17 @@ def test_get_period_name_vacances():
 
 def test_get_period_name_ete():
     # Given
-    date = datetime(2023, 7, 4)
+    test_date = date(2023, 7, 4)
     df_calendrier_scolaire = pd.DataFrame({
         'description': ['Vacances'],
-        'start_date': [IDF_TIMEZONE.localize(datetime(2023, 9, 1))],
-        'end_date': [IDF_TIMEZONE.localize(datetime(2023, 9, 3))]
+        'start_date': [datetime(2023, 9, 1, tzinfo=IDF_TIMEZONE)],
+        'end_date': [datetime(2023, 9, 3, tzinfo=IDF_TIMEZONE)]
     })
 
     expected_result = PeriodeName.ete
 
     # When
-    result = get_period_name(date, df_calendrier_scolaire, periode_ete=TEST_PERIODE_ETE)
+    result = get_period_name(test_date, df_calendrier_scolaire, periode_ete=TEST_PERIODE_ETE)
 
     # Then
     assert result == expected_result

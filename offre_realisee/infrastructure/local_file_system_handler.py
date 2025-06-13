@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import date, datetime
 
 import pandas as pd
 
@@ -44,12 +44,12 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
         logger.info(f"Reading input data from: {file_path}")
         return pd.read_parquet(file_path, **kwargs)
 
-    def get_daily_offre_realisee(self, date: datetime, dsp: str = "", ligne: str = "") -> pd.DataFrame:
+    def get_daily_offre_realisee(self, date: date, dsp: str = "", ligne: str = "") -> pd.DataFrame:
         """Récupération des données d'offre réalisée pour une date.
 
         Parameters
         ----------
-        date : datetime
+        date : date
             Date pour laquelle nous voulons les données d'offre théorique.
         dsp : str
             DSP pour laquelle les mesures de qualité de service doivent être calculées, par défaut à "".
@@ -76,7 +76,7 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
         return df_offre_realisee
 
     def save_daily_mesure_qs(
-        self, df_mesure_qs: pd.DataFrame, date: datetime, dsp: str, mesure_type: MesureType
+        self, df_mesure_qs: pd.DataFrame, date: date, dsp: str, mesure_type: MesureType
     ) -> None:
         """Sauvegarde du DataFrame de mesure de Qualité de Service (QS).
 
@@ -84,7 +84,7 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
         ----------
         df_mesure_qs : DataFrame
             DataFrame que nous voulons sauvegarder.
-        date : datetime
+        date : date
             Date des données de mesure QS.
         dsp : str
             DSP des données de mesure QS.
@@ -103,26 +103,34 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
         df_mesure_qs[mesure_qs.column_order].to_csv(file_path)
 
     def save_mesure_qs_by_aggregation(
-            self, df_mesure_qs: pd.DataFrame, date: datetime, dsp: str,
-            aggregation_level: AggregationLevel, mesure_type: MesureType,
-            suffix_by_agg: dict[AggregationLevel, callable]
+            self, df_mesure_qs: pd.DataFrame, suffix: str,
+            date_range: tuple[date, date], dsp: str, aggregation_level: AggregationLevel,
+            mesure_type: MesureType, periode_ete: tuple[str],
+            list_journees_exceptionnelles: list[date], window_name: str = "",
+            **kwargs
     ) -> None:
-        """Sauvegarde du DataFrame de mesure de Qualité de Service (QS) par aggrégation.
+        """Sauvegarde du DataFrame de mesure de Qualité de Service (QS).
 
         Parameters
         ----------
         df_mesure_qs : DataFrame
             DataFrame que nous voulons sauvegarder.
-        date : datetime
-            Date des données de mesure QS.
+        suffix: str
+            Suffix de l'agrégation, par exemple '2024_01' pour une agrégation mensuelle.
+        date_range : Tuple[date, date]
+            Plage de dates pour l'agrégation.
         dsp : str
-            DSP des données de mesure QS.
+            DSP à agréger.
         aggregation_level : AggregationLevel
-            Niveau d'aggrégation de la mesure QS (by_week, by_year, ...).
+            Niveau d'agrégation des données.
         mesure_type : MesureType
-            Le type de mesure (ponctualite, regularite).
-        suffix_by_agg: Dict[AggregationLevel, Callable]
-            Dictionnaire de fonction de génération de suffix basé sur la date et le calendrier scolaire.
+            Type de mesure à agréger (ponctualite ou regularite).
+        list_journees_exceptionnelles : Optional[List[date]]
+            La liste des journées exceptionnelles à exclure (ex: émeutes, grèves...). Par défaut, cette liste est vide.
+        window_name : Optional[str]
+            Nom de la fenêtre d'aggregation, optionnel par défaut égal à ""
+        **kwargs : dict
+            Arguments supplémentaires pour la sauvegarde, comme le niveau d'agrégation.
         """
         mesure_qs = MESURE_TYPE[mesure_type]
 
@@ -130,13 +138,12 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
         if not os.path.exists(folder_path):
             os.makedirs(folder_path, exist_ok=True)
 
-        suffix = suffix_by_agg[aggregation_level](date)
         file_path = os.path.join(folder_path, f"mesure_{mesure_type}_{suffix}" + FileExtensions.csv)
 
         logger.info(f"Writing a dataframe of shape {df_mesure_qs.shape} in {file_path}")
         df_mesure_qs[mesure_qs.column_order].to_csv(file_path)
 
-    def save_error_mesure_qs(self, df_mesure_qs: pd.DataFrame, date: datetime, mesure_type: MesureType, dsp: str,
+    def save_error_mesure_qs(self, df_mesure_qs: pd.DataFrame, date: date, mesure_type: MesureType, dsp: str,
                              ligne: str) -> None:
         mesure_qs = MESURE_TYPE[mesure_type]
         folder_path = os.path.join(self.data_path, self.output_path, dsp, mesure_type)
@@ -152,12 +159,12 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
 
         df_mesure_qs[mesure_qs.column_order].to_csv(file_path)
 
-    def get_daily_mesure_qs(self, date: datetime, dsp: str, mesure_type: MesureType) -> pd.DataFrame:
+    def get_daily_mesure_qs(self, date: date, dsp: str, mesure_type: MesureType) -> pd.DataFrame:
         """Récupération des données de mesure QS par jour.
 
         Parameters
         ----------
-        date : datetime
+        date : date
             Date des données de mesure QS.
         dsp : str
             DSP des données de mesure QS.
