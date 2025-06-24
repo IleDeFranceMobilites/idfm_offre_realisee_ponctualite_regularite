@@ -46,7 +46,7 @@ def create_mesure_qs_ponctualite(
         logger.info(f'No data to process for {date.strftime("%Y-%m-%d")} with dsp: [{dsp}] and ligne: [{ligne}]')
         return
     if (df_offre_realisee[InputColumns.heure_theorique].isna().all() or
-            df_offre_realisee[InputColumns.sens].isna().any()):
+            df_offre_realisee[InputColumns.sens].isna().any() or df_offre_realisee[InputColumns.arret].isna().any()):
         file_system_handler.save_error_mesure_qs(
             df_mesure_qs=df_offre_realisee, date=date, mesure_type=MesureType.ponctualite, dsp=dsp, ligne=ligne)
     else:
