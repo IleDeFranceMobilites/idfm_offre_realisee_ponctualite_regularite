@@ -63,7 +63,8 @@ def aggregate_mesure_qs(file_system_handler: FileSystemHandler, date_range: tupl
             df = file_system_handler.get_daily_mesure_qs(
                 date=date_to_agg, dsp=dsp, mesure_type=mesure_type, **read_options
             )
-            mesure_list.append(df)
+            if not df.empty:
+                mesure_list.append(df)
 
         if len(mesure_list) != 0:
             df_all_mesure = pd.concat(mesure_list)
@@ -103,7 +104,7 @@ def aggregate_df(df_all_mesure: pd.DataFrame, mesure: Mesure) -> pd.DataFrame:
     -------
     pd.DataFrame: DataFrame agrégé des mesures de qualité de service.
     """
-    grouped_df = df_all_mesure.groupby(mesure.ligne)
+    grouped_df = df_all_mesure.groupby(mesure.ligne, observed=True)
 
     columns_to_sum = [
         mesure.nombre_theorique,
