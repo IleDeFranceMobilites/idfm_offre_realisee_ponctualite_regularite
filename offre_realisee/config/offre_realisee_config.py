@@ -78,6 +78,13 @@ class MesurePonctualite(Mesure):
         taux_de_conformite,
         taux_absence_de_donnees,
     ]
+    si_column_order = [
+        ligne,
+        situation_inacceptable_avance,
+        situation_inacceptable_retard,
+        situation_inacceptable_sans_horaire_reel_attribue,
+        situation_inacceptable_total
+    ]
 
 
 class Borne:

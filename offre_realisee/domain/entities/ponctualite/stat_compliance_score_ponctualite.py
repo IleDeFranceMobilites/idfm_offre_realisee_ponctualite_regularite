@@ -24,7 +24,7 @@ def stat_situation_inacceptable(df: pd.DataFrame) -> pd.DataFrame:
 
     Cette fonction prend un DataFrame avec des données de ponctualité et calcule les statistiques liées aux SI.
     Elle compte le nombre de SI pour différents types (avance, retard, absence) pour chaque arrêt, et garde les valeurs
-    de l'arrêt ayant le plus de SI par ligne et sens.
+    de l'arrêt ayant le plus de SI par ligne et sens pour les retards uniquement.
 
     Parameters
     ----------
@@ -57,16 +57,32 @@ def stat_situation_inacceptable(df: pd.DataFrame) -> pd.DataFrame:
         )
     ]).reset_index()
 
-    # Conserve pour chaque ligne et sens l'arrêt avec le plus grand nombre de SI
     df_si_grouped_by_sens = df_si.groupby([MesurePonctualite.ligne, MesurePonctualite.sens])
-    df_si = df_si.loc[df_si_grouped_by_sens[MesurePonctualite.situation_inacceptable_total].idxmax().values]
 
-    df_si = df_si.drop([MesurePonctualite.arret, MesurePonctualite.sens], axis=1)
+    # Conserve le plus grand nombre de SI de retard pour chaque ligne et sens
+    df_retard_max = df_si.loc[df_si_grouped_by_sens[MesurePonctualite.situation_inacceptable_retard].idxmax().values]
+    df_retard_max = df_retard_max[
+        [MesurePonctualite.ligne, MesurePonctualite.sens, MesurePonctualite.situation_inacceptable_retard]
+    ]
 
-    # Somme les SI par sens
-    df_si = df_si.groupby([MesurePonctualite.ligne]).agg('sum').reset_index()
+    # Somme globale par ligne/sens pour les autres SI
+    df_avance = df_si_grouped_by_sens[
+        [MesurePonctualite.situation_inacceptable_avance,
+         MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue]
+    ].sum().reset_index()
 
-    return df_si
+    df_final = pd.merge(df_avance, df_retard_max, on=[MesurePonctualite.ligne, MesurePonctualite.sens], how='left')
+
+    # Somme les SI
+    df_final[MesurePonctualite.situation_inacceptable_total] = (
+            df_final[MesurePonctualite.situation_inacceptable_avance] +
+            df_final[MesurePonctualite.situation_inacceptable_retard] +
+            df_final[MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue]
+    )
+
+    df_final = df_final.drop(columns=[MesurePonctualite.sens])
+    df_final = df_final[MesurePonctualite.si_column_order]
+    return df_final.groupby(MesurePonctualite.ligne).sum(numeric_only=True).reset_index()
 
 
 def stat_compliance_score_ponctualite(df: pd.DataFrame, metadata_cols: list[str] = []) -> pd.DataFrame:

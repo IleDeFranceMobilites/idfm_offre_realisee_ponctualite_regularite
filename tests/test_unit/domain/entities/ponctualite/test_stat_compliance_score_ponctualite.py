@@ -67,10 +67,10 @@ def test_stat_situation_inacceptable():
 
     expected_result = pd.DataFrame({
         MesurePonctualite.ligne: [1, 2],
-        MesurePonctualite.situation_inacceptable_avance: [0, 1],
+        MesurePonctualite.situation_inacceptable_avance: [1, 1],
         MesurePonctualite.situation_inacceptable_retard: [1, 0],
         MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue: [2, 0],
-        MesurePonctualite.situation_inacceptable_total: [3, 1],
+        MesurePonctualite.situation_inacceptable_total: [4, 1],
     })
 
     # When
@@ -120,8 +120,8 @@ def test_stat_situation_inacceptable_keep_max_on_multiple_si():
         MesurePonctualite.ligne: [1],
         MesurePonctualite.situation_inacceptable_avance: [2],
         MesurePonctualite.situation_inacceptable_retard: [0],
-        MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue: [0],
-        MesurePonctualite.situation_inacceptable_total: [2],
+        MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue: [1],
+        MesurePonctualite.situation_inacceptable_total: [3],
     })
 
     # When
