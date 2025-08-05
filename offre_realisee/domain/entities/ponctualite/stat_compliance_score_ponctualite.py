@@ -50,10 +50,6 @@ def stat_situation_inacceptable(df: pd.DataFrame) -> pd.DataFrame:
         (
             MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue,
             lambda x: x.isin({ComplianceType.situation_inacceptable_absence}).sum()
-        ),
-        (
-            MesurePonctualite.situation_inacceptable_total,
-            lambda x: x.isin(_SI_VALUES_SET).sum()
         )
     ]).reset_index()
 
