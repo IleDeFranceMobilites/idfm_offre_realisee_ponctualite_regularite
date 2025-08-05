@@ -34,60 +34,8 @@
 
           <div class="body" role="main">
             
-  <section id="module-offre_realisee.domain.entities.ponctualite.process_stop_ponctualite">
-<span id="process-stop-ponctualite"></span><h1>process_stop_ponctualite<a class="headerlink" href="#module-offre_realisee.domain.entities.ponctualite.process_stop_ponctualite" title="Lien vers cette rubrique">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="offre_realisee.domain.entities.ponctualite.process_stop_ponctualite.compute_cost_matrix">
-<span class="sig-prename descclassname"><span class="pre">offre_realisee.domain.entities.ponctualite.process_stop_ponctualite.</span></span><span class="sig-name descname"><span class="pre">compute_cost_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_by_stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heure_reelle_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#offre_realisee.domain.entities.ponctualite.process_stop_ponctualite.compute_cost_matrix" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Traite les données de ponctualité par arrêts et génère le scores de conformité.</p>
-<section id="parameters">
-<h2>Parameters<a class="headerlink" href="#parameters" title="Lien vers cette rubrique">¶</a></h2>
-<dl class="simple">
-<dt>df_by_stop<span class="classifier">DataFrame</span></dt><dd><p>DataFrame contenant les données de ponctualité par arrêt.</p>
-</dd>
-<dt>heure_reelle_col<span class="classifier">pd.Series</span></dt><dd><p>Série contenant les heures réelles des passages.</p>
-</dd>
-</dl>
-</section>
-<section id="returns">
-<h2>Returns<a class="headerlink" href="#returns" title="Lien vers cette rubrique">¶</a></h2>
-<dl class="simple">
-<dt>matrix<span class="classifier">ndarray</span></dt><dd><p>Matrice contenant les scores de conformité:
-- ComplianceType.compliant (1).
-- ComplianceType.semi_compliant (0.75 en haute frequence, 0.5 en basse frequence).
-- ComplianceType.not_compliant (0.25 en haute frequence, 0 en basse frequence).
-- ComplianceType.situation_inacceptable_retard (-1000000): En retard.
-- ComplianceType.situation_inacceptable_avance (-999900): En avance.
-- ComplianceType.situation_inacceptable_absence (-999000): Pas de données.</p>
-</dd>
-</dl>
-</section>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="offre_realisee.domain.entities.ponctualite.process_stop_ponctualite.process_stop_ponctualite">
-<span class="sig-prename descclassname"><span class="pre">offre_realisee.domain.entities.ponctualite.process_stop_ponctualite.</span></span><span class="sig-name descname"><span class="pre">process_stop_ponctualite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_by_stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.domain.entities.ponctualite.process_stop_ponctualite.process_stop_ponctualite" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Traitement des données par arrêt et ajout des scores de conformité.</p>
-<p>Cette fonction prend un DataFrame avec des données de ponctualité par arrêt et optimise les attributions de temps
-réelle/théorique pour minimiser les pénalités. Elle retourne un DataFrame incluant les scores de conformité, le
-lien théorique réelle et gère les passages aberrants en les marquant comme non attribués.</p>
-<section id="id1">
-<h2>Parameters<a class="headerlink" href="#id1" title="Lien vers cette rubrique">¶</a></h2>
-<dl class="simple">
-<dt>df_by_stop<span class="classifier">DataFrame</span></dt><dd><p>DataFrame contenant les données par arrêt.</p>
-</dd>
-</dl>
-</section>
-<section id="id2">
-<h2>Returns<a class="headerlink" href="#id2" title="Lien vers cette rubrique">¶</a></h2>
-<dl class="simple">
-<dt>df_by_stop<span class="classifier">DataFrame</span></dt><dd><p>DataFrame contenant l’agencement optimal des valeurs théoriques/réelles ainsi que le score de conformité
-associé.</p>
-</dd>
-</dl>
-</section>
-</dd></dl>
-
+  <section id="process-stop-ponctualite">
+<h1>process_stop_ponctualite<a class="headerlink" href="#process-stop-ponctualite" title="Lien vers cette rubrique">¶</a></h1>
 </section>
 
 
