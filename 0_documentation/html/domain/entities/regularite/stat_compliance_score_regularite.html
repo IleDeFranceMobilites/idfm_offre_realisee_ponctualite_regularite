@@ -34,8 +34,42 @@
 
           <div class="body" role="main">
             
-  <section id="stat-compliance-score-regularite">
-<h1>stat_compliance_score_regularite<a class="headerlink" href="#stat-compliance-score-regularite" title="Lien vers cette rubrique">¶</a></h1>
+  <section id="module-offre_realisee.domain.entities.regularite.stat_compliance_score_regularite">
+<span id="stat-compliance-score-regularite"></span><h1>stat_compliance_score_regularite<a class="headerlink" href="#module-offre_realisee.domain.entities.regularite.stat_compliance_score_regularite" title="Lien vers cette rubrique">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="offre_realisee.domain.entities.regularite.stat_compliance_score_regularite.stat_compliance_score_regularite">
+<span class="sig-prename descclassname"><span class="pre">offre_realisee.domain.entities.regularite.stat_compliance_score_regularite.</span></span><span class="sig-name descname"><span class="pre">stat_compliance_score_regularite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_theorique_by_lignes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">any_high_frequency_on_lignes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.domain.entities.regularite.stat_compliance_score_regularite.stat_compliance_score_regularite" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Calcule le taux de conformité pour la régularité pour les lignes hautes fréquences (= les lignes qui contiennent
+au moins un arrêt haute fréquence sur la période analysée).
+La formule de calcul du taux de conformité est :
+[somme des score de conformité] / [nombre de passages théoriques] * 100.
+Le nombre de situations inacceptables par typologie et total sont sommées par ligne.
+Le taux d’absence des données est également calculé :
+[nombre de passages théoriques - nombre de passages réels] / [nombre de passages théoriques] * 100</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame qui contient les scores de conformité pour la régularité pour tous les arrêts par ligne</p>
+</dd>
+<dt>n_theorique_by_lignes<span class="classifier">dict</span></dt><dd><p>Dictionnaire qui contient les lignes en clé et le nombre de passages théoriques en valeur</p>
+</dd>
+<dt>any_high_frequency_on_lignes<span class="classifier">dict</span></dt><dd><p>Dictionnaire qui contient les lignes en clé et True en valeur si la ligne contient au moins un arrêt haute
+fréquence sur la période analysée, False sinon</p>
+</dd>
+<dt>metadata_cols: list[str]</dt><dd><p>Colonnes contenant des méta informations invariables par lignes qui doivent être conservées, par défaut à [].</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame qui contient le nombre de passages théoriques, réels, le nombre de situations inacceptables par
+typologie et total, le taux de conformité pour la régularité, le taux d’absence des données (réelles)</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
 </section>
 
 

@@ -34,8 +34,63 @@
 
           <div class="body" role="main">
             
-  <section id="aggregations">
-<h1>Aggregations<a class="headerlink" href="#aggregations" title="Lien vers cette rubrique">¶</a></h1>
+  <section id="module-offre_realisee.domain.usecases.aggregate_mesure_qs">
+<span id="aggregations"></span><h1>Aggregations<a class="headerlink" href="#module-offre_realisee.domain.usecases.aggregate_mesure_qs" title="Lien vers cette rubrique">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="offre_realisee.domain.usecases.aggregate_mesure_qs.aggregate_df">
+<span class="sig-prename descclassname"><span class="pre">offre_realisee.domain.usecases.aggregate_mesure_qs.</span></span><span class="sig-name descname"><span class="pre">aggregate_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_all_mesure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mesure</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.domain.usecases.aggregate_mesure_qs.aggregate_df" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Agrège les mesures de la qualité de service.</p>
+<p>Cette fonction prend un DataFrame de toutes les mesures quotidiennes de qualité de service et agrège ces mesures par
+lignes. Les colonnes agrégées incluent le nombre théorique, le nombre réel, le score de conformité, et les types de
+situations inacceptables. De plus, elle calcule le taux de conformité et le taux d’absence de données.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df_all_mesure<span class="classifier">pd.DataFrame</span></dt><dd><p>DataFrame contenant les mesures quotidiennes de qualité de service.</p>
+</dd>
+<dt>mesure<span class="classifier">Mesure</span></dt><dd><p>Objet Mesure spécifiant les colonnes à agréger.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Lien vers cette rubrique">¶</a></h2>
+<p>pd.DataFrame: DataFrame agrégé des mesures de qualité de service.</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="offre_realisee.domain.usecases.aggregate_mesure_qs.aggregate_mesure_qs">
+<span class="sig-prename descclassname"><span class="pre">offre_realisee.domain.usecases.aggregate_mesure_qs.</span></span><span class="sig-name descname"><span class="pre">aggregate_mesure_qs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_system_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../port/file_system_handler.html#offre_realisee.domain.port.file_system_handler.FileSystemHandler" title="offre_realisee.domain.port.file_system_handler.FileSystemHandler"><span class="pre">FileSystemHandler</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">datetime</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregation_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AggregationLevel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesure_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MesureType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periode_ete</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">date</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">date</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_journees_exceptionnelles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#offre_realisee.domain.usecases.aggregate_mesure_qs.aggregate_mesure_qs" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Agrège les mesures journalières de la qualité de service et les sauvegarde selon les spécifications fournies.</p>
+<p>Agrège les dates contenu dans la plage de données date_range en fonction du type de mesure: ponctualité ou
+régularité.</p>
+<section id="id1">
+<h2>Parameters<a class="headerlink" href="#id1" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>file_system_handler<span class="classifier">FileSystemHandler</span></dt><dd><p>Gestionnaire du système de fichiers.</p>
+</dd>
+<dt>date_range<span class="classifier">Tuple[datetime, datetime]</span></dt><dd><p>Plage de dates pour l’agrégation.</p>
+</dd>
+<dt>dsp<span class="classifier">str</span></dt><dd><p>DSP à agréger.</p>
+</dd>
+<dt>aggregation_level<span class="classifier">AggregationLevel</span></dt><dd><p>Niveau d’agrégation des données.</p>
+</dd>
+<dt>mesure_type<span class="classifier">MesureType</span></dt><dd><p>Type de mesure à agréger (ponctualite ou regularite).</p>
+</dd>
+<dt>periode_ete<span class="classifier">tuple[date, date]</span></dt><dd><p>Période d’été sous forme de tuple (début, fin) - Requis si l’aggregation concerne une period.</p>
+</dd>
+<dt>list_journees_exceptionnelles<span class="classifier">Optional[List[datetime]]</span></dt><dd><p>La liste des journées exceptionnelles à exclure (ex: émeutes, grèves…). Par défaut, cette liste est vide.</p>
+</dd>
+<dt>window_name<span class="classifier">Optional[str]</span></dt><dd><p>Nom de la fenêtre d’aggregation, optionnel par défaut égal à « « </p>
+</dd>
+<dt>read_options<span class="classifier">dict</span></dt><dd><p>Options complémentaires de lecture.</p>
+</dd>
+<dt>write_options<span class="classifier">dict</span></dt><dd><p>Options complémentaires d’écriture.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
 </section>
 
 

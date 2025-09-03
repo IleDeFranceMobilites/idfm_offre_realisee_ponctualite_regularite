@@ -34,8 +34,183 @@
 
           <div class="body" role="main">
             
-  <section id="gestionnaire-de-fichiers-locaux">
-<h1>Gestionnaire de fichiers locaux<a class="headerlink" href="#gestionnaire-de-fichiers-locaux" title="Lien vers cette rubrique">¶</a></h1>
+  <section id="module-offre_realisee.infrastructure.local_file_system_handler">
+<span id="gestionnaire-de-fichiers-locaux"></span><h1>Gestionnaire de fichiers locaux<a class="headerlink" href="#module-offre_realisee.infrastructure.local_file_system_handler" title="Lien vers cette rubrique">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="offre_realisee.infrastructure.local_file_system_handler.LocalFileSystemHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">offre_realisee.infrastructure.local_file_system_handler.</span></span><span class="sig-name descname"><span class="pre">LocalFileSystemHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calendrier_scolaire_file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#offre_realisee.infrastructure.local_file_system_handler.LocalFileSystemHandler" title="Lien vers cette définition">¶</a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="offre_realisee.infrastructure.local_file_system_handler.LocalFileSystemHandler.get_calendrier_scolaire">
+<span class="sig-name descname"><span class="pre">get_calendrier_scolaire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.infrastructure.local_file_system_handler.LocalFileSystemHandler.get_calendrier_scolaire" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Récupération des données de calendrier scolaire.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs :</dt><dd><p>Keyword arguments supplémentaires passés à la fonction pandas read_parquet.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame du calendrier scolaire.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="offre_realisee.infrastructure.local_file_system_handler.LocalFileSystemHandler.get_daily_mesure_qs">
+<span class="sig-name descname"><span class="pre">get_daily_mesure_qs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesure_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MesureType</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.infrastructure.local_file_system_handler.LocalFileSystemHandler.get_daily_mesure_qs" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Récupération des données de mesure QS par jour.</p>
+<section id="id3">
+<h2>Parameters<a class="headerlink" href="#id3" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>date<span class="classifier">date</span></dt><dd><p>Date des données de mesure QS.</p>
+</dd>
+<dt>dsp<span class="classifier">str</span></dt><dd><p>DSP des données de mesure QS.</p>
+</dd>
+<dt>mesure_type<span class="classifier">MesureType</span></dt><dd><p>Le type de mesure (ponctualite, regularite).</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h2>Returns<a class="headerlink" href="#id4" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame d’offre réalisée par jour.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="offre_realisee.infrastructure.local_file_system_handler.LocalFileSystemHandler.get_daily_offre_realisee">
+<span class="sig-name descname"><span class="pre">get_daily_offre_realisee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ligne</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.infrastructure.local_file_system_handler.LocalFileSystemHandler.get_daily_offre_realisee" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Récupération des données d’offre réalisée pour une date.</p>
+<section id="id5">
+<h2>Parameters<a class="headerlink" href="#id5" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>date<span class="classifier">date</span></dt><dd><p>Date pour laquelle nous voulons les données d’offre théorique.</p>
+</dd>
+<dt>dsp<span class="classifier">str</span></dt><dd><p>DSP pour laquelle les mesures de qualité de service doivent être calculées, par défaut à « « .</p>
+</dd>
+<dt>ligne<span class="classifier">str</span></dt><dd><p>Ligne pour laquelle les mesures de qualité de service doivent être calculées, par défaut à « « .</p>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h2>Returns<a class="headerlink" href="#id6" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df_offre_realisee<span class="classifier">DataFrame</span></dt><dd><p>DataFrame d’offre réalisée.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="offre_realisee.infrastructure.local_file_system_handler.LocalFileSystemHandler.read_offre_realisee">
+<span class="sig-name descname"><span class="pre">read_offre_realisee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.infrastructure.local_file_system_handler.LocalFileSystemHandler.read_offre_realisee" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Récupération des données d’offre réalisée.</p>
+<section id="id7">
+<h2>Parameters<a class="headerlink" href="#id7" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt><cite>**kwargs</cite> :</dt><dd><p>Keyword arguments supplémentaires passés à la fonction pandas read_parquet.</p>
+</dd>
+</dl>
+</section>
+<section id="id8">
+<h2>Returns<a class="headerlink" href="#id8" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame d’offre réalisée.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="offre_realisee.infrastructure.local_file_system_handler.LocalFileSystemHandler.save_calendrier_scolaire">
+<span class="sig-name descname"><span class="pre">save_calendrier_scolaire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filtered_calendrier_scolaire</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#offre_realisee.infrastructure.local_file_system_handler.LocalFileSystemHandler.save_calendrier_scolaire" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Sauvegarde les données du calendrier scolaire dans le dossier input.</p>
+<section id="id9">
+<h2>Parameters<a class="headerlink" href="#id9" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>filtered_calendrier_scolaire :</dt><dd><p>DataFrame du calendrier scolaire.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="offre_realisee.infrastructure.local_file_system_handler.LocalFileSystemHandler.save_daily_mesure_qs">
+<span class="sig-name descname"><span class="pre">save_daily_mesure_qs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_mesure_qs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesure_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MesureType</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#offre_realisee.infrastructure.local_file_system_handler.LocalFileSystemHandler.save_daily_mesure_qs" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Sauvegarde du DataFrame de mesure de Qualité de Service (QS).</p>
+<section id="id10">
+<h2>Parameters<a class="headerlink" href="#id10" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df_mesure_qs<span class="classifier">DataFrame</span></dt><dd><p>DataFrame que nous voulons sauvegarder.</p>
+</dd>
+<dt>date<span class="classifier">date</span></dt><dd><p>Date des données de mesure QS.</p>
+</dd>
+<dt>dsp<span class="classifier">str</span></dt><dd><p>DSP des données de mesure QS.</p>
+</dd>
+<dt>mesure_type<span class="classifier">MesureType</span></dt><dd><p>Le type de mesure (ponctualite, regularite).</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="offre_realisee.infrastructure.local_file_system_handler.LocalFileSystemHandler.save_error_mesure_qs">
+<span class="sig-name descname"><span class="pre">save_error_mesure_qs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_mesure_qs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesure_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MesureType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ligne</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#offre_realisee.infrastructure.local_file_system_handler.LocalFileSystemHandler.save_error_mesure_qs" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Sauvegarde du DataFrame de mesure de Qualité de Service (QS) en erreur.</p>
+<section id="id11">
+<h2>Parameters<a class="headerlink" href="#id11" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df_mesure_qs<span class="classifier">DataFrame</span></dt><dd><p>DataFrame que nous voulons sauvegarder.</p>
+</dd>
+<dt>date<span class="classifier">date</span></dt><dd><p>Date des données de mesure QS.</p>
+</dd>
+<dt>mesure_type<span class="classifier">MesureType</span></dt><dd><p>Le type de mesure (ponctualite, regularite).</p>
+</dd>
+<dt>dsp<span class="classifier">str</span></dt><dd><p>DSP des données de mesure QS.</p>
+</dd>
+<dt>ligne<span class="classifier">str</span></dt><dd><p>Ligne des données de mesure QS</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="offre_realisee.infrastructure.local_file_system_handler.LocalFileSystemHandler.save_mesure_qs_by_aggregation">
+<span class="sig-name descname"><span class="pre">save_mesure_qs_by_aggregation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_mesure_qs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">date</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">date</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregation_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AggregationLevel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesure_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MesureType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periode_ete</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_journees_exceptionnelles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">date</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#offre_realisee.infrastructure.local_file_system_handler.LocalFileSystemHandler.save_mesure_qs_by_aggregation" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Sauvegarde du DataFrame de mesure de Qualité de Service (QS).</p>
+<section id="id12">
+<h2>Parameters<a class="headerlink" href="#id12" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df_mesure_qs<span class="classifier">DataFrame</span></dt><dd><p>DataFrame que nous voulons sauvegarder.</p>
+</dd>
+<dt>suffix: str</dt><dd><p>Suffix de l’agrégation, par exemple “2024_01” pour une agrégation mensuelle.</p>
+</dd>
+<dt>date_range<span class="classifier">Tuple[date, date]</span></dt><dd><p>Plage de dates pour l’agrégation.</p>
+</dd>
+<dt>dsp<span class="classifier">str</span></dt><dd><p>DSP à agréger.</p>
+</dd>
+<dt>aggregation_level<span class="classifier">AggregationLevel</span></dt><dd><p>Niveau d’agrégation des données.</p>
+</dd>
+<dt>mesure_type<span class="classifier">MesureType</span></dt><dd><p>Type de mesure à agréger (ponctualite ou regularite).</p>
+</dd>
+<dt>list_journees_exceptionnelles<span class="classifier">Optional[List[date]]</span></dt><dd><p>La liste des journées exceptionnelles à exclure (ex: émeutes, grèves…). Par défaut, cette liste est vide.</p>
+</dd>
+<dt>window_name<span class="classifier">Optional[str]</span></dt><dd><p>Nom de la fenêtre d’aggregation, optionnel par défaut égal à « « </p>
+</dd>
+<dt><a href="#id13"><span class="problematic" id="id14">**</span></a>kwargs<span class="classifier">dict</span></dt><dd><p>Arguments supplémentaires pour la sauvegarde, comme le niveau d’agrégation.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

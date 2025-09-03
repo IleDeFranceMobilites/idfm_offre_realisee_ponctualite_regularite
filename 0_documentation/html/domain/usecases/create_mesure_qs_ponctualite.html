@@ -34,8 +34,54 @@
 
           <div class="body" role="main">
             
-  <section id="ponctualite">
-<h1>Ponctualité<a class="headerlink" href="#ponctualite" title="Lien vers cette rubrique">¶</a></h1>
+  <section id="module-offre_realisee.domain.usecases.create_mesure_qs_ponctualite">
+<span id="ponctualite"></span><h1>Ponctualité<a class="headerlink" href="#module-offre_realisee.domain.usecases.create_mesure_qs_ponctualite" title="Lien vers cette rubrique">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="offre_realisee.domain.usecases.create_mesure_qs_ponctualite.create_mesure_qs_ponctualite">
+<span class="sig-prename descclassname"><span class="pre">offre_realisee.domain.usecases.create_mesure_qs_ponctualite.</span></span><span class="sig-name descname"><span class="pre">create_mesure_qs_ponctualite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_system_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../port/file_system_handler.html#offre_realisee.domain.port.file_system_handler.FileSystemHandler" title="offre_realisee.domain.port.file_system_handler.FileSystemHandler"><span class="pre">FileSystemHandler</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ligne</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#offre_realisee.domain.usecases.create_mesure_qs_ponctualite.create_mesure_qs_ponctualite" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Crée et sauvegarde les mesures de qualité de service de type ponctualité.</p>
+<p>Cette fonction récupère les données d’offre réalisée pour une date donnée, effectue des calculs de ponctualité pour
+chaque arrêt, agrège les résultats et sauvegarde le DataFrame résultant.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>file_system_handler<span class="classifier">FileSystemHandler</span></dt><dd><p>Gestionnaire du système de fichiers.</p>
+</dd>
+<dt>date<span class="classifier">date</span></dt><dd><p>Date pour laquelle les mesures de qualité de service doivent être calculées.</p>
+</dd>
+<dt>dsp<span class="classifier">str</span></dt><dd><p>DSP pour laquelle les mesures de qualité de service doivent être calculées, par défaut à « « .</p>
+</dd>
+<dt>ligne<span class="classifier">str</span></dt><dd><p>Ligne pour laquelle les mesures de qualité de service doivent être calculées, par défaut à « « .</p>
+</dd>
+<dt>metadata_cols: list[str]</dt><dd><p>Colonnes contenant des méta informations invariables par lignes qui doivent être conservées, par défaut à [].</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="offre_realisee.domain.usecases.create_mesure_qs_ponctualite.create_mesure_qs_ponctualite_date_range">
+<span class="sig-prename descclassname"><span class="pre">offre_realisee.domain.usecases.create_mesure_qs_ponctualite.</span></span><span class="sig-name descname"><span class="pre">create_mesure_qs_ponctualite_date_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_system_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../port/file_system_handler.html#offre_realisee.domain.port.file_system_handler.FileSystemHandler" title="offre_realisee.domain.port.file_system_handler.FileSystemHandler"><span class="pre">FileSystemHandler</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">date</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">date</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ligne</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_thread</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#offre_realisee.domain.usecases.create_mesure_qs_ponctualite.create_mesure_qs_ponctualite_date_range" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Appelle la fonction create_mesure_qs_ponctualite sur une plage de date, en parallélisant les calculs.</p>
+<section id="id1">
+<h2>Parameters<a class="headerlink" href="#id1" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>file_system_handler<span class="classifier">FileSystemHandler</span></dt><dd><p>Gestionnaire du système de fichiers.</p>
+</dd>
+<dt>date_range<span class="classifier">datetime</span></dt><dd><p>Dates de début et de fin pour laquelle les mesures de qualité de service doivent être calculées.</p>
+</dd>
+<dt>dsp<span class="classifier">str</span></dt><dd><p>DSP pour laquelle les mesures de qualité de service doivent être calculées, par défaut à « « .</p>
+</dd>
+<dt>ligne<span class="classifier">str</span></dt><dd><p>Ligne pour laquelle les mesures de qualité de service doivent être calculées, par défaut à « « .</p>
+</dd>
+<dt>n_thread: int</dt><dd><p>Nombre de processus en parallèle.</p>
+</dd>
+<dt>metadata_cols: list[str]</dt><dd><p>Colonnes contenant des méta informations invariables par lignes qui doivent être conservées, par défaut à [].</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
 </section>
 
 
