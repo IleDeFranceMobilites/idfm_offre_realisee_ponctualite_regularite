@@ -5,6 +5,7 @@ from offre_realisee.config.input_config import InputColumns
 
 def drop_stop_without_real_time(df: pd.DataFrame) -> pd.DataFrame:
     """Supprime les arrêts sans heure réelle du DataFrame.
+    Un arrêt sans aucune heure réelle n'est pas pris en compte, il peut s'agir d'un arrêt non desservi.
 
     Parameters
     ----------

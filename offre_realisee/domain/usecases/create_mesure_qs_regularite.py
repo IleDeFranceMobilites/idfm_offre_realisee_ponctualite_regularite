@@ -6,6 +6,7 @@ from multiprocess import Pool
 
 from offre_realisee.config.logger import logger
 from offre_realisee.config.offre_realisee_config import MesureType
+from offre_realisee.domain.entities.drop_stop_without_real_time import drop_stop_without_real_time
 from offre_realisee.domain.port.file_system_handler import FileSystemHandler
 from offre_realisee.domain.entities.regularite.compute_regularite_stat_from_dataframe import (
     compute_regularite_stat_from_dataframe)
@@ -44,6 +45,9 @@ def create_mesure_qs_regularite(
     except FileNotFoundError:
         logger.info(f'No data to process for {date.strftime("%Y-%m-%d")}, for dsp {dsp}')
         return
+
+    # Un arrêt sans aucune heure réelle n'est pas pris en compte, il peut s'agir d'un arrêt non desservi.
+    df_offre_realisee = drop_stop_without_real_time(df_offre_realisee)
 
     df_stat_regularite = compute_regularite_stat_from_dataframe(
         df_offre_realisee=df_offre_realisee, metadata_cols=metadata_cols)

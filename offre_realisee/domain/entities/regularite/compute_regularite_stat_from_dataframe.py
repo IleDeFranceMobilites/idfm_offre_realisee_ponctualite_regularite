@@ -3,7 +3,6 @@ from offre_realisee.config.logger import logger
 from offre_realisee.config.offre_realisee_config import FrequenceType, MesureRegularite
 from offre_realisee.domain.entities.add_frequency import add_frequency
 from offre_realisee.domain.entities.drop_duplicates_heure_theorique import drop_duplicates_heure_theorique
-from offre_realisee.domain.entities.drop_stop_without_real_time import drop_stop_without_real_time
 from offre_realisee.domain.entities.regularite.process_stop_regularite import process_stop_regularite
 from offre_realisee.domain.entities.regularite.stat_compliance_score_regularite import stat_compliance_score_regularite
 
@@ -28,7 +27,6 @@ def compute_regularite_stat_from_dataframe(
     """
     df_offre_realisee = drop_duplicates_heure_theorique(df_offre_realisee)
 
-    df_offre_realisee = drop_stop_without_real_time(df_offre_realisee)
     df_grouped = df_offre_realisee.groupby(by=[
         InputColumns.ligne, InputColumns.sens, InputColumns.arret
     ])
