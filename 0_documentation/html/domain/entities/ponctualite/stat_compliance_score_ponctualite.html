@@ -34,8 +34,61 @@
 
           <div class="body" role="main">
             
-  <section id="stat-compliance-score-ponctualite">
-<h1>stat_compliance_score_ponctualite<a class="headerlink" href="#stat-compliance-score-ponctualite" title="Lien vers cette rubrique">¶</a></h1>
+  <section id="module-offre_realisee.domain.entities.ponctualite.stat_compliance_score_ponctualite">
+<span id="stat-compliance-score-ponctualite"></span><h1>stat_compliance_score_ponctualite<a class="headerlink" href="#module-offre_realisee.domain.entities.ponctualite.stat_compliance_score_ponctualite" title="Lien vers cette rubrique">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="offre_realisee.domain.entities.ponctualite.stat_compliance_score_ponctualite.stat_compliance_score_ponctualite">
+<span class="sig-prename descclassname"><span class="pre">offre_realisee.domain.entities.ponctualite.stat_compliance_score_ponctualite.</span></span><span class="sig-name descname"><span class="pre">stat_compliance_score_ponctualite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.domain.entities.ponctualite.stat_compliance_score_ponctualite.stat_compliance_score_ponctualite" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Génère les statistiques de conformité pour les données de ponctualité.</p>
+<p>Cette fonction prend un DataFrame avec les scores de conformité et calcule les statistiques liées à ces données.
+Elle renvoie un DataFrame contenant :
+- Le nombre de passage théoriques.
+- Le nombre de passages réelles assignées à une valeur théorique.
+- La somme des scores de conformité.
+- Les statistiques sur les SI (SI avance, SI retard, SI absence, SI total)
+- Le pourcentage de conformité.
+- Le pourcentage de données manquantes.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame contenant les données par arrêt, leur score de conformité et le nombre de SI.</p>
+</dd>
+<dt>metadata_cols: list[str]</dt><dd><p>Colonnes contenant des méta informations invariables par lignes qui doivent être conservées, par défaut à [].</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame contenant les statistiques de conformité pour chaque ligne.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="offre_realisee.domain.entities.ponctualite.stat_compliance_score_ponctualite.stat_situation_inacceptable">
+<span class="sig-prename descclassname"><span class="pre">offre_realisee.domain.entities.ponctualite.stat_compliance_score_ponctualite.</span></span><span class="sig-name descname"><span class="pre">stat_situation_inacceptable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.domain.entities.ponctualite.stat_compliance_score_ponctualite.stat_situation_inacceptable" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Génère les statistiques des Situations Inacceptables (SI) par ligne.</p>
+<p>Cette fonction prend un DataFrame avec des données de ponctualité et calcule les statistiques liées aux SI.
+Elle compte le nombre de SI pour différents types (avance, retard, absence) pour chaque arrêt, et garde les valeurs
+de l’arrêt ayant le plus de SI par ligne et sens pour les retards uniquement.</p>
+<section id="id1">
+<h2>Parameters<a class="headerlink" href="#id1" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame contenant les données par arrêt, leur score de conformité et le nombre de SI.</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h2>Returns<a class="headerlink" href="#id2" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df_si<span class="classifier">DataFrame</span></dt><dd><p>DataFrame contenant les statistiques sur les SI pour chaque ligne.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
 </section>
 
 

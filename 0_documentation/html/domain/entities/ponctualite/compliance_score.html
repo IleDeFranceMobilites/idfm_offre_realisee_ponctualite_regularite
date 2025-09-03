@@ -34,8 +34,40 @@
 
           <div class="body" role="main">
             
-  <section id="compliance-score">
-<h1>compliance_score<a class="headerlink" href="#compliance-score" title="Lien vers cette rubrique">¶</a></h1>
+  <section id="module-offre_realisee.domain.entities.ponctualite.compliance_score">
+<span id="compliance-score"></span><h1>compliance_score<a class="headerlink" href="#module-offre_realisee.domain.entities.ponctualite.compliance_score" title="Lien vers cette rubrique">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="offre_realisee.domain.entities.ponctualite.compliance_score.score">
+<span class="sig-prename descclassname"><span class="pre">offre_realisee.domain.entities.ponctualite.compliance_score.</span></span><span class="sig-name descname"><span class="pre">score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FrequenceType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_terminus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_theorique_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#offre_realisee.domain.entities.ponctualite.compliance_score.score" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Calcul des scores de conformité pour la ponctualité.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>freq<span class="classifier">FrequenceType</span></dt><dd><p>La fréquence de notre ligne (HF: Haute Frequence, BF: Basse Frequence).</p>
+</dd>
+<dt>matrix<span class="classifier">ndarray</span></dt><dd><p>Matrice d’entrée contenant les deltas de temps entre les valeurs réelles et théoriques.</p>
+</dd>
+<dt>is_terminus<span class="classifier">ndarray</span></dt><dd><p>Tableau de booléen indiquant si un arrêt est un terminus d’arrivée ou non.</p>
+</dd>
+<dt>next_theorique_interval<span class="classifier">ndarray</span></dt><dd><p>Tableau contenant les intervalles de temps avec le prochain passage théorique.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>matrix_score<span class="classifier">ndarray</span></dt><dd><p>Matrice contenant les scores de conformité:
+- ComplianceType.compliant (1).
+- ComplianceType.semi_compliant (0.75 en haute frequence, 0.5 en basse frequence).
+- ComplianceType.not_compliant (0.25 en haute frequence, 0 en basse frequence).
+- ComplianceType.situation_inacceptable_retard (-1000000): En retard.
+- ComplianceType.situation_inacceptable_avance (-999900): En avance.
+- ComplianceType.situation_inacceptable_absence (-999000): Pas de données.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
 </section>
 
 

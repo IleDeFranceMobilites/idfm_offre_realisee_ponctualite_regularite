@@ -7,6 +7,7 @@ from multiprocess import Pool
 from offre_realisee.config.input_config import InputColumns
 from offre_realisee.config.logger import logger
 from offre_realisee.config.offre_realisee_config import MesureType
+from offre_realisee.domain.entities.drop_stop_without_real_time import drop_stop_without_real_time
 from offre_realisee.domain.port.file_system_handler import FileSystemHandler
 from offre_realisee.domain.entities.ponctualite.compute_ponctualite_stat_from_dataframe import (
     compute_ponctualite_stat_from_dataframe)
@@ -45,6 +46,10 @@ def create_mesure_qs_ponctualite(
     except FileNotFoundError:
         logger.info(f'No data to process for {date.strftime("%Y-%m-%d")} with dsp: [{dsp}] and ligne: [{ligne}]')
         return
+
+    # Un arrêt sans aucune heure réelle n'est pas pris en compte, il peut s'agir d'un arrêt non desservi.
+    df_offre_realisee = drop_stop_without_real_time(df_offre_realisee)
+
     if (df_offre_realisee[InputColumns.heure_theorique].isna().all() or
             df_offre_realisee[InputColumns.sens].isna().any() or df_offre_realisee[InputColumns.arret].isna().any()):
         file_system_handler.save_error_mesure_qs(
