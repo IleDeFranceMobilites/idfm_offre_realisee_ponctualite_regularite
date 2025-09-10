@@ -48,15 +48,16 @@ def create_mesure_qs_ponctualite(
         return
 
     # Un arrêt sans aucune heure réelle n'est pas pris en compte, il peut s'agir d'un arrêt non desservi.
-    df_offre_realisee = drop_stop_without_real_time(df_offre_realisee)
+    df_offre_realisee_without_empty_stops = drop_stop_without_real_time(df_offre_realisee)
 
-    if (df_offre_realisee[InputColumns.heure_theorique].isna().all() or
-            df_offre_realisee[InputColumns.sens].isna().any() or df_offre_realisee[InputColumns.arret].isna().any()):
+    if (df_offre_realisee_without_empty_stops[InputColumns.heure_theorique].isna().all() or
+            df_offre_realisee_without_empty_stops[InputColumns.sens].isna().any() or
+            df_offre_realisee_without_empty_stops[InputColumns.arret].isna().any()):
         file_system_handler.save_error_mesure_qs(
             df_mesure_qs=df_offre_realisee, date=date, mesure_type=MesureType.ponctualite, dsp=dsp, ligne=ligne)
     else:
         df_stat_ponctualite = compute_ponctualite_stat_from_dataframe(
-            df_offre_realisee=df_offre_realisee, metadata_cols=metadata_cols)
+            df_offre_realisee=df_offre_realisee_without_empty_stops, metadata_cols=metadata_cols)
         file_system_handler.save_daily_mesure_qs(
             df_mesure_qs=df_stat_ponctualite, date=date, dsp=dsp, mesure_type=MesureType.ponctualite
         )
