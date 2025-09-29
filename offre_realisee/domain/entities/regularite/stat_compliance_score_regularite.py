@@ -41,6 +41,9 @@ def stat_compliance_score_regularite(
     # Filter lignes with at least one high frequency measure
     df = df[df[MesureRegularite.ligne].apply(lambda x: any_high_frequency_on_lignes[x])]
 
+    if df.empty:
+        return pd.DataFrame()
+
     # Aggregate stops results by lignes
     df = df.groupby([MesureRegularite.ligne] + metadata_cols)[MesureRegularite.resultat].agg([
         (MesureRegularite.nombre_reel, 'count'),
