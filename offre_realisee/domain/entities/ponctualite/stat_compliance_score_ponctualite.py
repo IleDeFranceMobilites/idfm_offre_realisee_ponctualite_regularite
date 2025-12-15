@@ -9,7 +9,8 @@ _SI_VALUES_SET = {
 }
 
 _ASSIGNED_VALUES_SET = {
-    ComplianceType.compliant,
+    ComplianceType.compliant_delay,
+    ComplianceType.compliant_advance,
     ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
     ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
     ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
@@ -89,8 +90,10 @@ def stat_compliance_score_ponctualite(df: pd.DataFrame, metadata_cols: list[str]
     - Le nombre de passage théoriques.
     - Le nombre de passages réelles assignées à une valeur théorique.
     - La somme des scores de conformité.
+    - Les statistiques sur la conformité (semi-conforme, non-conforme, avance conforme et retard conforme)
     - Les statistiques sur les SI (SI avance, SI retard, SI absence, SI total)
     - Le pourcentage de conformité.
+    - Le pourcentage de données remontée
     - Le pourcentage de données manquantes.
 
     Parameters
@@ -110,7 +113,16 @@ def stat_compliance_score_ponctualite(df: pd.DataFrame, metadata_cols: list[str]
     df = df.groupby([MesurePonctualite.ligne] + metadata_cols)[MesurePonctualite.resultat].agg([
         (MesurePonctualite.nombre_theorique, 'count'),
         (MesurePonctualite.nombre_reel, lambda x: x.isin(_ASSIGNED_VALUES_SET).sum()),
-        (MesurePonctualite.score_de_conformite, lambda x: x[~x.isin(_SI_VALUES_SET)].sum())
+        (MesurePonctualite.score_de_conformite, lambda x: x[~x.isin(_SI_VALUES_SET)].sum()),
+        (MesurePonctualite.non_conforme, lambda x: x.isin(
+            [ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
+             ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.basse_frequence]]).sum()),
+        (MesurePonctualite.semi_conforme, lambda x: x.isin(
+            [ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
+             ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence]]
+        ).sum()),
+        (MesurePonctualite.avance_conforme, lambda x: x.isin([ComplianceType.compliant_advance]).sum()),
+        (MesurePonctualite.retard_conforme, lambda x: x.isin([ComplianceType.compliant_delay]).sum())
     ]).reset_index()
 
     df = df.merge(df_si, on=[MesurePonctualite.ligne])
@@ -119,9 +131,17 @@ def stat_compliance_score_ponctualite(df: pd.DataFrame, metadata_cols: list[str]
         df[MesurePonctualite.score_de_conformite] / df[MesurePonctualite.nombre_theorique] * 100, 2
     )
 
+    df[MesurePonctualite.taux_de_situation_innaceptable] = round(
+        df[MesurePonctualite.situation_inacceptable_total] / df[MesurePonctualite.nombre_theorique] * 100, 2
+    )
+
     df[MesurePonctualite.taux_absence_de_donnees] = round(
         (df[MesurePonctualite.nombre_theorique] - df[MesurePonctualite.nombre_reel]) /
         df[MesurePonctualite.nombre_theorique] * 100, 2
+    )
+
+    df[MesurePonctualite.taux_de_remontee_sae] = round(
+        df[MesurePonctualite.nombre_reel] / df[MesurePonctualite.nombre_theorique] * 100, 2
     )
 
     return df

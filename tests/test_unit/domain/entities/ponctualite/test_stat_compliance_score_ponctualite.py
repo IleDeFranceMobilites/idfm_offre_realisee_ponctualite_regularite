@@ -13,15 +13,15 @@ def test_stat_compliance_score_ponctualite():
         MesurePonctualite.arret: [1, 1, 1, 1, 1, 2, 2, 2, 2, 1],
         MesurePonctualite.sens: [1, 1, 2, 2, 2, 1, 1, 2, 2, 1],
         MesurePonctualite.resultat: [
-            ComplianceType.compliant,
+            ComplianceType.compliant_delay,
             ComplianceType.situation_inacceptable_retard,
             ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
             ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
             ComplianceType.situation_inacceptable_absence,
-            ComplianceType.compliant,
-            ComplianceType.compliant,
+            ComplianceType.compliant_delay,
+            ComplianceType.compliant_advance,
             ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
-            ComplianceType.compliant,
+            ComplianceType.compliant_delay,
             ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence]]
     })
 
@@ -29,13 +29,19 @@ def test_stat_compliance_score_ponctualite():
         MesurePonctualite.ligne: [1, 2],
         MesurePonctualite.nombre_theorique: [9, 1],
         MesurePonctualite.nombre_reel: [8, 1],
-        MesurePonctualite.score_de_conformite: [5.0, 0.5],
+        MesurePonctualite.score_de_conformite: [4.99, 0.5],
+        MesurePonctualite.non_conforme: [1, 0],
+        MesurePonctualite.semi_conforme: [2, 1],
+        MesurePonctualite.avance_conforme: [1, 0],
+        MesurePonctualite.retard_conforme: [3, 0],
         MesurePonctualite.situation_inacceptable_avance: [0, 0],
         MesurePonctualite.situation_inacceptable_retard: [1, 0],
         MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue: [1, 0],
         MesurePonctualite.situation_inacceptable_total: [2, 0],
-        MesurePonctualite.taux_de_conformite: [55.56, 50.0],
-        MesurePonctualite.taux_absence_de_donnees: [11.11, 0.0]
+        MesurePonctualite.taux_de_conformite: [55.44, 50.0],
+        MesurePonctualite.taux_de_situation_innaceptable: [22.22, 0],
+        MesurePonctualite.taux_absence_de_donnees: [11.11, 0.0],
+        MesurePonctualite.taux_de_remontee_sae: [88.89, 100]
     })
 
     # When
@@ -57,10 +63,10 @@ def test_stat_situation_inacceptable():
             ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
             ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
             ComplianceType.situation_inacceptable_absence,
-            ComplianceType.compliant,
+            ComplianceType.compliant_advance,
             ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
             ComplianceType.situation_inacceptable_avance,
-            ComplianceType.compliant,
+            ComplianceType.compliant_advance,
             ComplianceType.situation_inacceptable_avance
         ]
     })
@@ -86,7 +92,7 @@ def test_stat_situation_inacceptable_keep_max():
         MesurePonctualite.ligne: [1, 1],
         MesurePonctualite.arret: [1, 2],
         MesurePonctualite.sens: [1, 1],
-        MesurePonctualite.resultat: [ComplianceType.compliant, ComplianceType.situation_inacceptable_absence]
+        MesurePonctualite.resultat: [ComplianceType.compliant_advance, ComplianceType.situation_inacceptable_absence]
     })
 
     expected_result = pd.DataFrame({
@@ -111,7 +117,7 @@ def test_stat_situation_inacceptable_keep_max_on_multiple_si():
         MesurePonctualite.arret: [1, 1, 2, 2],
         MesurePonctualite.sens: [1, 1, 1, 1],
         MesurePonctualite.resultat: [
-            ComplianceType.compliant, ComplianceType.situation_inacceptable_absence,
+            ComplianceType.compliant_advance, ComplianceType.situation_inacceptable_absence,
             ComplianceType.situation_inacceptable_avance, ComplianceType.situation_inacceptable_avance,
         ]
     })

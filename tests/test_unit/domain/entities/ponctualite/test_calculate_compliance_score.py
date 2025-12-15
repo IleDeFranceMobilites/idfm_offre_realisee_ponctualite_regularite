@@ -9,24 +9,28 @@ from offre_realisee.config.offre_realisee_config import FrequenceType, Complianc
 def test_score_bf():
     matrix_bf = np.array(
         [[timedelta(minutes=3).total_seconds(), timedelta(minutes=-1).total_seconds(),
-          timedelta(minutes=-2).total_seconds(), timedelta(minutes=5).total_seconds()],
+          timedelta(minutes=-2).total_seconds(), timedelta(minutes=5).total_seconds(),
+          timedelta(seconds=-30).total_seconds()],
          [timedelta(minutes=6).total_seconds(), timedelta(minutes=7).total_seconds(),
-          timedelta(minutes=10).total_seconds(), timedelta(minutes=11).total_seconds()]])
+          timedelta(minutes=10).total_seconds(), timedelta(minutes=11).total_seconds(),
+          timedelta(seconds=-30).total_seconds()]])
     is_terminus_bf = np.array([False, False])
     next_theorique_interval = [[timedelta(minutes=4).total_seconds()], [np.nan]]
 
     expected_result = np.array([
         [
-            ComplianceType.compliant,
+            ComplianceType.compliant_delay,
             ComplianceType.situation_inacceptable_avance,
             ComplianceType.situation_inacceptable_avance,
-            ComplianceType.situation_inacceptable_absence
+            ComplianceType.situation_inacceptable_absence,
+            ComplianceType.compliant_advance
         ],
         [
             ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
             ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
             ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
-            ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.basse_frequence]
+            ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
+            ComplianceType.compliant_advance
         ],
     ])
 
@@ -40,24 +44,28 @@ def test_score_bf():
 def test_score_hf():
     matrix_hf = np.array(
         [[timedelta(minutes=3).total_seconds(), timedelta(minutes=-1).total_seconds(),
-          timedelta(minutes=-2).total_seconds(), timedelta(minutes=5).total_seconds()],
+          timedelta(minutes=-2).total_seconds(), timedelta(minutes=5).total_seconds(),
+          timedelta(seconds=-30).total_seconds()],
          [timedelta(minutes=6).total_seconds(), timedelta(minutes=7).total_seconds(),
-          timedelta(minutes=10).total_seconds(), timedelta(minutes=11).total_seconds()]])
+          timedelta(minutes=10).total_seconds(), timedelta(minutes=11).total_seconds(),
+          timedelta(seconds=-30).total_seconds()]])
     is_terminus_hf = np.array([False, False])
     next_theorique_interval = [[timedelta(minutes=4).total_seconds()], [np.nan]]
 
     expected_result = np.array([
         [
-            ComplianceType.compliant,
+            ComplianceType.compliant_delay,
             ComplianceType.situation_inacceptable_avance,
             ComplianceType.situation_inacceptable_avance,
-            ComplianceType.situation_inacceptable_absence
+            ComplianceType.situation_inacceptable_absence,
+            ComplianceType.compliant_advance
         ],
         [
             ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
             ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
             ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
             ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
+            ComplianceType.compliant_advance
         ],
     ])
 
