@@ -29,7 +29,7 @@ def test_stat_compliance_score_ponctualite():
         MesurePonctualite.ligne: [1, 2],
         MesurePonctualite.nombre_theorique: [9, 1],
         MesurePonctualite.nombre_reel: [8, 1],
-        MesurePonctualite.score_de_conformite: [4.99, 0.5],
+        MesurePonctualite.score_de_conformite: [4.999999900000001, 0.5],
         MesurePonctualite.non_conforme: [1, 0],
         MesurePonctualite.semi_conforme: [2, 1],
         MesurePonctualite.avance_conforme: [1, 0],
@@ -38,7 +38,7 @@ def test_stat_compliance_score_ponctualite():
         MesurePonctualite.situation_inacceptable_retard: [1, 0],
         MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue: [1, 0],
         MesurePonctualite.situation_inacceptable_total: [2, 0],
-        MesurePonctualite.taux_de_conformite: [55.44, 50.0],
+        MesurePonctualite.taux_de_conformite: [55.56, 50.0],
         MesurePonctualite.taux_de_situation_innaceptable: [22.22, 0],
         MesurePonctualite.taux_absence_de_donnees: [11.11, 0.0],
         MesurePonctualite.taux_de_remontee_sae: [88.89, 100]

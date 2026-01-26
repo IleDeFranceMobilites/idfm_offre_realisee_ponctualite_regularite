@@ -117,6 +117,8 @@ class MesureRegularite(Mesure):
     resultat_inf = 'RESULTAT' + Borne.inf
     resultat_sup = 'RESULTAT' + Borne.sup
     score_de_conformite = 'SCORE_DE_CONFORMITE'
+    semi_conforme = "SEMI_CONFORME"
+    non_conforme = "NON_CONFORME"
     situation_inacceptable_train_de_bus = 'SITUATION_INACCEPTABLE_TRAIN_DE_BUS'
     situation_inacceptable_ecart_important = 'SITUATION_INACCEPTABLE_ECART_IMPORTANT'
     situation_inacceptable_total = 'SITUATION_INACCEPTABLE_TOTAL'
@@ -154,7 +156,7 @@ class FrequenceType:
 class ComplianceType:
     compliant = 1.
     compliant_delay = 1.
-    compliant_advance = 0.99
+    compliant_advance = 0.9999999
     semi_compliant = {
         MesureType.ponctualite: {
             FrequenceType.haute_frequence: 0.75,

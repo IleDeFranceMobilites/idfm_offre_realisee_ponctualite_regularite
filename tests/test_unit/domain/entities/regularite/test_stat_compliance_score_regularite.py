@@ -32,7 +32,9 @@ def test_stat_regularite_compliance_score():
         MesureRegularite.nombre_theorique: [5, 7, 1],
         MesureRegularite.nombre_reel: [4, 5, 1],
         MesureRegularite.taux_de_conformite: [33.0, 52.14, 65.0],
-        MesureRegularite.taux_absence_de_donnees: [20.0, 28.57, 0.0]
+        MesureRegularite.taux_absence_de_donnees: [20.0, 28.57, 0.0],
+        MesureRegularite.non_conforme:[0, 0, 0],
+        MesureRegularite.semi_conforme:[1, 1, 1]
     })
 
     # When
@@ -64,6 +66,8 @@ def test_stat_regularite_compliance_score_no_high_frequency():
         MesureRegularite.nombre_reel: [1],
         MesureRegularite.taux_de_conformite: [100.],
         MesureRegularite.taux_absence_de_donnees: [0.],
+        MesureRegularite.non_conforme: [0],
+        MesureRegularite.semi_conforme: [0]
     })
 
     # When
