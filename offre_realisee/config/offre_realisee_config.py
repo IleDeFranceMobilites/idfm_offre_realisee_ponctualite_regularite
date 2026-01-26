@@ -36,7 +36,15 @@ class Mesure(abc.ABC):
         pass
 
     @abc.abstractproperty
+    def situtation_conforme_types(self) -> list:
+        pass
+
+    @abc.abstractproperty
     def column_order(self) -> list:
+        pass
+
+    @abc.abstractproperty
+    def column_order_agregated(self) -> list:
         pass
 
 
@@ -72,7 +80,31 @@ class MesurePonctualite(Mesure):
         situation_inacceptable_sans_horaire_reel_attribue,
         situation_inacceptable_total,
     ]
+    situtation_conforme_types= [
+        avance_conforme,
+        retard_conforme,
+        semi_conforme,
+        non_conforme
+    ]
     column_order = [
+        ligne,
+        nombre_theorique,
+        nombre_reel,
+        avance_conforme,
+        retard_conforme,
+        semi_conforme,
+        non_conforme,
+        score_de_conformite,
+        situation_inacceptable_retard,
+        situation_inacceptable_avance,
+        situation_inacceptable_sans_horaire_reel_attribue,
+        situation_inacceptable_total,
+        taux_de_conformite,
+        taux_de_situation_innaceptable,
+        taux_absence_de_donnees,
+        taux_de_remontee_sae
+    ]
+    column_order_agregated = [
         ligne,
         nombre_theorique,
         nombre_reel,
@@ -129,7 +161,24 @@ class MesureRegularite(Mesure):
         situation_inacceptable_ecart_important,
         situation_inacceptable_total,
     ]
+    situtation_conforme_types = [
+        semi_conforme,
+        non_conforme
+    ]
     column_order = [
+        ligne,
+        nombre_theorique,
+        nombre_reel,
+        score_de_conformite,
+        semi_conforme,
+        non_conforme,
+        situation_inacceptable_train_de_bus,
+        situation_inacceptable_ecart_important,
+        situation_inacceptable_total,
+        taux_de_conformite,
+        taux_absence_de_donnees,
+    ]
+    column_order_agregated = [
         ligne,
         nombre_theorique,
         nombre_reel,

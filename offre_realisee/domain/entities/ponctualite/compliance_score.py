@@ -56,8 +56,8 @@ def score(freq: FrequenceType, matrix: np.ndarray, is_terminus: np.ndarray,
     -------
     matrix_score : ndarray
         Matrice contenant les scores de conformité:
-        - ComplianceType.compliant_delay (1.1).
-        - ComplianceType.compliant_advance(1.)
+        - ComplianceType.compliant_delay (1).
+        - ComplianceType.compliant_advance(0.9999999)
         - ComplianceType.semi_compliant (0.75 en haute frequence, 0.5 en basse frequence).
         - ComplianceType.not_compliant (0.25 en haute frequence, 0 en basse frequence).
         - ComplianceType.situation_inacceptable_retard (-1000000): En retard.
