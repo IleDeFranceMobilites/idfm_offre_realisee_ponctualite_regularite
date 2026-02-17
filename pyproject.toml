@@ -10,8 +10,8 @@ readme = "README.md"
 license = {file = "LICENSE"}
 dependencies = [
     'pandas >= 2.2.3',
-    'pyarrow >= 19.0.1',
-    'scipy >= 1.14.1',
+    'pyarrow >= 23.0.0',
+    'scipy >= 1.17.0',
     'workalendar == 17.0.0',
     'multiprocess >= 0.70.17',
 ]
