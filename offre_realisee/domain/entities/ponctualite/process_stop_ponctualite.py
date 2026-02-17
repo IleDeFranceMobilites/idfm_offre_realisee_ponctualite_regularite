@@ -83,7 +83,8 @@ def compute_cost_matrix(df_by_stop: pd.DataFrame, heure_reelle_col: pd.Series) -
     -------
     matrix : ndarray
         Matrice contenant les scores de conformité:
-        - ComplianceType.compliant (1).
+        - ComplianceType.compliant_delay (1).
+        - ComplianceType.compliant_advance(0.9999999)
         - ComplianceType.semi_compliant (0.75 en haute frequence, 0.5 en basse frequence).
         - ComplianceType.not_compliant (0.25 en haute frequence, 0 en basse frequence).
         - ComplianceType.situation_inacceptable_retard (-1000000): En retard.

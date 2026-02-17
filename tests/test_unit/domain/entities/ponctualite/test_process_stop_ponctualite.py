@@ -51,7 +51,7 @@ def test_process_stop_ponctualite():
                 datetime.fromisoformat("2023-01-01 14:30:00+00:00"),
                 datetime.fromisoformat("2023-01-01 18:30:00+00:00"),],
             MesurePonctualite.heure_reelle: [
-                datetime.fromisoformat("2023-01-01 10:00:00+00:00"),
+                datetime.fromisoformat("2023-01-01 10:02:00+00:00"),
                 datetime.fromisoformat("2023-01-01 10:05:00+00:00"),
                 datetime.fromisoformat("2023-01-01 10:12:00+00:00"),
                 pd.NaT,
@@ -60,9 +60,9 @@ def test_process_stop_ponctualite():
                 datetime.fromisoformat("2023-01-01 10:29:00+00:00"),],
             MesurePonctualite.is_terminus: [False, False, False, False, False, False, True],
             MesurePonctualite.resultat: [
-                ComplianceType.compliant, ComplianceType.compliant, ComplianceType.compliant,
-                ComplianceType.situation_inacceptable_absence, ComplianceType.compliant,
-                ComplianceType.situation_inacceptable_absence, ComplianceType.compliant],
+                ComplianceType.compliant_delay, ComplianceType.compliant_advance, ComplianceType.compliant_delay,
+                ComplianceType.situation_inacceptable_absence, ComplianceType.compliant_delay,
+                ComplianceType.situation_inacceptable_absence, ComplianceType.compliant_advance],
         }
     )
 
@@ -95,14 +95,15 @@ def test_process_stop_ponctualite_small_set():
                 datetime.fromisoformat("2023-01-01 09:54:00+00:00"),
                 datetime.fromisoformat("2023-01-01 09:59:00+00:00"),],
             # 09:58:49 est associé à 09:59 car il est compliant tandis qu'il serait semi_compliant avec 09:54
-            # 19:30 génère de toute façon une SI, il est associé à 09:54 pour permettre d'avoir un "compliant" sur 09:59
+            # 19:30 génère de toute façon une SI, il est associé à 09:54 pour permettre d'avoir un "compliant_advance"
+            # sur 09:59
             # 19:30 ayant plus d'une heure de retard, il n'est pas assigné
             MesurePonctualite.heure_reelle: [
                 pd.NaT,
                 datetime.fromisoformat("2023-01-01 09:58:49+00:00"),],
             MesurePonctualite.is_terminus: [False, False],
             MesurePonctualite.resultat: [ComplianceType.situation_inacceptable_absence,
-                                         ComplianceType.compliant],
+                                         ComplianceType.compliant_advance],
         }
     )
 
@@ -140,7 +141,7 @@ def test_process_stop_ponctualite_small_set_less_reel():
                 datetime.fromisoformat("2023-01-01 09:58:49+00:00")],
             MesurePonctualite.is_terminus: [False, False],
             MesurePonctualite.resultat: [ComplianceType.situation_inacceptable_absence,
-                                         ComplianceType.compliant],
+                                         ComplianceType.compliant_advance],
         }
     )
 
@@ -186,7 +187,8 @@ def test_process_stop_ponctualite_small_set_no_assignment_because_after_next_sto
                 datetime.fromisoformat("2023-01-01 10:04:10+00:00")],
             MesurePonctualite.is_terminus: [False, False, False],
             MesurePonctualite.resultat: [
-                ComplianceType.compliant, ComplianceType.situation_inacceptable_absence, ComplianceType.compliant],
+                ComplianceType.compliant_advance, ComplianceType.situation_inacceptable_absence,
+                ComplianceType.compliant_delay],
         }
     )
 
@@ -232,7 +234,8 @@ def test_process_stop_ponctualite_small_set_no_assignment_because_before_previou
                 datetime.fromisoformat("2023-01-01 10:06:18+00:00")],
             MesurePonctualite.is_terminus: [False, False, False],
             MesurePonctualite.resultat: [
-                ComplianceType.compliant, ComplianceType.situation_inacceptable_absence, ComplianceType.compliant],
+                ComplianceType.compliant_advance, ComplianceType.situation_inacceptable_absence,
+                ComplianceType.compliant_delay],
         }
     )
 

@@ -110,7 +110,7 @@ def aggregate_df(df_all_mesure: pd.DataFrame, mesure: Mesure) -> pd.DataFrame:
         mesure.nombre_theorique,
         mesure.nombre_reel,
         mesure.score_de_conformite,
-        *mesure.situation_inacceptable_types
+        *mesure.situation_inacceptable_types,
     ]
 
     df_aggregated = grouped_df[columns_to_sum].sum()

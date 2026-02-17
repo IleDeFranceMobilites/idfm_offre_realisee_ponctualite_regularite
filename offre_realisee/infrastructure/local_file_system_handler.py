@@ -141,7 +141,7 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
         file_path = os.path.join(folder_path, f"mesure_{mesure_type}_{suffix}" + FileExtensions.csv)
 
         logger.info(f"Writing a dataframe of shape {df_mesure_qs.shape} in {file_path}")
-        df_mesure_qs[mesure_qs.column_order].to_csv(file_path)
+        df_mesure_qs[mesure_qs.column_order_agregated].to_csv(file_path)
 
     def save_error_mesure_qs(self, df_mesure_qs: pd.DataFrame, date: date, mesure_type: MesureType, dsp: str,
                              ligne: str) -> None:

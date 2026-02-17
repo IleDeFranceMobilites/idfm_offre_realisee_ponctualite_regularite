@@ -1,5 +1,5 @@
 import pandas as pd
-from offre_realisee.config.offre_realisee_config import MesureRegularite, ComplianceType
+from offre_realisee.config.offre_realisee_config import MesureRegularite, ComplianceType, MesureType
 
 _SI_VALUES_SET = {
     ComplianceType.situation_inacceptable_train_de_bus,
@@ -48,6 +48,14 @@ def stat_compliance_score_regularite(
     df = df.groupby([MesureRegularite.ligne] + metadata_cols)[MesureRegularite.resultat].agg([
         (MesureRegularite.nombre_reel, 'count'),
         (MesureRegularite.score_de_conformite, lambda x: x[~x.isin(_SI_VALUES_SET)].sum()),
+        (
+            MesureRegularite.semi_conforme,
+            lambda x: x.isin({ComplianceType.semi_compliant[MesureType.regularite]}).sum()
+        ),
+        (
+            MesureRegularite.non_conforme,
+            lambda x: x.isin({ComplianceType.not_compliant[MesureType.regularite]}).sum()
+        ),
         (
             MesureRegularite.situation_inacceptable_train_de_bus,
             lambda x: x.isin({ComplianceType.situation_inacceptable_train_de_bus}).sum()

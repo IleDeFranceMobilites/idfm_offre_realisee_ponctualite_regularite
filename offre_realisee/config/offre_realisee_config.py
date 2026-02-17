@@ -36,7 +36,15 @@ class Mesure(abc.ABC):
         pass
 
     @abc.abstractproperty
+    def situtation_conforme_types(self) -> list:
+        pass
+
+    @abc.abstractproperty
     def column_order(self) -> list:
+        pass
+
+    @abc.abstractproperty
+    def column_order_agregated(self) -> list:
         pass
 
 
@@ -60,13 +68,43 @@ class MesurePonctualite(Mesure):
     situation_inacceptable_total = 'SITUATION_INACCEPTABLE_TOTAL'
     taux_de_conformite = 'TAUX_DE_CONFORMITE'
     taux_absence_de_donnees = 'TAUX_ABSENCE_DE_DONNEES'
+    taux_de_situation_innaceptable = "TAUX_DE_SITUATION_INNACEPTABLE"
+    taux_de_remontee_sae = "TAUX_DE_REMONTEE_SAE"
+    semi_conforme = "SEMI_CONFORME"
+    non_conforme = "NON_CONFORME"
+    retard_conforme = "RETARD_CONFORME"
+    avance_conforme = "AVANCE_CONFORME"
     situation_inacceptable_types = [
         situation_inacceptable_retard,
         situation_inacceptable_avance,
         situation_inacceptable_sans_horaire_reel_attribue,
         situation_inacceptable_total,
     ]
+    situtation_conforme_types= [
+        avance_conforme,
+        retard_conforme,
+        semi_conforme,
+        non_conforme
+    ]
     column_order = [
+        ligne,
+        nombre_theorique,
+        nombre_reel,
+        avance_conforme,
+        retard_conforme,
+        semi_conforme,
+        non_conforme,
+        score_de_conformite,
+        situation_inacceptable_retard,
+        situation_inacceptable_avance,
+        situation_inacceptable_sans_horaire_reel_attribue,
+        situation_inacceptable_total,
+        taux_de_conformite,
+        taux_de_situation_innaceptable,
+        taux_absence_de_donnees,
+        taux_de_remontee_sae
+    ]
+    column_order_agregated = [
         ligne,
         nombre_theorique,
         nombre_reel,
@@ -111,6 +149,8 @@ class MesureRegularite(Mesure):
     resultat_inf = 'RESULTAT' + Borne.inf
     resultat_sup = 'RESULTAT' + Borne.sup
     score_de_conformite = 'SCORE_DE_CONFORMITE'
+    semi_conforme = "SEMI_CONFORME"
+    non_conforme = "NON_CONFORME"
     situation_inacceptable_train_de_bus = 'SITUATION_INACCEPTABLE_TRAIN_DE_BUS'
     situation_inacceptable_ecart_important = 'SITUATION_INACCEPTABLE_ECART_IMPORTANT'
     situation_inacceptable_total = 'SITUATION_INACCEPTABLE_TOTAL'
@@ -121,7 +161,24 @@ class MesureRegularite(Mesure):
         situation_inacceptable_ecart_important,
         situation_inacceptable_total,
     ]
+    situtation_conforme_types = [
+        semi_conforme,
+        non_conforme
+    ]
     column_order = [
+        ligne,
+        nombre_theorique,
+        nombre_reel,
+        score_de_conformite,
+        semi_conforme,
+        non_conforme,
+        situation_inacceptable_train_de_bus,
+        situation_inacceptable_ecart_important,
+        situation_inacceptable_total,
+        taux_de_conformite,
+        taux_absence_de_donnees,
+    ]
+    column_order_agregated = [
         ligne,
         nombre_theorique,
         nombre_reel,
@@ -147,6 +204,8 @@ class FrequenceType:
 
 class ComplianceType:
     compliant = 1.
+    compliant_delay = 1.
+    compliant_advance = 0.9999999
     semi_compliant = {
         MesureType.ponctualite: {
             FrequenceType.haute_frequence: 0.75,

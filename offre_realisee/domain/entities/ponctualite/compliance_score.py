@@ -11,7 +11,11 @@ class FrequencyThreshold:
         FrequenceType.basse_frequence: timedelta(minutes=-1).total_seconds(),
         FrequenceType.haute_frequence: timedelta(minutes=-1).total_seconds(),
     }
-    compliance: _ThresholdType = {
+    compliance_avance: _ThresholdType = {
+        FrequenceType.basse_frequence: timedelta(minutes=0).total_seconds(),
+        FrequenceType.haute_frequence: timedelta(minutes=0).total_seconds(),
+    }
+    compliance_retard: _ThresholdType = {
         FrequenceType.basse_frequence: timedelta(minutes=5).total_seconds(),
         FrequenceType.haute_frequence: timedelta(minutes=3).total_seconds(),
     }
@@ -52,7 +56,8 @@ def score(freq: FrequenceType, matrix: np.ndarray, is_terminus: np.ndarray,
     -------
     matrix_score : ndarray
         Matrice contenant les scores de conformité:
-        - ComplianceType.compliant (1).
+        - ComplianceType.compliant_delay (1).
+        - ComplianceType.compliant_advance(0.9999999)
         - ComplianceType.semi_compliant (0.75 en haute frequence, 0.5 en basse frequence).
         - ComplianceType.not_compliant (0.25 en haute frequence, 0 en basse frequence).
         - ComplianceType.situation_inacceptable_retard (-1000000): En retard.
@@ -64,10 +69,13 @@ def score(freq: FrequenceType, matrix: np.ndarray, is_terminus: np.ndarray,
 
     # Calcul de la compliance des arrêts
     matrix_score[
-        (matrix > FrequencyThreshold.lower_si[freq]) & (matrix <= FrequencyThreshold.compliance[freq])
-    ] = ComplianceType.compliant
+        (matrix > FrequencyThreshold.lower_si[freq]) & (matrix <= FrequencyThreshold.compliance_avance[freq])
+    ] = ComplianceType.compliant_advance
     matrix_score[
-        (matrix > FrequencyThreshold.compliance[freq]) & (matrix <= FrequencyThreshold.semi_compliance[freq])
+        (matrix > FrequencyThreshold.compliance_avance[freq]) & (matrix <= FrequencyThreshold.compliance_retard[freq])
+        ] = ComplianceType.compliant_delay
+    matrix_score[
+        (matrix > FrequencyThreshold.compliance_retard[freq]) & (matrix <= FrequencyThreshold.semi_compliance[freq])
     ] = ComplianceType.semi_compliant[MesureType.ponctualite][freq]
     matrix_score[
         (matrix > FrequencyThreshold.semi_compliance[freq]) & (matrix < FrequencyThreshold.upper_si[freq])
@@ -95,7 +103,7 @@ def score(freq: FrequenceType, matrix: np.ndarray, is_terminus: np.ndarray,
     where_is_terminus = np.where(is_terminus)
     matrix_score[where_is_terminus] = np.where(
         matrix[where_is_terminus] <= FrequencyThreshold.lower_si[freq],
-        ComplianceType.compliant,
+        ComplianceType.compliant_advance,
         matrix_score[where_is_terminus]
     )
 
