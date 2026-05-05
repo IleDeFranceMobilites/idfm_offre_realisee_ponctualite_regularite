@@ -32,6 +32,10 @@ class Mesure(abc.ABC):
         pass
 
     @abc.abstractproperty
+    def nb_courses_theoriques(self) -> str:
+        pass
+
+    @abc.abstractproperty
     def situation_inacceptable_types(self) -> list:
         pass
 
@@ -70,6 +74,7 @@ class MesurePonctualite(Mesure):
     taux_absence_de_donnees = 'TAUX_ABSENCE_DE_DONNEES'
     taux_de_situation_innaceptable = "TAUX_DE_SITUATION_INNACEPTABLE"
     taux_de_remontee_sae = "TAUX_DE_REMONTEE_SAE"
+    nb_courses_theoriques = 'NOMBRE_COURSES_THEORIQUES'
     semi_conforme = "SEMI_CONFORME"
     non_conforme = "NON_CONFORME"
     retard_conforme = "RETARD_CONFORME"
@@ -88,6 +93,7 @@ class MesurePonctualite(Mesure):
     ]
     column_order = [
         ligne,
+        nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
         avance_conforme,
@@ -106,6 +112,7 @@ class MesurePonctualite(Mesure):
     ]
     column_order_agregated = [
         ligne,
+        nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
         score_de_conformite,
@@ -134,6 +141,7 @@ class MesureRegularite(Mesure):
     ligne = 'LIGNE'
     arret = 'ARRET'
     sens = 'SENS'
+    nb_courses_theoriques = 'NOMBRE_COURSES_THEORIQUES'
     nombre_theorique = 'NOMBRE_PASSAGES_THEORIQUES'
     nombre_reel = 'NOMBRE_PASSAGES_REELS'
     heure_theorique = 'HEURE_THEORIQUE'
@@ -167,6 +175,7 @@ class MesureRegularite(Mesure):
     ]
     column_order = [
         ligne,
+        nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
         score_de_conformite,
@@ -180,6 +189,7 @@ class MesureRegularite(Mesure):
     ]
     column_order_agregated = [
         ligne,
+        nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
         score_de_conformite,

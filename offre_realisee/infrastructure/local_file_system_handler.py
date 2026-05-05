@@ -67,9 +67,9 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
         if ligne:
             filters[0].append((InputColumns.ligne, 'in', ligne))
         df_offre_realisee = self.read_offre_realisee(
-            columns=[InputColumns.ligne, InputColumns.arret,
-                     InputColumns.sens, InputColumns.heure_theorique,
-                     InputColumns.heure_reelle, InputColumns.is_terminus],
+            columns=[InputColumns.ligne, InputColumns.arret, InputColumns.sens,
+                     InputColumns.heure_theorique, InputColumns.heure_reelle,
+                     InputColumns.is_terminus, InputColumns.course_id],
             filters=filters
         )
 
@@ -156,7 +156,6 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
                                  FileExtensions.csv)
 
         logger.info(f"Writing a dataframe of shape {df_mesure_qs.shape} in {file_path}")
-
         df_mesure_qs[mesure_qs.column_order].to_csv(file_path)
 
     def get_daily_mesure_qs(self, date: date, dsp: str, mesure_type: MesureType) -> pd.DataFrame:
@@ -176,7 +175,10 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
         df : DataFrame
             DataFrame d'offre réalisée par jour.
         """
-        folder_path = os.path.join(self.data_path, self.output_path, dsp, mesure_type)
+        if dsp :
+            folder_path = os.path.join(self.data_path, self.output_path, dsp, mesure_type)
+        else:
+            folder_path = os.path.join(self.data_path, self.output_path, mesure_type)
         file_path = os.path.join(folder_path, f"mesure_{mesure_type}_{date.strftime('%Y_%m_%d')}" + FileExtensions.csv)
 
         logger.info(f"Reading daily mesure qs for date: {date.strftime('%Y-%m-%d')}, from: {file_path}")

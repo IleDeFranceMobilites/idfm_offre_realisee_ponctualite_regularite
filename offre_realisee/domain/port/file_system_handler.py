@@ -85,7 +85,7 @@ class FileSystemHandler(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_daily_mesure_qs(self, date: date, dsp: str, mesure_type: MesureType, **kwargs) -> pd.DataFrame:
+    def get_daily_mesure_qs(self, date: date, dsp: str|None, mesure_type: MesureType, **kwargs) -> pd.DataFrame:
         """Récupération des données de mesure QS par jour.
 
         Parameters

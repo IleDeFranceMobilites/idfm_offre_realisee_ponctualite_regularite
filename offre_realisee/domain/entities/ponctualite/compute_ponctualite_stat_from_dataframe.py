@@ -1,5 +1,6 @@
 from offre_realisee.config.input_config import InputColumns
 from offre_realisee.config.logger import logger
+from offre_realisee.config.offre_realisee_config import MesurePonctualite
 from offre_realisee.domain.entities.add_frequency import add_frequency
 from offre_realisee.domain.entities.drop_duplicates_heure_theorique import drop_duplicates_heure_theorique
 from offre_realisee.domain.entities.ponctualite.process_stop_ponctualite import process_stop_ponctualite
@@ -27,6 +28,14 @@ def compute_ponctualite_stat_from_dataframe(
     df : DataFrame
         DataFrame contenant les statistiques de conformité pour chaque ligne.
     """
+    nb_courses = (
+        df_offre_realisee[df_offre_realisee[InputColumns.heure_theorique].notna()]
+        .groupby(InputColumns.ligne)[InputColumns.course_id]
+        .nunique()
+        .reset_index()
+        .rename(columns={InputColumns.course_id: MesurePonctualite.nb_courses_theoriques})
+    )
+
     df_offre_realisee = drop_duplicates_heure_theorique(df_offre_realisee)
 
     df_grouped = df_offre_realisee.groupby(by=[
@@ -44,4 +53,5 @@ def compute_ponctualite_stat_from_dataframe(
         if not score_by_stop_ponctualite.empty:
             df_concat_ponctualite = pd.concat([df_concat_ponctualite, score_by_stop_ponctualite], ignore_index=True)
 
-    return stat_compliance_score_ponctualite(df=df_concat_ponctualite, metadata_cols=metadata_cols)
+    df = stat_compliance_score_ponctualite(df=df_concat_ponctualite, metadata_cols=metadata_cols)
+    return df.merge(nb_courses, on=MesurePonctualite.ligne, how='left')
