@@ -65,3 +65,4 @@ def compute_regularite_stat_from_dataframe(
     if df.empty:
         return pd.DataFrame()
     return df.merge(nb_courses, on=MesureRegularite.ligne, how='left')
+
