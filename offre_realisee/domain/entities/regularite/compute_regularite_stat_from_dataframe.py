@@ -1,3 +1,7 @@
+from collections import defaultdict
+
+import pandas as pd
+
 from offre_realisee.config.input_config import InputColumns
 from offre_realisee.config.logger import logger
 from offre_realisee.config.offre_realisee_config import FrequenceType, MesureRegularite
@@ -7,17 +11,11 @@ from offre_realisee.domain.entities.regularite.process_stop_regularite import pr
 from offre_realisee.domain.entities.regularite.stat_compliance_score_regularite import stat_compliance_score_regularite
 
 
-import pandas as pd
-
-
-from collections import defaultdict
-
-
 def compute_regularite_stat_from_dataframe(
-    df_offre_realisee: pd.DataFrame, metadata_cols: list[str] = [],
+        df_offre_realisee: pd.DataFrame, metadata_cols: list[str] = [],
 ) -> pd.DataFrame:
     """Calcule les statistiques de régularité à partir d'un DataFrame d'offre réalisée.
-
+    Ajoute le nombre de courses théoriques basé sur l'unicité des course_id. par ligne pour une journée
     Parameters
     ----------
     df_offre_realisee : DataFrame
@@ -65,4 +63,3 @@ def compute_regularite_stat_from_dataframe(
     if df.empty:
         return pd.DataFrame()
     return df.merge(nb_courses, on=MesureRegularite.ligne, how='left')
-

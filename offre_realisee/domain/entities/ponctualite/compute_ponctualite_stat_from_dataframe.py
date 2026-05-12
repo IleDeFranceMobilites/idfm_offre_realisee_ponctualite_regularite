@@ -15,6 +15,8 @@ def compute_ponctualite_stat_from_dataframe(
     df_offre_realisee: pd.DataFrame, metadata_cols: list[str] = []
 ) -> pd.DataFrame:
     """Calcule les statistiques de ponctualité à partir d'un DataFrame d'offre réalisée.
+    Ajoute le nombre de courses théoriques basé sur l'unicité des course_id. par ligne pour une journée
+
 
     Parameters
     ----------
@@ -35,6 +37,7 @@ def compute_ponctualite_stat_from_dataframe(
         .reset_index()
         .rename(columns={InputColumns.course_id: MesurePonctualite.nb_courses_theoriques})
     )
+    df_offre_realisee = df_offre_realisee.drop(columns=[InputColumns.course_id])
 
     df_offre_realisee = drop_duplicates_heure_theorique(df_offre_realisee)
 

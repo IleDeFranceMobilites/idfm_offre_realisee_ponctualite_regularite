@@ -3,17 +3,15 @@ from datetime import date
 
 import pandas as pd
 
-from offre_realisee.config.file_extensions import FileExtensions
-from offre_realisee.config.calendrier_scolaire_config import PARQUET_ENGINE, PARQUET_COMPRESSION
-from offre_realisee.config.offre_realisee_config import MesureType
 from offre_realisee.config.aggregation_config import AggregationLevel
+from offre_realisee.config.calendrier_scolaire_config import PARQUET_ENGINE, PARQUET_COMPRESSION
+from offre_realisee.config.file_extensions import FileExtensions
+from offre_realisee.config.input_config import InputColumns
+from offre_realisee.config.logger import logger
+from offre_realisee.config.offre_realisee_config import MESURE_TYPE
+from offre_realisee.config.offre_realisee_config import MesureType
 from offre_realisee.domain.port.calendrier_scolaire_file_system_handler import CalendrierScolaireFileSystemHandler
 from offre_realisee.domain.port.file_system_handler import FileSystemHandler
-
-from offre_realisee.config.input_config import InputColumns
-from offre_realisee.config.offre_realisee_config import MESURE_TYPE
-
-from offre_realisee.config.logger import logger
 
 
 class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHandler):
@@ -76,7 +74,7 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
         return df_offre_realisee
 
     def save_daily_mesure_qs(
-        self, df_mesure_qs: pd.DataFrame, date: date, dsp: str, mesure_type: MesureType
+            self, df_mesure_qs: pd.DataFrame, date: date, dsp: str, mesure_type: MesureType
     ) -> None:
         """Sauvegarde du DataFrame de mesure de Qualité de Service (QS).
 
@@ -175,10 +173,7 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
         df : DataFrame
             DataFrame d'offre réalisée par jour.
         """
-        if dsp :
-            folder_path = os.path.join(self.data_path, self.output_path, dsp, mesure_type)
-        else:
-            folder_path = os.path.join(self.data_path, self.output_path, mesure_type)
+        folder_path = os.path.join(self.data_path, self.output_path, dsp, mesure_type)
         file_path = os.path.join(folder_path, f"mesure_{mesure_type}_{date.strftime('%Y_%m_%d')}" + FileExtensions.csv)
 
         logger.info(f"Reading daily mesure qs for date: {date.strftime('%Y-%m-%d')}, from: {file_path}")

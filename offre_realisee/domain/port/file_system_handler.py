@@ -46,7 +46,7 @@ class FileSystemHandler(abc.ABC):
 
     @abc.abstractmethod
     def save_daily_mesure_qs(
-        self, df_mesure_qs: pd.DataFrame, date: date, dsp: str, mesure_type: MesureType
+            self, df_mesure_qs: pd.DataFrame, date: date, dsp: str, mesure_type: MesureType
     ) -> None:
         """Sauvegarde du DataFrame de mesure de Qualité de Service (QS).
 
@@ -85,7 +85,7 @@ class FileSystemHandler(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_daily_mesure_qs(self, date: date, dsp: str|None, mesure_type: MesureType, **kwargs) -> pd.DataFrame:
+    def get_daily_mesure_qs(self, date: date, dsp: str, mesure_type: MesureType, **kwargs) -> pd.DataFrame:
         """Récupération des données de mesure QS par jour.
 
         Parameters
@@ -110,10 +110,10 @@ class FileSystemHandler(abc.ABC):
 
     @abc.abstractmethod
     def save_mesure_qs_by_aggregation(
-        self, df_mesure_qs: pd.DataFrame, suffix: str, date_range: tuple[date, date], dsp: str,
-        aggregation_level: AggregationLevel, mesure_type: MesureType, periode_ete: tuple[str],
-        list_journees_exceptionnelles: list[date], window_name: str = "",
-        **kwargs
+            self, df_mesure_qs: pd.DataFrame, suffix: str, date_range: tuple[date, date], dsp: str,
+            aggregation_level: AggregationLevel, mesure_type: MesureType, periode_ete: tuple[str],
+            list_journees_exceptionnelles: list[date], window_name: str = "",
+            **kwargs
     ) -> None:
         """Sauvegarde du DataFrame de mesure de Qualité de Service (QS).
 

@@ -85,7 +85,7 @@ class MesurePonctualite(Mesure):
         situation_inacceptable_sans_horaire_reel_attribue,
         situation_inacceptable_total,
     ]
-    situtation_conforme_types= [
+    situtation_conforme_types = [
         avance_conforme,
         retard_conforme,
         semi_conforme,
@@ -232,10 +232,10 @@ class ComplianceType:
     }
 
     # Ponctualité
-    situation_inacceptable_retard = -1000000. - 0      # Un retard est le SI le moins pénalisant
-    situation_inacceptable_avance = -1000000. - 100    # Un passage en avance est plus pénalisant qu'un retard
+    situation_inacceptable_retard = -1000000. - 0  # Un retard est le SI le moins pénalisant
+    situation_inacceptable_avance = -1000000. - 100  # Un passage en avance est plus pénalisant qu'un retard
     situation_inacceptable_absence = -1000000. - 1000  # On cherche à assigner le plus de passages possible
 
     # Régularité
-    situation_inacceptable_train_de_bus = -1.      # SI de trains de bus
+    situation_inacceptable_train_de_bus = -1.  # SI de trains de bus
     situation_inacceptable_faible_frequence = -2.  # SI d'interval trop important
