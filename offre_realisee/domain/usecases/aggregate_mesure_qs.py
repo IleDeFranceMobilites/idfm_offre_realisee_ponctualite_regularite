@@ -107,6 +107,7 @@ def aggregate_df(df_all_mesure: pd.DataFrame, mesure: Mesure) -> pd.DataFrame:
     grouped_df = df_all_mesure.groupby(mesure.ligne, observed=True)
 
     columns_to_sum = [
+        mesure.nb_courses_theoriques,
         mesure.nombre_theorique,
         mesure.nombre_reel,
         mesure.score_de_conformite,

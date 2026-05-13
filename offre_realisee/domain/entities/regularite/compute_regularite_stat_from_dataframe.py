@@ -1,3 +1,7 @@
+from collections import defaultdict
+
+import pandas as pd
+
 from offre_realisee.config.input_config import InputColumns
 from offre_realisee.config.logger import logger
 from offre_realisee.config.offre_realisee_config import FrequenceType, MesureRegularite
@@ -7,17 +11,11 @@ from offre_realisee.domain.entities.regularite.process_stop_regularite import pr
 from offre_realisee.domain.entities.regularite.stat_compliance_score_regularite import stat_compliance_score_regularite
 
 
-import pandas as pd
-
-
-from collections import defaultdict
-
-
 def compute_regularite_stat_from_dataframe(
-    df_offre_realisee: pd.DataFrame, metadata_cols: list[str] = [],
+        df_offre_realisee: pd.DataFrame, metadata_cols: list[str] = [],
 ) -> pd.DataFrame:
     """Calcule les statistiques de régularité à partir d'un DataFrame d'offre réalisée.
-
+    Ajoute le nombre de courses théoriques basé sur l'unicité des course_id. par ligne pour une journée
     Parameters
     ----------
     df_offre_realisee : DataFrame
@@ -25,6 +23,14 @@ def compute_regularite_stat_from_dataframe(
     metadata_cols: list[str]
         Colonnes contenant des méta informations invariables par lignes qui doivent être conservées, par défaut à [].
     """
+    nb_courses = (
+        df_offre_realisee[df_offre_realisee[InputColumns.heure_theorique].notna()]
+        .groupby(InputColumns.ligne)[InputColumns.course_id]
+        .nunique()
+        .reset_index()
+        .rename(columns={InputColumns.course_id: MesureRegularite.nb_courses_theoriques})
+    )
+
     df_offre_realisee = drop_duplicates_heure_theorique(df_offre_realisee)
 
     df_grouped = df_offre_realisee.groupby(by=[
@@ -52,5 +58,8 @@ def compute_regularite_stat_from_dataframe(
             any_high_frequency_on_lignes[ligne] = True
     if df_concat_regularite.empty:
         return pd.DataFrame()
-    return stat_compliance_score_regularite(
+    df = stat_compliance_score_regularite(
         df_concat_regularite, theorique_passages_by_lignes, any_high_frequency_on_lignes, metadata_cols=metadata_cols)
+    if df.empty:
+        return pd.DataFrame()
+    return df.merge(nb_courses, on=MesureRegularite.ligne, how='left')

@@ -32,6 +32,10 @@ class Mesure(abc.ABC):
         pass
 
     @abc.abstractproperty
+    def nb_courses_theoriques(self) -> str:
+        pass
+
+    @abc.abstractproperty
     def situation_inacceptable_types(self) -> list:
         pass
 
@@ -70,6 +74,7 @@ class MesurePonctualite(Mesure):
     taux_absence_de_donnees = 'TAUX_ABSENCE_DE_DONNEES'
     taux_de_situation_innaceptable = "TAUX_DE_SITUATION_INNACEPTABLE"
     taux_de_remontee_sae = "TAUX_DE_REMONTEE_SAE"
+    nb_courses_theoriques = 'NOMBRE_COURSES_THEORIQUES'
     semi_conforme = "SEMI_CONFORME"
     non_conforme = "NON_CONFORME"
     retard_conforme = "RETARD_CONFORME"
@@ -80,7 +85,7 @@ class MesurePonctualite(Mesure):
         situation_inacceptable_sans_horaire_reel_attribue,
         situation_inacceptable_total,
     ]
-    situtation_conforme_types= [
+    situtation_conforme_types = [
         avance_conforme,
         retard_conforme,
         semi_conforme,
@@ -88,6 +93,7 @@ class MesurePonctualite(Mesure):
     ]
     column_order = [
         ligne,
+        nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
         avance_conforme,
@@ -106,6 +112,7 @@ class MesurePonctualite(Mesure):
     ]
     column_order_agregated = [
         ligne,
+        nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
         score_de_conformite,
@@ -134,6 +141,7 @@ class MesureRegularite(Mesure):
     ligne = 'LIGNE'
     arret = 'ARRET'
     sens = 'SENS'
+    nb_courses_theoriques = 'NOMBRE_COURSES_THEORIQUES'
     nombre_theorique = 'NOMBRE_PASSAGES_THEORIQUES'
     nombre_reel = 'NOMBRE_PASSAGES_REELS'
     heure_theorique = 'HEURE_THEORIQUE'
@@ -167,6 +175,7 @@ class MesureRegularite(Mesure):
     ]
     column_order = [
         ligne,
+        nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
         score_de_conformite,
@@ -180,6 +189,7 @@ class MesureRegularite(Mesure):
     ]
     column_order_agregated = [
         ligne,
+        nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
         score_de_conformite,
@@ -222,10 +232,10 @@ class ComplianceType:
     }
 
     # Ponctualité
-    situation_inacceptable_retard = -1000000. - 0      # Un retard est le SI le moins pénalisant
-    situation_inacceptable_avance = -1000000. - 100    # Un passage en avance est plus pénalisant qu'un retard
+    situation_inacceptable_retard = -1000000. - 0  # Un retard est le SI le moins pénalisant
+    situation_inacceptable_avance = -1000000. - 100  # Un passage en avance est plus pénalisant qu'un retard
     situation_inacceptable_absence = -1000000. - 1000  # On cherche à assigner le plus de passages possible
 
     # Régularité
-    situation_inacceptable_train_de_bus = -1.      # SI de trains de bus
+    situation_inacceptable_train_de_bus = -1.  # SI de trains de bus
     situation_inacceptable_faible_frequence = -2.  # SI d'interval trop important

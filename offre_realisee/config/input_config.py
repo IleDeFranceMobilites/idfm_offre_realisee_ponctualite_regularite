@@ -7,6 +7,7 @@ class InputColumns:
     heure_theorique = 'HEURE_THEORIQUE'
     heure_reelle = 'HEURE_REELLE'
     dsp = 'DSP'
+    course_id = 'COURSE_ID'
 
     # column_types = {
     #     ligne: 'string',

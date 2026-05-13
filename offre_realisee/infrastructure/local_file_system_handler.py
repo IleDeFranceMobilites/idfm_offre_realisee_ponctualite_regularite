@@ -3,17 +3,15 @@ from datetime import date
 
 import pandas as pd
 
-from offre_realisee.config.file_extensions import FileExtensions
-from offre_realisee.config.calendrier_scolaire_config import PARQUET_ENGINE, PARQUET_COMPRESSION
-from offre_realisee.config.offre_realisee_config import MesureType
 from offre_realisee.config.aggregation_config import AggregationLevel
+from offre_realisee.config.calendrier_scolaire_config import PARQUET_ENGINE, PARQUET_COMPRESSION
+from offre_realisee.config.file_extensions import FileExtensions
+from offre_realisee.config.input_config import InputColumns
+from offre_realisee.config.logger import logger
+from offre_realisee.config.offre_realisee_config import MESURE_TYPE
+from offre_realisee.config.offre_realisee_config import MesureType
 from offre_realisee.domain.port.calendrier_scolaire_file_system_handler import CalendrierScolaireFileSystemHandler
 from offre_realisee.domain.port.file_system_handler import FileSystemHandler
-
-from offre_realisee.config.input_config import InputColumns
-from offre_realisee.config.offre_realisee_config import MESURE_TYPE
-
-from offre_realisee.config.logger import logger
 
 
 class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHandler):
@@ -67,16 +65,16 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
         if ligne:
             filters[0].append((InputColumns.ligne, 'in', ligne))
         df_offre_realisee = self.read_offre_realisee(
-            columns=[InputColumns.ligne, InputColumns.arret,
-                     InputColumns.sens, InputColumns.heure_theorique,
-                     InputColumns.heure_reelle, InputColumns.is_terminus],
+            columns=[InputColumns.ligne, InputColumns.arret, InputColumns.sens,
+                     InputColumns.heure_theorique, InputColumns.heure_reelle,
+                     InputColumns.is_terminus, InputColumns.course_id],
             filters=filters
         )
 
         return df_offre_realisee
 
     def save_daily_mesure_qs(
-        self, df_mesure_qs: pd.DataFrame, date: date, dsp: str, mesure_type: MesureType
+            self, df_mesure_qs: pd.DataFrame, date: date, dsp: str, mesure_type: MesureType
     ) -> None:
         """Sauvegarde du DataFrame de mesure de Qualité de Service (QS).
 
@@ -156,7 +154,6 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
                                  FileExtensions.csv)
 
         logger.info(f"Writing a dataframe of shape {df_mesure_qs.shape} in {file_path}")
-
         df_mesure_qs[mesure_qs.column_order].to_csv(file_path)
 
     def get_daily_mesure_qs(self, date: date, dsp: str, mesure_type: MesureType) -> pd.DataFrame:
