@@ -17,6 +17,7 @@ def compute_regularite_stat_from_dataframe(
     """Calcule les statistiques de régularité à partir d'un DataFrame d'offre réalisée.
 
     Ajoute le nombre de courses théoriques basé sur l'unicité des course_id. par ligne pour une journée
+    Ajoute le nombre de non passages aux arrêts : nombre de passages théoriques - nombre de passages réels.
 
     Parameters
     ----------
@@ -64,4 +65,8 @@ def compute_regularite_stat_from_dataframe(
         df_concat_regularite, theorique_passages_by_lignes, any_high_frequency_on_lignes, metadata_cols=metadata_cols)
     if df.empty:
         return pd.DataFrame()
-    return df.merge(nb_courses, on=MesureRegularite.ligne, how='left')
+    df = df.merge(nb_courses, on=MesureRegularite.ligne, how='left')
+    df[MesureRegularite.non_passage_arret] = (
+        df[MesureRegularite.nombre_theorique] - df[MesureRegularite.nombre_reel]
+    )
+    return df

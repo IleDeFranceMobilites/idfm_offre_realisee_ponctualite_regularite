@@ -93,3 +93,30 @@ def test_nb_courses_theoriques_regularite_counts_course_once_across_multiple_sto
         result[[MesureRegularite.ligne, MesureRegularite.nb_courses_theoriques]].reset_index(drop=True),
         expected,
     )
+
+
+def test_non_passage_arret_regularite():
+    # Given - 6 passages théoriques haute fréquence, le 4ème n'a pas de passage réel
+    df = pd.DataFrame({
+        InputColumns.ligne: ['L1'] * 6,
+        InputColumns.sens: [1] * 6,
+        InputColumns.arret: ['A1'] * 6,
+        InputColumns.heure_theorique: _HF_THEORIQUE,
+        InputColumns.heure_reelle: _HF_REELLE[:3] + [None] + _HF_REELLE[4:],
+        InputColumns.is_terminus: [False] * 6,
+        InputColumns.course_id: [f'C{i + 1}' for i in range(6)],
+    })
+
+    expected = pd.DataFrame({
+        MesureRegularite.ligne: ['L1'],
+        MesureRegularite.non_passage_arret: [1],
+    })
+
+    # When
+    result = compute_regularite_stat_from_dataframe(df)
+
+    # Then
+    pd.testing.assert_frame_equal(
+        result[[MesureRegularite.ligne, MesureRegularite.non_passage_arret]].reset_index(drop=True),
+        expected,
+    )
