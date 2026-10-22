@@ -15,7 +15,9 @@ def compute_regularite_stat_from_dataframe(
         df_offre_realisee: pd.DataFrame, metadata_cols: list[str] = [],
 ) -> pd.DataFrame:
     """Calcule les statistiques de régularité à partir d'un DataFrame d'offre réalisée.
+
     Ajoute le nombre de courses théoriques basé sur l'unicité des course_id. par ligne pour une journée
+
     Parameters
     ----------
     df_offre_realisee : DataFrame

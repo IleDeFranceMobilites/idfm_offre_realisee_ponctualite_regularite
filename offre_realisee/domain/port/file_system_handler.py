@@ -14,7 +14,7 @@ class FileSystemHandler(abc.ABC):
 
         Parameters
         ----------
-        **kwargs :
+        `**kwargs` :
             Keyword arguments supplémentaires passés à la fonction pandas read_parquet.
 
         Returns
@@ -98,7 +98,7 @@ class FileSystemHandler(abc.ABC):
             Le type de mesure (ponctualite, regularite).
         suffix_by_agg: Dict[AggregationLevel, Callable]
             Dictionnaire de fonction de génération de suffix basé sur la date et le calendrier scolaire.
-        **kwargs : dict
+        `**kwargs` : dict
             Options complémentaires de lecture.
 
         Returns
@@ -137,7 +137,7 @@ class FileSystemHandler(abc.ABC):
             La liste des journées exceptionnelles à exclure (ex: émeutes, grèves...). Par défaut, cette liste est vide.
         window_name : Optional[str]
             Nom de la fenêtre d'aggregation, optionnel par défaut égal à ""
-        **kwargs : dict
+        `**kwargs` : dict
             Options complémentaires d'écriture.
         """
         pass
@@ -148,7 +148,7 @@ class FileSystemHandler(abc.ABC):
 
         Parameters
         ----------
-        **kwargs :
+        `**kwargs` :
             Keyword arguments supplémentaires passés à la fonction pandas read_parquet.
 
         Returns
