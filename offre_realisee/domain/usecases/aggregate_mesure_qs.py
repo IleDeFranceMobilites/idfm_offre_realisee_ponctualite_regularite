@@ -90,8 +90,9 @@ def aggregate_df(df_all_mesure: pd.DataFrame, mesure: Mesure) -> pd.DataFrame:
     """Agrège les mesures de la qualité de service.
 
     Cette fonction prend un DataFrame de toutes les mesures quotidiennes de qualité de service et agrège ces mesures par
-    lignes. Les colonnes agrégées incluent le nombre théorique, le nombre réel, le score de conformité, et les types de
-    situations inacceptables. De plus, elle calcule le taux de conformité et le taux d'absence de données.
+    lignes. Les colonnes sommées sont celles listées dans mesure.columns_to_sum : le nombre théorique, le nombre réel,
+    le score de conformité et les types de situations inacceptables (ainsi que le nombre de passages semi conformes et
+    non conformes pour la régularité). De plus, elle calcule le taux de conformité et le taux d'absence de données.
 
     Parameters
     ----------
@@ -106,15 +107,7 @@ def aggregate_df(df_all_mesure: pd.DataFrame, mesure: Mesure) -> pd.DataFrame:
     """
     grouped_df = df_all_mesure.groupby(mesure.ligne, observed=True)
 
-    columns_to_sum = [
-        mesure.nb_courses_theoriques,
-        mesure.nombre_theorique,
-        mesure.nombre_reel,
-        mesure.score_de_conformite,
-        *mesure.situation_inacceptable_types,
-    ]
-
-    df_aggregated = grouped_df[columns_to_sum].sum()
+    df_aggregated = grouped_df[mesure.columns_to_sum].sum()
 
     df_aggregated[mesure.taux_de_conformite] = round(
             df_aggregated[mesure.score_de_conformite] / df_aggregated[mesure.nombre_theorique] * 100, 2

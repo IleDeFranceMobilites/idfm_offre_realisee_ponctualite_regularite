@@ -6,6 +6,10 @@ _SI_VALUES_SET = {
     ComplianceType.situation_inacceptable_faible_frequence,
 }
 
+# La situation inacceptable de capacité d'emport fera l'objet d'un calcul à part entière, dont les règles ne sont pas
+# encore arrêtées. En attendant, elle est fixée à 0 : la colonne existe en sortie mais ne pénalise aucune ligne.
+CAPACITE_EMPORT = 0
+
 
 def stat_compliance_score_regularite(
     df: pd.DataFrame,
@@ -15,7 +19,9 @@ def stat_compliance_score_regularite(
     au moins un arrêt haute fréquence sur la période analysée).
     La formule de calcul du taux de conformité est :
     [somme des score de conformité] / [nombre de passages théoriques] * 100.
-    Le nombre de situations inacceptables par typologie et total sont sommées par ligne.
+    Le nombre de situations inacceptables par typologie et total sont sommées par ligne. La situation inacceptable de
+    capacité d'emport est fixée à 0 en attendant que son mode de calcul soit défini, mais elle est déjà comptée dans
+    le total.
     Le taux d'absence des données est également calculé :
     [nombre de passages théoriques - nombre de passages réels] / [nombre de passages théoriques] * 100
 
@@ -64,8 +70,15 @@ def stat_compliance_score_regularite(
             MesureRegularite.situation_inacceptable_ecart_important,
             lambda x: x.isin({ComplianceType.situation_inacceptable_faible_frequence}).sum()
         ),
-        (MesureRegularite.situation_inacceptable_total, lambda x: x.isin(_SI_VALUES_SET).sum()),
     ]).reset_index()
+
+    df[MesureRegularite.situation_inacceptable_capacite_d_emport] = CAPACITE_EMPORT
+
+    df[MesureRegularite.situation_inacceptable_total] = df[[
+        MesureRegularite.situation_inacceptable_train_de_bus,
+        MesureRegularite.situation_inacceptable_ecart_important,
+        MesureRegularite.situation_inacceptable_capacite_d_emport,
+    ]].sum(axis=1)
 
     df[MesureRegularite.nombre_theorique] = df[MesureRegularite.ligne].apply(lambda x: int(n_theorique_by_lignes[x]))
 

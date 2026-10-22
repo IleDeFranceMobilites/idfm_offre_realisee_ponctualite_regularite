@@ -8,6 +8,7 @@ import pytest
 
 from offre_realisee import AggregationLevel, MesureType, LocalFileSystemHandler, \
     aggregate_mesure_qs, FileExtensions
+from offre_realisee.config.offre_realisee_config import MesureRegularite
 from tests.test_data import TEST_DATA_PATH
 
 
@@ -156,3 +157,11 @@ def test_def_aggregate_mesure_qs_regularite_by_periode(file_system_rm_agg_by_per
 
     assert f"mesure_{mesure_type}_2023_ete" + FileExtensions.csv in result_clean
     assert f"mesure_{mesure_type}_2023_vacances_scolaires" + FileExtensions.csv in result_clean
+
+    # Les passages semi conformes et non conformes sont sommés, la SI de capacité d'emport est reportée
+    result_ete = pd.read_csv(os.path.join(RESULT_PATH, aggregation_level, mesure_type,
+                                          f"mesure_{mesure_type}_2023_ete" + FileExtensions.csv))
+
+    assert result_ete[MesureRegularite.semi_conforme].tolist() == [5, 3]
+    assert result_ete[MesureRegularite.non_conforme].tolist() == [2, 1]
+    assert result_ete[MesureRegularite.situation_inacceptable_capacite_d_emport].tolist() == [0, 0]
