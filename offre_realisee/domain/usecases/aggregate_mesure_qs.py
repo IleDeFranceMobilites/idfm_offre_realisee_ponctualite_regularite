@@ -110,6 +110,7 @@ def aggregate_df(df_all_mesure: pd.DataFrame, mesure: Mesure) -> pd.DataFrame:
         mesure.nb_courses_theoriques,
         mesure.nombre_theorique,
         mesure.nombre_reel,
+        mesure.non_passage_arret,
         mesure.score_de_conformite,
         *mesure.situation_inacceptable_types,
     ]

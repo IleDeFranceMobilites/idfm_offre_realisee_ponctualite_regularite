@@ -1,5 +1,6 @@
 import pandas as pd
 
+from offre_realisee.config.input_config import InputColumns
 from offre_realisee.config.offre_realisee_config import FrequenceType, MesurePonctualite, ComplianceType, MesureType
 
 _SI_VALUES_SET = {
@@ -24,8 +25,10 @@ def stat_situation_inacceptable(df: pd.DataFrame) -> pd.DataFrame:
     """Génère les statistiques des Situations Inacceptables (SI) par ligne.
 
     Cette fonction prend un DataFrame avec des données de ponctualité et calcule les statistiques liées aux SI.
-    Elle compte le nombre de SI pour différents types (avance, retard, absence) pour chaque arrêt, et garde les valeurs
+    Elle compte le nombre de SI pour différents types (avance, retard) pour chaque arrêt, et garde les valeurs
     de l'arrêt ayant le plus de SI par ligne et sens pour les retards uniquement.
+    Les SI d'absence (passage théorique sans horaire réel attribué) sont plafonnées à 1 par course : une course
+    génère une SI dès son premier arrêt manquant.
 
     Parameters
     ----------
@@ -48,13 +51,16 @@ def stat_situation_inacceptable(df: pd.DataFrame) -> pd.DataFrame:
             MesurePonctualite.situation_inacceptable_retard,
             lambda x: x.isin({ComplianceType.situation_inacceptable_retard}).sum()
         ),
-        (
-            MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue,
-            lambda x: x.isin({ComplianceType.situation_inacceptable_absence}).sum()
-        )
     ]).reset_index()
 
     df_si_grouped_by_sens = df_si.groupby([MesurePonctualite.ligne, MesurePonctualite.sens])
+
+    # SI absence plafonnée à 1 par course : une course générant au moins un passage théorique sans horaire réel
+    # attribué compte pour une seule SI. Un passage sans course renseignée compte pour une SI.
+    df_absence = df[df[MesurePonctualite.resultat] == ComplianceType.situation_inacceptable_absence]
+    df_absence = df_absence.groupby([MesurePonctualite.ligne, MesurePonctualite.sens])[InputColumns.course_id].agg(
+        lambda x: x.nunique() + x.isna().sum()
+    ).rename(MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue).reset_index()
 
     # Conserve le plus grand nombre de SI de retard pour chaque ligne et sens
     df_retard_max = df_si.loc[df_si_grouped_by_sens[MesurePonctualite.situation_inacceptable_retard].idxmax().values]
@@ -63,12 +69,13 @@ def stat_situation_inacceptable(df: pd.DataFrame) -> pd.DataFrame:
     ]
 
     # Somme globale par ligne/sens pour les autres SI
-    df_avance = df_si_grouped_by_sens[
-        [MesurePonctualite.situation_inacceptable_avance,
-         MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue]
-    ].sum().reset_index()
+    df_avance = df_si_grouped_by_sens[[MesurePonctualite.situation_inacceptable_avance]].sum().reset_index()
 
     df_final = pd.merge(df_avance, df_retard_max, on=[MesurePonctualite.ligne, MesurePonctualite.sens], how='left')
+    df_final = pd.merge(df_final, df_absence, on=[MesurePonctualite.ligne, MesurePonctualite.sens], how='left')
+    df_final[MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue] = (
+        df_final[MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue].fillna(0).astype(int)
+    )
 
     # Somme les SI
     df_final[MesurePonctualite.situation_inacceptable_total] = (
