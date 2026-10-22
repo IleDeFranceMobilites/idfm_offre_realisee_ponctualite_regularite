@@ -6,6 +6,7 @@ from offre_realisee.config.input_config import InputColumns
 from offre_realisee.config.logger import logger
 from offre_realisee.config.offre_realisee_config import FrequenceType, MesureRegularite
 from offre_realisee.domain.entities.add_frequency import add_frequency
+from offre_realisee.domain.entities.compute_non_passage_arret import compute_non_passage_arret
 from offre_realisee.domain.entities.drop_duplicates_heure_theorique import drop_duplicates_heure_theorique
 from offre_realisee.domain.entities.regularite.process_stop_regularite import process_stop_regularite
 from offre_realisee.domain.entities.regularite.stat_compliance_score_regularite import stat_compliance_score_regularite
@@ -16,6 +17,7 @@ def compute_regularite_stat_from_dataframe(
 ) -> pd.DataFrame:
     """Calcule les statistiques de régularité à partir d'un DataFrame d'offre réalisée.
     Ajoute le nombre de courses théoriques basé sur l'unicité des course_id. par ligne pour une journée
+    Ajoute le nombre de non passages aux arrêts : somme par arrêt de max(0, passages théoriques - passages réels).
     Parameters
     ----------
     df_offre_realisee : DataFrame
@@ -32,6 +34,7 @@ def compute_regularite_stat_from_dataframe(
     )
 
     df_offre_realisee = drop_duplicates_heure_theorique(df_offre_realisee)
+    non_passage_arret = compute_non_passage_arret(df_offre_realisee)
 
     df_grouped = df_offre_realisee.groupby(by=[
         InputColumns.ligne, InputColumns.sens, InputColumns.arret
@@ -62,4 +65,5 @@ def compute_regularite_stat_from_dataframe(
         df_concat_regularite, theorique_passages_by_lignes, any_high_frequency_on_lignes, metadata_cols=metadata_cols)
     if df.empty:
         return pd.DataFrame()
-    return df.merge(nb_courses, on=MesureRegularite.ligne, how='left')
+    df = df.merge(nb_courses, on=MesureRegularite.ligne, how='left')
+    return df.merge(non_passage_arret, on=MesureRegularite.ligne, how='left')

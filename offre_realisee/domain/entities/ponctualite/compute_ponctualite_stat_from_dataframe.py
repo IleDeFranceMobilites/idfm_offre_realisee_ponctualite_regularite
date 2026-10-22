@@ -2,6 +2,7 @@ from offre_realisee.config.input_config import InputColumns
 from offre_realisee.config.logger import logger
 from offre_realisee.config.offre_realisee_config import MesurePonctualite
 from offre_realisee.domain.entities.add_frequency import add_frequency
+from offre_realisee.domain.entities.compute_non_passage_arret import compute_non_passage_arret
 from offre_realisee.domain.entities.drop_duplicates_heure_theorique import drop_duplicates_heure_theorique
 from offre_realisee.domain.entities.ponctualite.process_stop_ponctualite import process_stop_ponctualite
 from offre_realisee.domain.entities.ponctualite.stat_compliance_score_ponctualite import (
@@ -16,6 +17,7 @@ def compute_ponctualite_stat_from_dataframe(
 ) -> pd.DataFrame:
     """Calcule les statistiques de ponctualité à partir d'un DataFrame d'offre réalisée.
     Ajoute le nombre de courses théoriques basé sur l'unicité des course_id. par ligne pour une journée
+    Ajoute le nombre de non passages aux arrêts : somme par arrêt de max(0, passages théoriques - passages réels).
 
 
     Parameters
@@ -37,9 +39,14 @@ def compute_ponctualite_stat_from_dataframe(
         .reset_index()
         .rename(columns={InputColumns.course_id: MesurePonctualite.nb_courses_theoriques})
     )
-    df_offre_realisee = df_offre_realisee.drop(columns=[InputColumns.course_id])
+    # La course n'est conservée que pour les passages théoriques (plafonnement des SI absence par course)
+    df_offre_realisee = df_offre_realisee.assign(**{
+        InputColumns.course_id: df_offre_realisee[InputColumns.course_id].where(
+            df_offre_realisee[InputColumns.heure_theorique].notna())
+    })
 
     df_offre_realisee = drop_duplicates_heure_theorique(df_offre_realisee)
+    non_passage_arret = compute_non_passage_arret(df_offre_realisee)
 
     df_grouped = df_offre_realisee.groupby(by=[
         InputColumns.ligne, InputColumns.sens, InputColumns.arret
@@ -57,4 +64,5 @@ def compute_ponctualite_stat_from_dataframe(
             df_concat_ponctualite = pd.concat([df_concat_ponctualite, score_by_stop_ponctualite], ignore_index=True)
 
     df = stat_compliance_score_ponctualite(df=df_concat_ponctualite, metadata_cols=metadata_cols)
-    return df.merge(nb_courses, on=MesurePonctualite.ligne, how='left')
+    df = df.merge(nb_courses, on=MesurePonctualite.ligne, how='left')
+    return df.merge(non_passage_arret, on=MesurePonctualite.ligne, how='left')
