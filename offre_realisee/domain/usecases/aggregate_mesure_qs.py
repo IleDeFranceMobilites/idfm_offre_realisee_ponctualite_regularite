@@ -90,8 +90,9 @@ def aggregate_df(df_all_mesure: pd.DataFrame, mesure: Mesure) -> pd.DataFrame:
     """Agrège les mesures de la qualité de service.
 
     Cette fonction prend un DataFrame de toutes les mesures quotidiennes de qualité de service et agrège ces mesures par
-    lignes. Les colonnes agrégées incluent le nombre théorique, le nombre réel, le score de conformité, et les types de
-    situations inacceptables. De plus, elle calcule le taux de conformité et le taux d'absence de données.
+    lignes. Les colonnes agrégées incluent le nombre théorique, le nombre réel, le score de conformité, les types de
+    conformité et les types de situations inacceptables. De plus, elle calcule le taux de conformité et le taux
+    d'absence de données.
 
     Parameters
     ----------
@@ -111,6 +112,7 @@ def aggregate_df(df_all_mesure: pd.DataFrame, mesure: Mesure) -> pd.DataFrame:
         mesure.nombre_theorique,
         mesure.nombre_reel,
         mesure.score_de_conformite,
+        *mesure.situtation_conforme_types,
         *mesure.situation_inacceptable_types,
     ]
 

@@ -79,6 +79,10 @@ class MesurePonctualite(Mesure):
     non_conforme = "NON_CONFORME"
     retard_conforme = "RETARD_CONFORME"
     avance_conforme = "AVANCE_CONFORME"
+    retard_75_conforme = "RETARD_75_CONFORME"
+    retard_50_conforme = "RETARD_50_CONFORME"
+    retard_25_conforme = "RETARD_25_CONFORME"
+    retard_non_conforme = "RETARD_NON_CONFORME"
     situation_inacceptable_types = [
         situation_inacceptable_retard,
         situation_inacceptable_avance,
@@ -88,7 +92,11 @@ class MesurePonctualite(Mesure):
     situtation_conforme_types = [
         avance_conforme,
         retard_conforme,
+        retard_75_conforme,
+        retard_50_conforme,
         semi_conforme,
+        retard_25_conforme,
+        retard_non_conforme,
         non_conforme
     ]
     column_order = [
@@ -96,10 +104,7 @@ class MesurePonctualite(Mesure):
         nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
-        avance_conforme,
-        retard_conforme,
-        semi_conforme,
-        non_conforme,
+        *situtation_conforme_types,
         score_de_conformite,
         situation_inacceptable_retard,
         situation_inacceptable_avance,
@@ -115,6 +120,7 @@ class MesurePonctualite(Mesure):
         nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
+        *situtation_conforme_types,
         score_de_conformite,
         situation_inacceptable_retard,
         situation_inacceptable_avance,
@@ -179,8 +185,7 @@ class MesureRegularite(Mesure):
         nombre_theorique,
         nombre_reel,
         score_de_conformite,
-        semi_conforme,
-        non_conforme,
+        *situtation_conforme_types,
         situation_inacceptable_train_de_bus,
         situation_inacceptable_ecart_important,
         situation_inacceptable_total,
@@ -193,6 +198,7 @@ class MesureRegularite(Mesure):
         nombre_theorique,
         nombre_reel,
         score_de_conformite,
+        *situtation_conforme_types,
         situation_inacceptable_train_de_bus,
         situation_inacceptable_ecart_important,
         situation_inacceptable_total,
