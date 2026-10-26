@@ -10,10 +10,10 @@ from offre_realisee.domain.entities.ponctualite.stat_compliance_score_ponctualit
 def test_stat_compliance_score_ponctualite():
     # Given - la ligne 1 porte les 4 paliers de retard: 0.75 et 0.25 en HF, 0.5 et 0. en BF
     df = pd.DataFrame({
-        MesurePonctualite.ligne: [1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-        MesurePonctualite.arret: [1, 1, 1, 1, 1, 2, 2, 2, 2, 1],
-        MesurePonctualite.sens: [1, 1, 2, 2, 2, 1, 1, 2, 2, 1],
-        InputColumns.course_id: ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10'],
+        MesurePonctualite.ligne: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+        MesurePonctualite.arret: [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1],
+        MesurePonctualite.sens: [1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1],
+        InputColumns.course_id: ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11', 'C12'],
         MesurePonctualite.resultat: [
             ComplianceType.compliant_delay,
             ComplianceType.situation_inacceptable_retard,

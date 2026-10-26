@@ -114,6 +114,7 @@ class MesurePonctualite(Mesure):
         nombre_reel,
         non_passage_arret,
         score_de_conformite,
+        *situtation_conforme_types,
         *situation_inacceptable_types,
     ]
     column_order = [
@@ -122,10 +123,6 @@ class MesurePonctualite(Mesure):
         nombre_theorique,
         nombre_reel,
         non_passage_arret,
-        avance_conforme,
-        retard_conforme,
-        semi_conforme,
-        non_conforme,
         *situtation_conforme_types,
         score_de_conformite,
         situation_inacceptable_retard,
@@ -237,8 +234,6 @@ class MesureRegularite(Mesure):
         nombre_reel,
         non_passage_arret,
         score_de_conformite,
-        semi_conforme,
-        non_conforme,
         *situtation_conforme_types,
         situation_inacceptable_train_de_bus,
         situation_inacceptable_ecart_important,
