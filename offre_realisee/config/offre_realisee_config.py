@@ -44,6 +44,10 @@ class Mesure(abc.ABC):
         pass
 
     @abc.abstractproperty
+    def columns_to_sum(self) -> list:
+        pass
+
+    @abc.abstractproperty
     def column_order(self) -> list:
         pass
 
@@ -90,6 +94,13 @@ class MesurePonctualite(Mesure):
         retard_conforme,
         semi_conforme,
         non_conforme
+    ]
+    columns_to_sum = [
+        nb_courses_theoriques,
+        nombre_theorique,
+        nombre_reel,
+        score_de_conformite,
+        *situation_inacceptable_types,
     ]
     column_order = [
         ligne,
@@ -161,17 +172,28 @@ class MesureRegularite(Mesure):
     non_conforme = "NON_CONFORME"
     situation_inacceptable_train_de_bus = 'SITUATION_INACCEPTABLE_TRAIN_DE_BUS'
     situation_inacceptable_ecart_important = 'SITUATION_INACCEPTABLE_ECART_IMPORTANT'
+    situation_inacceptable_capacite_d_emport = 'SITUATION_INACCEPTABLE_CAPACITE_D_EMPORT'
     situation_inacceptable_total = 'SITUATION_INACCEPTABLE_TOTAL'
     taux_de_conformite = 'TAUX_DE_CONFORMITE'
     taux_absence_de_donnees = 'TAUX_ABSENCE_DE_DONNEES'
     situation_inacceptable_types = [
         situation_inacceptable_train_de_bus,
         situation_inacceptable_ecart_important,
+        situation_inacceptable_capacite_d_emport,
         situation_inacceptable_total,
     ]
     situtation_conforme_types = [
         semi_conforme,
         non_conforme
+    ]
+    columns_to_sum = [
+        nb_courses_theoriques,
+        nombre_theorique,
+        nombre_reel,
+        score_de_conformite,
+        semi_conforme,
+        non_conforme,
+        *situation_inacceptable_types,
     ]
     column_order = [
         ligne,
@@ -183,6 +205,7 @@ class MesureRegularite(Mesure):
         non_conforme,
         situation_inacceptable_train_de_bus,
         situation_inacceptable_ecart_important,
+        situation_inacceptable_capacite_d_emport,
         situation_inacceptable_total,
         taux_de_conformite,
         taux_absence_de_donnees,
@@ -193,8 +216,11 @@ class MesureRegularite(Mesure):
         nombre_theorique,
         nombre_reel,
         score_de_conformite,
+        semi_conforme,
+        non_conforme,
         situation_inacceptable_train_de_bus,
         situation_inacceptable_ecart_important,
+        situation_inacceptable_capacite_d_emport,
         situation_inacceptable_total,
         taux_de_conformite,
         taux_absence_de_donnees,

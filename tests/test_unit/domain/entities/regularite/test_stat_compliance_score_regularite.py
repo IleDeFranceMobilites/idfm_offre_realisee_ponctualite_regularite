@@ -28,6 +28,7 @@ def test_stat_regularite_compliance_score():
         MesureRegularite.score_de_conformite: [1.65, 3.65, 0.65],
         MesureRegularite.situation_inacceptable_train_de_bus: [1, 1, 0],
         MesureRegularite.situation_inacceptable_ecart_important: [1, 0, 0],
+        MesureRegularite.situation_inacceptable_capacite_d_emport: [0, 0, 0],
         MesureRegularite.situation_inacceptable_total: [2, 1, 0],
         MesureRegularite.nombre_theorique: [5, 7, 1],
         MesureRegularite.nombre_reel: [4, 5, 1],
@@ -43,6 +44,29 @@ def test_stat_regularite_compliance_score():
 
     # Then
     pd.testing.assert_frame_equal(result.sort_index(axis=1), expected_result.sort_index(axis=1))
+
+
+def test_stat_regularite_si_capacite_d_emport_nulle_et_comptee_dans_le_total():
+    # Given
+    df = pd.DataFrame({
+        MesureRegularite.ligne: ["1", "1", "1"],
+        MesureRegularite.arret: [1, 1, 1],
+        MesureRegularite.sens: [1, 1, 1],
+        MesureRegularite.resultat: [
+            ComplianceType.compliant, ComplianceType.situation_inacceptable_train_de_bus,
+            ComplianceType.situation_inacceptable_faible_frequence
+        ]
+    })
+    n_theorique_by_lignes = {"1": 3}
+    any_high_frequency_on_lignes = {"1": True}
+
+    # When
+    result = stat_compliance_score_regularite(df=df, n_theorique_by_lignes=n_theorique_by_lignes,
+                                              any_high_frequency_on_lignes=any_high_frequency_on_lignes)
+
+    # Then - la capacité d'emport n'est pas encore remontée, le total reste la somme des 3 typologies
+    assert result[MesureRegularite.situation_inacceptable_capacite_d_emport].tolist() == [0]
+    assert result[MesureRegularite.situation_inacceptable_total].tolist() == [2]
 
 
 def test_stat_regularite_compliance_score_no_high_frequency():
@@ -61,6 +85,7 @@ def test_stat_regularite_compliance_score_no_high_frequency():
         MesureRegularite.score_de_conformite: [1.],
         MesureRegularite.situation_inacceptable_train_de_bus: [0],
         MesureRegularite.situation_inacceptable_ecart_important: [0],
+        MesureRegularite.situation_inacceptable_capacite_d_emport: [0],
         MesureRegularite.situation_inacceptable_total: [0],
         MesureRegularite.nombre_theorique: [1],
         MesureRegularite.nombre_reel: [1],

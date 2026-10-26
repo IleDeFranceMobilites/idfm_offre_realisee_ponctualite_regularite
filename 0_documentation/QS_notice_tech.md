@@ -47,20 +47,24 @@ Tous les fichiers de sortie sont au format csv de sorte à faciliter l'analyse (
 
 ### Format des données - Régularité
 
-| Nom de la colonne                      | Type   | Description                                                                                                                                                                                    |
-|:---------------------------------------|:-------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| LIGNE                                  | string | Le numéro de la ligne de bus/tram/train concernée.                                                                                                                                             |
-| NOMBRE_PASSAGES_THEORIQUES             | int64  | Nombre de passages théoriques total sur la période analysée.                                                                                                                                   |
-| NOMBRE_PASSAGES_REELS                  | int64  | Nombre de passages réels total sur la période analysée. Ce nombre peut-être inférieur au nombre de passages théoriques, à de rares occasions il peut être supérieur.                           |
-| SCORE_DE_CONFORMITE                    | float  | La somme de l'ensemble des scores de conformité obtenus par arrêt et par course sur la ligne pour la période analysée et selon les règles de calcul précisées dans le cahier des charges.      |
-| SEMI_CONFORME                          | float  | La somme de l'ensemble des scores de semi-conformité obtenus par arrêt et par course sur la ligne pour la période analysée et selon les règles de calcul précisées dans le cahier des charges. |
-| NON_CONFORME                           | float  | La somme de l'ensemble des scores de non-conformité obtenus par arrêt et par course sur la ligne pour la période analysée et selon les règles de calcul précisées dans le cahier des charges.  |
-| SCORE_DE_CONFORMITE                    | float  | La somme de l'ensemble des scores de conformité obtenus par arrêt et par course sur la ligne pour la période analysée et selon les règles de calcul précisées dans le cahier des charges.      |
-| SITUATION_INACCEPTABLE_TRAIN_DE_BUS    | int64  | Le nombre de SI causées par un train de bus (moins de 2min d'écart avec le passage du bus précédent).                                                                                          |
-| SITUATION_INACCEPTABLE_ECART_IMPORTANT | int64  | Le nombre de SI causées par un écart important avec le passage du bus précédent (plus de 2 fois l'écart théorique avec le bus précédent).                                                      |
-| SITUATION_INACCEPTABLE_TOTAL           | int64  | La somme de l'ensemble des SI pour la ligne et la période analysée.                                                                                                                            |
-| TAUX_DE_CONFORMITE                     | float  | Le score de conformité / nombre de passages théoriques * 100.                                                                                                                                  |
-| TAUX_ABSENCE_DE_DONNEES                | float  | (Le nombre de passages théoriques - le nombre de passages réels) / le nombre de passages théoriques * 100.                                                                                     |
+| Nom de la colonne                        | Type   | Description                                                                                                                                                                               |
+|:-----------------------------------------|:-------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| LIGNE                                    | string | Le numéro de la ligne de bus/tram/train concernée.                                                                                                                                        |
+| NOMBRE_COURSES_THEORIQUES                | int64  | Nombre de courses théoriques distinctes (course_id uniques ayant une heure théorique) sur la période analysée.                                                                            |
+| NOMBRE_PASSAGES_THEORIQUES               | int64  | Nombre de passages théoriques total sur la période analysée.                                                                                                                              |
+| NOMBRE_PASSAGES_REELS                    | int64  | Nombre de passages réels total sur la période analysée. Ce nombre peut-être inférieur au nombre de passages théoriques, à de rares occasions il peut être supérieur.                      |
+| SCORE_DE_CONFORMITE                      | float  | La somme de l'ensemble des scores de conformité obtenus par arrêt et par course sur la ligne pour la période analysée et selon les règles de calcul précisées dans le cahier des charges. |
+| SEMI_CONFORME                            | int64  | Le nombre de passages semi conformes, c'est-à-dire ayant obtenu un score de 0,65.                                                                                                         |
+| NON_CONFORME                             | int64  | Le nombre de passages non conformes, c'est-à-dire ayant obtenu un score de 0. Le calcul de régularité n'attribue aujourd'hui aucun score de 0 : cette colonne est donc toujours nulle.    |
+| SITUATION_INACCEPTABLE_TRAIN_DE_BUS      | int64  | Le nombre de SI causées par un train de bus (moins de 1min30 d'écart avec le passage du bus précédent).                                                                                   |
+| SITUATION_INACCEPTABLE_ECART_IMPORTANT   | int64  | Le nombre de SI causées par un écart important avec le passage du bus précédent (plus de 2 fois l'écart théorique avec le bus précédent).                                                 |
+| SITUATION_INACCEPTABLE_CAPACITE_D_EMPORT | int64  | Le nombre de SI causées par un dépassement de la capacité d'emport. Le mode de calcul n'est pas encore arrêté : cette colonne est pour le moment toujours à 0.                            |
+| SITUATION_INACCEPTABLE_TOTAL             | int64  | La somme de l'ensemble des SI pour la ligne et la période analysée (train de bus + écart important + capacité d'emport).                                                                  |
+| TAUX_DE_CONFORMITE                       | float  | Le score de conformité / nombre de passages théoriques * 100.                                                                                                                             |
+| TAUX_ABSENCE_DE_DONNEES                  | float  | (Le nombre de passages théoriques - le nombre de passages réels) / le nombre de passages théoriques * 100.                                                                                |
+
+Toutes ces colonnes sont présentes dans les mesures journalières comme dans les fichiers agrégés, à l'exception du
+taux de conformité et du taux d'absence de données qui sont recalculés à partir des totaux lors de l'agrégation.
 
 ### Les niveaux d'aggrégation
 Afin d'analyser plus finement certaines périodes et certaines situation, nous avons mis en place 3 niveaux d'aggrégation :
@@ -355,6 +359,12 @@ Score :
     - Score = 0
     - Situation inacceptable faible frequence
 
+### Situation inacceptable de capacité d'emport
+
+Une troisième typologie de situation inacceptable est prévue pour la régularité : le dépassement de la capacité
+d'emport (`SITUATION_INACCEPTABLE_CAPACITE_D_EMPORT`). Son mode de calcul n'est pas encore arrêté, la colonne est donc
+produite en sortie mais toujours valorisée à 0 : elle n'affecte ni le score de conformité, ni le total des situations
+inacceptables tant que le calcul n'est pas implémenté.
 
 ### Comment les passages réels sont-ils associés aux passages théoriques à un arrêt ?
 
@@ -368,5 +378,11 @@ supérieur on prend l'heure associée maximisant le score et minimisant les situ
 ### Calcul du score pour une ligne par jours
 
 Le score final est calculé de la manière suivante:
-- Le nombre de situations inacceptables est la somme des situations inacceptables générées par trajets.
+- Le nombre de situations inacceptables est la somme des situations inacceptables générées par trajets. Le total est la
+somme des trois typologies : train de bus, écart important et capacité d'emport.
 - Le score est égal à la somme des scores par arrêts divisée par la somme des passages théoriques par arrêts.
+- Le nombre de passages semi conformes et non conformes est également remonté par ligne.
+
+Lors de l'agrégation (par mois, période, année...), les nombres de courses, de passages, le score de conformité, les
+nombres de passages semi conformes et non conformes ainsi que chaque typologie de situation inacceptable sont sommés
+par ligne, puis le taux de conformité et le taux d'absence de données sont recalculés à partir de ces totaux.
