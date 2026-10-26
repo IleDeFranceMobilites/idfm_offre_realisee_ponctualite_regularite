@@ -36,6 +36,10 @@ class Mesure(abc.ABC):
         pass
 
     @abc.abstractproperty
+    def non_passage_arret(self) -> str:
+        pass
+
+    @abc.abstractproperty
     def situation_inacceptable_types(self) -> list:
         pass
 
@@ -79,6 +83,7 @@ class MesurePonctualite(Mesure):
     taux_de_situation_innaceptable = "TAUX_DE_SITUATION_INNACEPTABLE"
     taux_de_remontee_sae = "TAUX_DE_REMONTEE_SAE"
     nb_courses_theoriques = 'NOMBRE_COURSES_THEORIQUES'
+    non_passage_arret = 'NON_PASSAGE_ARRET'
     semi_conforme = "SEMI_CONFORME"
     non_conforme = "NON_CONFORME"
     retard_conforme = "RETARD_CONFORME"
@@ -99,6 +104,7 @@ class MesurePonctualite(Mesure):
         nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
+        non_passage_arret,
         score_de_conformite,
         *situation_inacceptable_types,
     ]
@@ -107,6 +113,7 @@ class MesurePonctualite(Mesure):
         nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
+        non_passage_arret,
         avance_conforme,
         retard_conforme,
         semi_conforme,
@@ -126,6 +133,7 @@ class MesurePonctualite(Mesure):
         nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
+        non_passage_arret,
         score_de_conformite,
         situation_inacceptable_retard,
         situation_inacceptable_avance,
@@ -153,6 +161,7 @@ class MesureRegularite(Mesure):
     arret = 'ARRET'
     sens = 'SENS'
     nb_courses_theoriques = 'NOMBRE_COURSES_THEORIQUES'
+    non_passage_arret = 'NON_PASSAGE_ARRET'
     nombre_theorique = 'NOMBRE_PASSAGES_THEORIQUES'
     nombre_reel = 'NOMBRE_PASSAGES_REELS'
     heure_theorique = 'HEURE_THEORIQUE'
@@ -190,6 +199,7 @@ class MesureRegularite(Mesure):
         nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
+        non_passage_arret,
         score_de_conformite,
         semi_conforme,
         non_conforme,
@@ -200,6 +210,7 @@ class MesureRegularite(Mesure):
         nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
+        non_passage_arret,
         score_de_conformite,
         semi_conforme,
         non_conforme,
@@ -215,6 +226,7 @@ class MesureRegularite(Mesure):
         nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
+        non_passage_arret,
         score_de_conformite,
         semi_conforme,
         non_conforme,

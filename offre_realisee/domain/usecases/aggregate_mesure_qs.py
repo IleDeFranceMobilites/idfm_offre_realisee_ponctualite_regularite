@@ -91,8 +91,9 @@ def aggregate_df(df_all_mesure: pd.DataFrame, mesure: Mesure) -> pd.DataFrame:
 
     Cette fonction prend un DataFrame de toutes les mesures quotidiennes de qualité de service et agrège ces mesures par
     lignes. Les colonnes sommées sont celles listées dans mesure.columns_to_sum : le nombre théorique, le nombre réel,
-    le score de conformité et les types de situations inacceptables (ainsi que le nombre de passages semi conformes et
-    non conformes pour la régularité). De plus, elle calcule le taux de conformité et le taux d'absence de données.
+    le nombre de non passages aux arrêts, le score de conformité et les types de situations inacceptables (ainsi que le
+    nombre de passages semi conformes et non conformes pour la régularité). De plus, elle calcule le taux de conformité
+    et le taux d'absence de données.
 
     Parameters
     ----------
