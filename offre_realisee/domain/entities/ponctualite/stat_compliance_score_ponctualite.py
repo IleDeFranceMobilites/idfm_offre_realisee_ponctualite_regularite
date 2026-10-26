@@ -128,8 +128,6 @@ def stat_compliance_score_ponctualite(df: pd.DataFrame, metadata_cols: list[str]
         (MesurePonctualite.nombre_theorique, 'count'),
         (MesurePonctualite.nombre_reel, lambda x: x.isin(_ASSIGNED_VALUES_SET).sum()),
         (MesurePonctualite.score_de_conformite, lambda x: x[~x.isin(_SI_VALUES_SET)].sum()),
-        (MesurePonctualite.non_conforme, lambda x: x.isin([_NOT_COMPLIANT_HF, _NOT_COMPLIANT_BF]).sum()),
-        (MesurePonctualite.semi_conforme, lambda x: x.isin([_SEMI_COMPLIANT_HF, _SEMI_COMPLIANT_BF]).sum()),
         (MesurePonctualite.avance_conforme, lambda x: x.isin([ComplianceType.compliant_advance]).sum()),
         (MesurePonctualite.retard_conforme, lambda x: x.isin([ComplianceType.compliant_delay]).sum()),
         (MesurePonctualite.retard_75_conforme, lambda x: x.isin([_SEMI_COMPLIANT_HF]).sum()),
@@ -137,6 +135,14 @@ def stat_compliance_score_ponctualite(df: pd.DataFrame, metadata_cols: list[str]
         (MesurePonctualite.retard_25_conforme, lambda x: x.isin([_NOT_COMPLIANT_HF]).sum()),
         (MesurePonctualite.retard_non_conforme, lambda x: x.isin([_NOT_COMPLIANT_BF]).sum())
     ]).reset_index()
+
+    # Les paliers de retard se cumulent en semi-conforme et non-conforme
+    df[MesurePonctualite.semi_conforme] = (
+        df[MesurePonctualite.retard_75_conforme] + df[MesurePonctualite.retard_50_conforme]
+    )
+    df[MesurePonctualite.non_conforme] = (
+        df[MesurePonctualite.retard_25_conforme] + df[MesurePonctualite.retard_non_conforme]
+    )
 
     df = df.merge(df_si, on=[MesurePonctualite.ligne])
 
