@@ -39,10 +39,10 @@ Les colonnes sont présentées ci-dessous dans l'ordre dans lequel elles apparai
 | RETARD_CONFORME                                             | int64  | La somme des situations de conformité retard (retard <5 min pour une fréquence basse et <3min pour une fréquence haute)                                                                   |
 | RETARD_75_CONFORME                                          | int64  | Le détail de SEMI_CONFORME en haute fréquence : le nombre de passages entre 3 et 6 min de retard, qui valent 0.75 point chacun.                                                           |
 | RETARD_50_CONFORME                                          | int64  | Le détail de SEMI_CONFORME en basse fréquence : le nombre de passages entre 5 et 10 min de retard, qui valent 0.5 point chacun.                                                           |
-| SEMI_CONFORME                                               | int64  | La somme des situations de semi-conformité (entre 5 et 10 min de retard pour une fréquence basse et entre 3 et 6 min pour une fréquence haute). Égal à RETARD_75_CONFORME + RETARD_50_CONFORME. |
-| RETARD_25_CONFORME                                          | int64  | Le détail de NON_CONFORME en haute fréquence : le nombre de passages entre 6 et 12 min de retard, qui valent 0.25 point chacun.                                                           |
+| SEMI_CONFORME                                               | int64  | La somme des situations de retard rapportant encore des points (entre 5 et 10 min de retard pour une fréquence basse et entre 3 et 12 min pour une fréquence haute). Égal à RETARD_75_CONFORME + RETARD_50_CONFORME + RETARD_25_CONFORME. |
+| RETARD_25_CONFORME                                          | int64  | Le détail de SEMI_CONFORME en haute fréquence : le nombre de passages entre 6 et 12 min de retard, qui valent 0.25 point chacun.                                                          |
 | RETARD_NON_CONFORME                                         | int64  | Le détail de NON_CONFORME en basse fréquence : le nombre de passages entre 10 et 15 min de retard, qui valent 0 point chacun.                                                             |
-| NON_CONFORME                                                | int64  | La somme des situations de non conformité (entre 10 et 15 minutes de retard pour une fréquence basse et 6 et 12 minutes de retard pour une fréquence haute). Égal à RETARD_25_CONFORME + RETARD_NON_CONFORME. |
+| NON_CONFORME                                                | int64  | Le nombre de situations de non conformité, qui ne rapportent aucun point (entre 10 et 15 minutes de retard pour une fréquence basse). Égal à RETARD_NON_CONFORME. |
 | SCORE_DE_CONFORMITE                                         | float  | La somme de l'ensemble des scores de conformité obtenus par arrêt et par course sur la ligne pour la période analysée et selon les règles de calcul précisées dans le cahier des charges. |
 | SITUATION_INACCEPTABLE_RETARD                               | int64  | Le nombre de SI causées par un retard >12min ou 15min selon la fréquence de la ligne.                                                                                                     |
 | SITUATION_INACCEPTABLE_AVANCE                               | int64  | Le nombre de SI causées par une avance >2min.                                                                                                                                            |
@@ -71,7 +71,7 @@ pas recalculées dans les fichiers agrégés.
 | SCORE_DE_CONFORMITE                    | float  | La somme de l'ensemble des scores de conformité obtenus par arrêt et par course sur la ligne pour la période analysée et selon les règles de calcul précisées dans le cahier des charges. |
 | SEMI_CONFORME                          | int64  | Le nombre d'intervalles semi-conformes (score de 0.65) sur la ligne pour la période analysée.                                                                                             |
 | NON_CONFORME                           | int64  | Le nombre d'intervalles dont le score vaut 0 hors situation inacceptable. Le barème de la régularité ne comportant pas un tel palier, cette colonne vaut toujours 0 (cf. partie 3).         |
-| SITUATION_INACCEPTABLE_TRAIN_DE_BUS    | int64  | Le nombre de SI causées par un train de bus (moins de 2min d'écart avec le passage du bus précédent).                                                                                      |
+| SITUATION_INACCEPTABLE_TRAIN_DE_BUS    | int64  | Le nombre de SI causées par un train de bus (moins de 1min30 d'écart avec le passage du bus précédent).                                                                                    |
 | SITUATION_INACCEPTABLE_ECART_IMPORTANT | int64  | Le nombre de SI causées par un écart important avec le passage du bus précédent (plus de 2 fois l'écart théorique avec le bus précédent).                                                      |
 | SITUATION_INACCEPTABLE_CAPACITE_D_EMPORT | int64 | Le nombre de SI causées par un dépassement de la capacité d'emport. Le mode de calcul n'est pas encore arrêté : cette colonne est pour le moment toujours à 0.                               |
 | SITUATION_INACCEPTABLE_TOTAL           | int64  | La somme de l'ensemble des SI pour la ligne et la période analysée (train de bus + écart important + capacité d'emport).                                                                       |
@@ -348,8 +348,9 @@ détail du score par fréquence :
 | 0.25  | RETARD_25_CONFORME (6 à 12 min)       | -                                      |
 | 0     | -                                     | RETARD_NON_CONFORME (10 à 15 min)      |
 
-SEMI_CONFORME regroupe les paliers 0.75 et 0.5 (RETARD_75_CONFORME + RETARD_50_CONFORME), NON_CONFORME regroupe les
-paliers 0.25 et 0 (RETARD_25_CONFORME + RETARD_NON_CONFORME). AVANCE_CONFORME dénombre les passages en avance de moins
+SEMI_CONFORME regroupe tous les paliers qui rapportent encore des points, soit 0.75, 0.5 et 0.25
+(RETARD_75_CONFORME + RETARD_50_CONFORME + RETARD_25_CONFORME) ; NON_CONFORME ne retient que le palier à 0 point, qui
+n'existe qu'en basse fréquence (RETARD_NON_CONFORME). AVANCE_CONFORME dénombre les passages en avance de moins
 d'une minute (jusqu'à l'heure théorique incluse) ainsi que les avances d'une minute ou plus au terminus de destination ;
 RETARD_CONFORME dénombre les passages en retard dans la limite conforme (jusqu'à 3 min en haute fréquence, 5 min en
 basse fréquence). Les situations inacceptables ne sont comptées dans aucune de ces colonnes.
@@ -403,18 +404,15 @@ Score :
     - Score = 0
     - Situation inacceptable faible frequence
 
-<<<<<<< HEAD
+Le barème de la régularité ne comporte pas de palier à 0 point hors situation inacceptable : la colonne NON_CONFORME,
+qui dénombre les intervalles dont le score vaut exactement 0, vaut donc toujours 0 en pratique.
+
 ### Situation inacceptable de capacité d'emport
 
 Une troisième typologie de situation inacceptable est prévue pour la régularité : le dépassement de la capacité
 d'emport (`SITUATION_INACCEPTABLE_CAPACITE_D_EMPORT`). Son mode de calcul n'est pas encore arrêté, la colonne est donc
 produite en sortie mais toujours valorisée à 0 : elle n'affecte ni le score de conformité, ni le total des situations
 inacceptables tant que le calcul n'est pas implémenté.
-=======
-Le barème de la régularité ne comporte pas de palier à 0 point hors situation inacceptable : la colonne NON_CONFORME,
-qui dénombre les intervalles dont le score vaut exactement 0, vaut donc toujours 0 en pratique.
-
->>>>>>> 7e8ef09 (FEAT: add new mesure for ponctualite)
 
 ### Comment les passages réels sont-ils associés aux passages théoriques à un arrêt ?
 

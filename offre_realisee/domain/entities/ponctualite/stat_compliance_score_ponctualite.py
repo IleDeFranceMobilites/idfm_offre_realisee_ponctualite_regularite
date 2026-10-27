@@ -104,7 +104,8 @@ def stat_compliance_score_ponctualite(df: pd.DataFrame, metadata_cols: list[str]
     - La somme des scores de conformité.
     - Les statistiques sur la conformité (semi-conforme, non-conforme, avance conforme et retard conforme), ainsi que
       le détail des paliers de retard selon la fréquence de la ligne (retard 75% et 25% en haute fréquence,
-      retard 50% et non conforme en basse fréquence).
+      retard 50% et non conforme en basse fréquence). Le semi-conforme regroupe les paliers rapportant encore des
+      points (75%, 50% et 25%), le non-conforme ne retient que le palier à 0 point.
     - Les statistiques sur les SI (SI avance, SI retard, SI absence, SI total)
     - Le pourcentage de conformité.
     - Le pourcentage de données remontée
@@ -136,13 +137,14 @@ def stat_compliance_score_ponctualite(df: pd.DataFrame, metadata_cols: list[str]
         (MesurePonctualite.retard_non_conforme, lambda x: x.isin([_NOT_COMPLIANT_BF]).sum())
     ]).reset_index()
 
-    # Les paliers de retard se cumulent en semi-conforme et non-conforme
+    # Les paliers de retard rapportant encore des points se cumulent en semi-conforme, y compris le
+    # palier à 0.25 point en haute fréquence ; seul le palier à 0 point reste non conforme.
     df[MesurePonctualite.semi_conforme] = (
-        df[MesurePonctualite.retard_75_conforme] + df[MesurePonctualite.retard_50_conforme]
+        df[MesurePonctualite.retard_75_conforme]
+        + df[MesurePonctualite.retard_50_conforme]
+        + df[MesurePonctualite.retard_25_conforme]
     )
-    df[MesurePonctualite.non_conforme] = (
-        df[MesurePonctualite.retard_25_conforme] + df[MesurePonctualite.retard_non_conforme]
-    )
+    df[MesurePonctualite.non_conforme] = df[MesurePonctualite.retard_non_conforme]
 
     df = df.merge(df_si, on=[MesurePonctualite.ligne])
 
