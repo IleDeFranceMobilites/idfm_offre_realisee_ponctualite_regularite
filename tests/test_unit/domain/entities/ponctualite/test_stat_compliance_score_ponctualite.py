@@ -8,12 +8,12 @@ from offre_realisee.domain.entities.ponctualite.stat_compliance_score_ponctualit
 
 
 def test_stat_compliance_score_ponctualite():
-    # Given
+    # Given - la ligne 1 porte les 4 paliers de retard: 0.75 et 0.25 en HF, 0.5 et 0. en BF
     df = pd.DataFrame({
-        MesurePonctualite.ligne: [1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-        MesurePonctualite.arret: [1, 1, 1, 1, 1, 2, 2, 2, 2, 1],
-        MesurePonctualite.sens: [1, 1, 2, 2, 2, 1, 1, 2, 2, 1],
-        InputColumns.course_id: ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10'],
+        MesurePonctualite.ligne: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+        MesurePonctualite.arret: [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1],
+        MesurePonctualite.sens: [1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1],
+        InputColumns.course_id: ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11', 'C12'],
         MesurePonctualite.resultat: [
             ComplianceType.compliant_delay,
             ComplianceType.situation_inacceptable_retard,
@@ -24,26 +24,32 @@ def test_stat_compliance_score_ponctualite():
             ComplianceType.compliant_advance,
             ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
             ComplianceType.compliant_delay,
+            ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
+            ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
             ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence]]
     })
 
     expected_result = pd.DataFrame({
         MesurePonctualite.ligne: [1, 2],
-        MesurePonctualite.nombre_theorique: [9, 1],
-        MesurePonctualite.nombre_reel: [8, 1],
-        MesurePonctualite.score_de_conformite: [4.999999900000001, 0.5],
-        MesurePonctualite.non_conforme: [1, 0],
-        MesurePonctualite.semi_conforme: [2, 1],
+        MesurePonctualite.nombre_theorique: [11, 1],
+        MesurePonctualite.nombre_reel: [10, 1],
+        MesurePonctualite.score_de_conformite: [5.999999900000001, 0.5],
         MesurePonctualite.avance_conforme: [1, 0],
         MesurePonctualite.retard_conforme: [3, 0],
+        MesurePonctualite.retard_75_conforme: [1, 0],
+        MesurePonctualite.retard_50_conforme: [2, 1],
+        MesurePonctualite.retard_25_conforme: [1, 0],
+        MesurePonctualite.retard_non_conforme: [1, 0],
+        MesurePonctualite.semi_conforme: [4, 1],
+        MesurePonctualite.non_conforme: [1, 0],
         MesurePonctualite.situation_inacceptable_avance: [0, 0],
         MesurePonctualite.situation_inacceptable_retard: [1, 0],
         MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue: [1, 0],
         MesurePonctualite.situation_inacceptable_total: [2, 0],
-        MesurePonctualite.taux_de_conformite: [55.56, 50.0],
-        MesurePonctualite.taux_de_situation_innaceptable: [22.22, 0],
-        MesurePonctualite.taux_absence_de_donnees: [11.11, 0.0],
-        MesurePonctualite.taux_de_remontee_sae: [88.89, 100]
+        MesurePonctualite.taux_de_conformite: [54.55, 50.0],
+        MesurePonctualite.taux_de_situation_innaceptable: [18.18, 0],
+        MesurePonctualite.taux_absence_de_donnees: [9.09, 0.0],
+        MesurePonctualite.taux_de_remontee_sae: [90.91, 100]
     })
 
     # When

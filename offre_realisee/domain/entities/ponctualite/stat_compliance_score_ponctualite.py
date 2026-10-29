@@ -9,13 +9,18 @@ _SI_VALUES_SET = {
     ComplianceType.situation_inacceptable_absence
 }
 
+_SEMI_COMPLIANT_HF = ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.haute_frequence]
+_SEMI_COMPLIANT_BF = ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence]
+_NOT_COMPLIANT_HF = ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.haute_frequence]
+_NOT_COMPLIANT_BF = ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.basse_frequence]
+
 _ASSIGNED_VALUES_SET = {
     ComplianceType.compliant_delay,
     ComplianceType.compliant_advance,
-    ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
-    ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
-    ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
-    ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.basse_frequence],
+    _SEMI_COMPLIANT_HF,
+    _SEMI_COMPLIANT_BF,
+    _NOT_COMPLIANT_HF,
+    _NOT_COMPLIANT_BF,
     ComplianceType.situation_inacceptable_avance,
     ComplianceType.situation_inacceptable_retard,
 }
@@ -97,7 +102,10 @@ def stat_compliance_score_ponctualite(df: pd.DataFrame, metadata_cols: list[str]
     - Le nombre de passage théoriques.
     - Le nombre de passages réelles assignées à une valeur théorique.
     - La somme des scores de conformité.
-    - Les statistiques sur la conformité (semi-conforme, non-conforme, avance conforme et retard conforme)
+    - Les statistiques sur la conformité (semi-conforme, non-conforme, avance conforme et retard conforme), ainsi que
+      le détail des paliers de retard selon la fréquence de la ligne (retard 75% et 25% en haute fréquence,
+      retard 50% et non conforme en basse fréquence). Le semi-conforme regroupe les paliers rapportant encore des
+      points (75%, 50% et 25%), le non-conforme ne retient que le palier à 0 point.
     - Les statistiques sur les SI (SI avance, SI retard, SI absence, SI total)
     - Le pourcentage de conformité.
     - Le pourcentage de données remontée
@@ -121,16 +129,22 @@ def stat_compliance_score_ponctualite(df: pd.DataFrame, metadata_cols: list[str]
         (MesurePonctualite.nombre_theorique, 'count'),
         (MesurePonctualite.nombre_reel, lambda x: x.isin(_ASSIGNED_VALUES_SET).sum()),
         (MesurePonctualite.score_de_conformite, lambda x: x[~x.isin(_SI_VALUES_SET)].sum()),
-        (MesurePonctualite.non_conforme, lambda x: x.isin(
-            [ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
-             ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.basse_frequence]]).sum()),
-        (MesurePonctualite.semi_conforme, lambda x: x.isin(
-            [ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
-             ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence]]
-        ).sum()),
         (MesurePonctualite.avance_conforme, lambda x: x.isin([ComplianceType.compliant_advance]).sum()),
-        (MesurePonctualite.retard_conforme, lambda x: x.isin([ComplianceType.compliant_delay]).sum())
+        (MesurePonctualite.retard_conforme, lambda x: x.isin([ComplianceType.compliant_delay]).sum()),
+        (MesurePonctualite.retard_75_conforme, lambda x: x.isin([_SEMI_COMPLIANT_HF]).sum()),
+        (MesurePonctualite.retard_50_conforme, lambda x: x.isin([_SEMI_COMPLIANT_BF]).sum()),
+        (MesurePonctualite.retard_25_conforme, lambda x: x.isin([_NOT_COMPLIANT_HF]).sum()),
+        (MesurePonctualite.retard_non_conforme, lambda x: x.isin([_NOT_COMPLIANT_BF]).sum())
     ]).reset_index()
+
+    # Les paliers de retard rapportant encore des points se cumulent en semi-conforme, y compris le
+    # palier à 0.25 point en haute fréquence ; seul le palier à 0 point reste non conforme.
+    df[MesurePonctualite.semi_conforme] = (
+        df[MesurePonctualite.retard_75_conforme]
+        + df[MesurePonctualite.retard_50_conforme]
+        + df[MesurePonctualite.retard_25_conforme]
+    )
+    df[MesurePonctualite.non_conforme] = df[MesurePonctualite.retard_non_conforme]
 
     df = df.merge(df_si, on=[MesurePonctualite.ligne])
 
