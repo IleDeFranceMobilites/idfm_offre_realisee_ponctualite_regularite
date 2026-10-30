@@ -5,11 +5,14 @@ from typing import Optional
 
 from offre_realisee.config.aggregation_config import AggregationLevel
 from offre_realisee.config.file_extensions import FileExtensions
+from offre_realisee.config.input_brute_config import (DEFAULT_INPUT_BRUTE_FILE_NAME_PATTERN,
+                                                      DEFAULT_INPUT_BRUTE_PATH)
 from offre_realisee.config.offre_realisee_config import MesureType
 from offre_realisee.domain.usecases.aggregate_mesure_qs import aggregate_mesure_qs
 from offre_realisee.domain.usecases.create_mesure_qs_ponctualite import create_mesure_qs_ponctualite_date_range
 from offre_realisee.domain.usecases.create_mesure_qs_regularite import create_mesure_qs_regularite_date_range
 from offre_realisee.domain.usecases.download_calendrier_scolaire import download_calendrier_scolaire
+from offre_realisee.domain.usecases.prepare_offre_realisee import prepare_offre_realisee_date_range
 from offre_realisee.infrastructure.calendrier_scolaire_api_handler import CalendrierScolaireApiHandler
 from offre_realisee.infrastructure.local_file_system_handler import LocalFileSystemHandler
 from offre_realisee.config.logger import logger
@@ -19,6 +22,8 @@ default_data_path_config = {
     'input-path': 'input',
     'output-path': 'output',
     'input-file-name': f'offre_realisee{FileExtensions.parquet}',
+    'input-brute-path': DEFAULT_INPUT_BRUTE_PATH,
+    'input-brute-file-name-pattern': DEFAULT_INPUT_BRUTE_FILE_NAME_PATTERN,
     'calendrier-scolaire-file-name': f'calendrier_scolaire{FileExtensions.parquet}',
     'periode-ete-start-date': date(2023, 7, 1),
     'periode-ete-end-date': date(2023, 8, 31),
@@ -27,6 +32,7 @@ default_data_path_config = {
 
 def compute_qs(
     telecharge_calendrier_scolaire: bool,
+    preparation: bool,
     mesure: bool,
     aggregation: bool,
     ponctualite: bool,
@@ -37,6 +43,8 @@ def compute_qs(
     input_path: str,
     output_path: str,
     input_file_name: str,
+    input_brute_path: str,
+    input_brute_file_name_pattern: str,
     calendrier_scolaire_file_name: str,
     periode_ete_start_date: date,
     periode_ete_end_date: date,
@@ -49,7 +57,9 @@ def compute_qs(
         input_path=input_path,
         output_path=output_path,
         input_file_name=input_file_name,
-        calendrier_scolaire_file_name=calendrier_scolaire_file_name
+        calendrier_scolaire_file_name=calendrier_scolaire_file_name,
+        input_brute_path=input_brute_path,
+        input_brute_file_name_pattern=input_brute_file_name_pattern
     )
 
     if telecharge_calendrier_scolaire:
@@ -58,20 +68,32 @@ def compute_qs(
 
     date_range = (start_date, end_date)
 
+    if preparation:
+        prepare_offre_realisee_date_range(
+            file_system_handler=file_system_handler, date_range=date_range, n_thread=n_thread)
+
     if mesure:
         if ponctualite:
-            create_mesure_qs_ponctualite_date_range(file_system_handler, date_range, n_thread)
+            create_mesure_qs_ponctualite_date_range(
+                file_system_handler=file_system_handler, date_range=date_range, n_thread=n_thread)
         if regularite:
-            create_mesure_qs_regularite_date_range(file_system_handler, date_range, n_thread)
+            create_mesure_qs_regularite_date_range(
+                file_system_handler=file_system_handler, date_range=date_range, n_thread=n_thread)
 
     if aggregation:
         for aggregation_level in [AggregationLevel.by_period, AggregationLevel.by_period_weekdays]:
             if ponctualite:
-                aggregate_mesure_qs(file_system_handler, date_range, aggregation_level, MesureType.ponctualite,
-                                    (periode_ete_start_date, periode_ete_end_date), list_journees_exceptionnelles)
+                aggregate_mesure_qs(
+                    file_system_handler=file_system_handler, date_range=date_range, dsp="",
+                    aggregation_level=aggregation_level, mesure_type=MesureType.ponctualite,
+                    periode_ete=(periode_ete_start_date, periode_ete_end_date),
+                    list_journees_exceptionnelles=list_journees_exceptionnelles)
             if regularite:
-                aggregate_mesure_qs(file_system_handler, date_range, aggregation_level, MesureType.regularite,
-                                    (periode_ete_start_date, periode_ete_end_date), list_journees_exceptionnelles)
+                aggregate_mesure_qs(
+                    file_system_handler=file_system_handler, date_range=date_range, dsp="",
+                    aggregation_level=aggregation_level, mesure_type=MesureType.regularite,
+                    periode_ete=(periode_ete_start_date, periode_ete_end_date),
+                    list_journees_exceptionnelles=list_journees_exceptionnelles)
 
 
 def main():  # noqa
@@ -86,6 +108,10 @@ def main():  # noqa
                         help="Télécharge le calendrier scolaire.\n"
                              " (Valeur par défaut: %(default)s)\n"
                              "Download holidays.")
+    parser.add_argument('--preparation', default=False, action=argparse.BooleanOptionalAction,
+                        help="Transforme les données brutes livrées par le transporteur au format attendu en entrée.\n"
+                        " (Valeur par défaut: %(default)s)\n"
+                        "Transform raw input data to the expected input format.")
     parser.add_argument('--mesure', default=True, action=argparse.BooleanOptionalAction,
                         help="Calcule la mesure par jour.\n"
                         " (Valeur par défaut: %(default)s)\n"
@@ -126,6 +152,15 @@ def main():  # noqa
     parser.add_argument('--input-file-name', default=default_data_path_config["input-file-name"], type=str,
                         help="Nom du fichier de données d'entrée. (default: %(default)s)\n"
                         "Input parquet file name. (default: %(default)s)")
+    parser.add_argument('--input-brute-path', default=default_data_path_config["input-brute-path"], type=str,
+                        help="Chemin relatif par rapport au 'data-path' vers le dossier des données brutes livrées "
+                        "par le transporteur. (Valeur par défaut: %(default)s)\n"
+                        "Relative path to the raw input folder from data path. (default: %(default)s)")
+    parser.add_argument('--input-brute-file-name-pattern',
+                        default=default_data_path_config["input-brute-file-name-pattern"], type=str,
+                        help="Patron du nom des fichiers de données brutes, au format strftime (un fichier par jour). "
+                        "(Valeur par défaut: %(default)s)\n"
+                        "Raw input file name pattern, in strftime format (one file per day). (default: %(default)s)")
     parser.add_argument('--calendrier-scolaire-file-name',
                         default=default_data_path_config["calendrier-scolaire-file-name"], type=str,
                         help="Nom du fichier du referentiel du calendrier scolaire. (default: %(default)s)\n"
@@ -161,6 +196,7 @@ def main():  # noqa
 if __name__ == "__main__":
     compute_qs(
         telecharge_calendrier_scolaire=False,
+        preparation=False,
         mesure=True,
         aggregation=True,
         ponctualite=True,
@@ -168,10 +204,11 @@ if __name__ == "__main__":
         data_path="./data",
         start_date=date(2023, 1, 1),
         end_date=date(2023, 1, 2),
-        dsp="",
         input_path=default_data_path_config["input-path"],
         output_path=default_data_path_config["output-path"],
         input_file_name=default_data_path_config["input-file-name"],
+        input_brute_path=default_data_path_config["input-brute-path"],
+        input_brute_file_name_pattern=default_data_path_config["input-brute-file-name-pattern"],
         calendrier_scolaire_file_name=default_data_path_config["calendrier-scolaire-file-name"],
         periode_ete_start_date=default_data_path_config["periode-ete-start-date"],
         periode_ete_end_date=default_data_path_config["periode-ete-end-date"],

@@ -52,6 +52,16 @@ calendar reference parquet from data.education.gouv.fr into the input folder.
 Four boolean toggles (all default True) select the work: `--mesure` / `--aggregation` pick the stage,
 `--ponctualite` / `--regularite` pick the mesure type. Use `--no-*` to narrow a run.
 
+`--preparation` (default False, opt-in) adds an upstream bronze→silver stage: it reads one raw
+transporteur parquet per day from `--input-brute-path` (file name built with
+`--input-brute-file-name-pattern`, a strftime pattern), keeps the `PASSAGE_EVALUABLE` rows, merges
+`HEURE_DEPART_*` / `HEURE_ARRIVEE_*` into `HEURE_THEORIQUE` / `HEURE_REELLE` (departure first, arrival
+at the arrival terminus), localizes them to UTC, and writes the `JOUR=` partitions of
+`input/offre_realisee.parquet` that the mesure stage reads. The transporteur delivery format is wider
+than what is kept — see `COLONNES_BRUTES_REQUISES` in `config/input_brute_config.py` and the
+"Préparation des données brutes" section of `0_documentation/QS_notice_tech.md`; extra delivered
+columns (`DSP`, `ORDRE`, `ZDA_*`, `LIGNE_NAME`, `HEURE_*_COMMANDEE`, `ELIGIBLE_DECALAGE`) are ignored.
+
 ## Architecture
 
 Hexagonal, inside the single `offre_realisee/` package. Respect the layering when adding code:
@@ -65,19 +75,27 @@ Hexagonal, inside the single `offre_realisee/` package. Respect the layering whe
   generated `0_documentation/html/`).
 - **`domain/entities/`** — pure business logic on DataFrames, no I/O. Organized by concern:
   `ponctualite/`, `regularite/`, `aggregation/` (date bucketing + filename suffixes),
-  `calendrier_scolaire/`, plus shared `add_frequency.py`, `drop_*.py`.
+  `calendrier_scolaire/`, `preparation/` (raw → input schema), plus shared `add_frequency.py`,
+  `drop_*.py`.
 - **`domain/port/`** — abstract interfaces: `FileSystemHandler`, `CalendrierScolaireSourceHandler`,
-  `CalendrierScolaireFileSystemHandler`. Any new I/O need goes through a port method.
+  `CalendrierScolaireFileSystemHandler`, `OffreRealiseeBruteFileSystemHandler`. Any new I/O need goes
+  through a port method.
 - **`domain/usecases/`** — orchestration: `create_mesure_qs_ponctualite.py`,
-  `create_mesure_qs_regularite.py`, `aggregate_mesure_qs.py`, `download_calendrier_scolaire.py`.
+  `create_mesure_qs_regularite.py`, `aggregate_mesure_qs.py`, `download_calendrier_scolaire.py`,
+  `prepare_offre_realisee.py`.
   The `*_date_range` variants fan out over days with `multiprocess.Pool(processes=n_thread)`.
-- **`infrastructure/`** — adapters: `LocalFileSystemHandler` (implements both filesystem ports; all
-  parquet/CSV paths and auto-mkdir live here) and `CalendrierScolaireApiHandler`.
+- **`infrastructure/`** — adapters: `LocalFileSystemHandler` (implements all three filesystem ports;
+  all parquet/CSV paths and auto-mkdir live here) and `CalendrierScolaireApiHandler`.
 - **`offre_realisee/__init__.py`** — argparse CLI (`main`) plus `compute_qs`, the only place the
   adapters are constructed and the stages are sequenced.
 
 ### Data flow
 
+0. (optional, `--preparation`) Per day, `prepare_offre_realisee` reads
+   `input_brute/offre_realisee_brute_<YYYY-MM-DD>.parquet`, runs `transform_offre_realisee_brute`, and
+   writes `input/offre_realisee.parquet/JOUR=<YYYY-MM-DD>/part-<YYYYMMDD>.parquet` — the `JOUR` column
+   is dropped on write since the partition directory carries it. Deterministic file name, so re-running
+   a day overwrites its own output instead of duplicating rows.
 1. Per day, `LocalFileSystemHandler.get_daily_offre_realisee` reads the parquet with a pushdown
    filter on `JOUR` (plus optional `DSP` / `LIGNE`), selecting only the needed columns.
 2. The usecase drops stops with no real-time data, then either writes an `*_error.csv` via
@@ -105,11 +123,11 @@ don't overwrite blindly.
 
 ## Known gotchas
 
-- `compute_qs` calls `create_mesure_qs_*_date_range(file_system_handler, date_range, n_thread)`, but
-  the third positional parameter is `dsp` — so `--n-thread` is passed as `dsp` and the pool silently
-  uses the default `NUMBER_OF_PARALLEL_PROCESS = 6`. The `if __name__ == "__main__"` block in the
-  same file also passes a `dsp=""` kwarg that `compute_qs` does not accept, so running the module
-  directly raises `TypeError`. Use keyword arguments if you touch this wiring.
+- `compute_qs` used to call `create_mesure_qs_*_date_range(file_system_handler, date_range, n_thread)`
+  positionally, so `--n-thread` landed in the `dsp` parameter and the `DSP` pushdown filter crashed
+  the whole CLI (`TypeError: 'int' object is not iterable`). Fixed — all stage calls in `compute_qs`
+  now use keyword arguments. Keep it that way: the usecases take `(file_system_handler, date_range,
+  dsp, ligne, metadata_cols, n_thread)`.
 - Top-level `config/__init__.py` is an empty, unused stray package — unrelated to
   `offre_realisee/config/`. Don't import from it.
 - `build/`, `0_documentation/html/`, `0_documentation/doctrees/` and
