@@ -13,7 +13,7 @@ Ci-dessous, un descriptif des colonnes nécessaires pour l'exécution du code :
 | Nom de la colonne | Type                | Description                                                                                                                             |
 |:------------------|:--------------------|:----------------------------------------------------------------------------------------------------------------------------------------|
 | LIGNE             | string              | Le numéro de la ligne de bus/tram/train concernée.                                                                                      |
-| SENS              | string              | Le format des valeurs est `[arrêt_départ]->[terminus]`. Ex : "VIL->RAM".                                                                |
+| SENS              | string              | Le sens du déplacement sur la ligne. Le format des valeurs peut être `[arrêt_départ]->[terminus]` (ex : "VIL->RAM") ou l'identifiant de sens ("0" ou "1") : cette colonne ne sert que de clé de regroupement. Les données issues de l'étape de préparation contiennent l'identifiant de sens. |
 | ARRET             | string              | Le nom unique de l'arrêt. Si un arrêt est sur plusieurs lignes, le nom doit être le même.                                               |
 | COURSE_ID         | string              | L'identifiant unique de la course théorique. Il sert à compter le nombre de courses théoriques par ligne et par jour.                   |
 | HEURE_THEORIQUE   | datetime64[ns, UTC] | L'heure théorique de passage du bus/tram/train. Les valeurs de cette colonne doivent être au format datetime et sous la timezone "UTC". |
@@ -27,34 +27,66 @@ Les fichiers sont partitionnés par jour : la valeur du jour est portée par le 
 
 Les données livrées par les transporteurs ne sont pas directement au format décrit ci-dessus : les heures de passage y
 sont séparées en heure de départ et heure d'arrivée, et une colonne indique si le passage est évaluable. L'étape de
-préparation (`--preparation`) transforme ces données brutes au format attendu. Elle attend un fichier parquet par jour
-contenant les colonnes suivantes :
+préparation (`--preparation`) transforme ces données brutes au format attendu, à partir d'un fichier parquet par jour.
 
-| Nom de la colonne       | Type           | Description                                                                                             |
-|:------------------------|:---------------|:--------------------------------------------------------------------------------------------------------|
-| JOUR                    | string         | Le jour des données, au format "AAAA-MM-JJ". Il sert de clé de partition des données préparées.         |
-| LIGNE                   | string         | Le numéro de la ligne de bus/tram/train concernée.                                                      |
-| SENS                    | string         | Le format des valeurs est `[arrêt_départ]->[terminus]`. Ex : "VIL->RAM".                                |
-| ARRET                   | string         | Le nom unique de l'arrêt. Si un arrêt est sur plusieurs lignes, le nom doit être le même.               |
-| COURSE_ID               | string         | L'identifiant unique de la course théorique.                                                            |
-| IS_TERMINUS             | boolean        | "False" si l'arrêt n'est pas le terminus de la course, "True" s'il s'agit du terminus.                  |
-| HEURE_THEORIQUE_DEPART  | datetime64[ns] | L'heure théorique de départ de l'arrêt. Non renseignée au terminus d'arrivée.                           |
-| HEURE_THEORIQUE_ARRIVEE | datetime64[ns] | L'heure théorique d'arrivée à l'arrêt.                                                                  |
-| HEURE_REELLE_DEPART     | datetime64[ns] | L'heure réelle de départ de l'arrêt. Non renseignée au terminus d'arrivée.                              |
-| HEURE_REELLE_ARRIVEE    | datetime64[ns] | L'heure réelle d'arrivée à l'arrêt.                                                                     |
-| PASSAGE_EVALUABLE       | boolean        | "True" si le passage doit être pris en compte dans le calcul de la qualité de service.                  |
+#### Format demandé aux transporteurs
 
-La transformation appliquée est la suivante :
+Le format de livraison demandé aux transporteurs est le suivant. Il est plus large que ce dont le calcul de la qualité
+de service a besoin : la granularité est le passage d'une course à un arrêt, avec son contexte (référentiel d'arrêt,
+ordre dans la course, offre commandée).
+
+| Nom de la colonne       | Type                | Description                                                                                             |
+|:------------------------|:--------------------|:--------------------------------------------------------------------------------------------------------|
+| LIGNE                   | string              | Le numéro de la ligne de bus/tram/train concernée.                                                      |
+| DSP                     | string              | La délégation de service public à laquelle la ligne est rattachée.                                      |
+| JOUR                    | date                | Le jour des données. Il sert de clé de partition des données préparées.                                 |
+| SENS_ID                 | 0 ou 1              | Le sens du déplacement sur la ligne.                                                                    |
+| ARRET                   | string              | Le nom unique de l'arrêt. Si un arrêt est sur plusieurs lignes, le nom doit être le même.               |
+| ORDRE                   | int                 | La position de l'arrêt dans la course.                                                                  |
+| IS_TERMINUS             | boolean             | "False" si l'arrêt n'est pas le terminus de la course, "True" s'il s'agit du terminus.                  |
+| ZDA_NAME                | string              | Le nom de la zone d'arrêt du référentiel.                                                               |
+| ZDA_ID                  | string              | L'identifiant de la zone d'arrêt du référentiel.                                                        |
+| LIGNE_NAME              | string              | Le nom commercial de la ligne.                                                                          |
+| COURSE_ID               | string              | L'identifiant unique de la course théorique.                                                            |
+| HEURE_DEPART_COMMANDEE  | datetime64[ns, UTC] | L'heure de départ de l'arrêt telle que commandée dans l'offre.                                          |
+| HEURE_DEPART_THEORIQUE  | datetime64[ns, UTC] | L'heure théorique de départ de l'arrêt. Non renseignée au terminus d'arrivée.                           |
+| HEURE_DEPART_REELLE     | datetime64[ns, UTC] | L'heure réelle de départ de l'arrêt. Non renseignée au terminus d'arrivée.                              |
+| HEURE_ARRIVEE_COMMANDEE | datetime64[ns, UTC] | L'heure d'arrivée à l'arrêt telle que commandée dans l'offre.                                           |
+| HEURE_ARRIVEE_THEORIQUE | datetime64[ns, UTC] | L'heure théorique d'arrivée à l'arrêt.                                                                  |
+| HEURE_ARRIVEE_REELLE    | datetime64[ns, UTC] | L'heure réelle d'arrivée à l'arrêt.                                                                     |
+| ELIGIBLE_DECALAGE       | boolean             | Indicateur de décalage fourni par le transporteur.                                                      |
+| PASSAGE_EVALUABLE       | boolean             | "True" si le passage doit être pris en compte dans le calcul de la qualité de service.                  |
+
+#### Colonnes conservées par la préparation
+
+**Toutes ces colonnes ne sont pas conservées** : la préparation ne garde que celles qui interviennent dans le calcul
+des indicateurs, et produit les 7 colonnes du format d'entrée décrit plus haut. Le fichier livré peut donc contenir des
+colonnes supplémentaires, elles sont simplement ignorées.
+
+| Colonne livrée                                      | Devenir dans la préparation                                                        |
+|:----------------------------------------------------|:-----------------------------------------------------------------------------------|
+| JOUR                                                | Clé de partition des données préparées ("JOUR=AAAA-MM-JJ").                        |
+| LIGNE, ARRET, COURSE_ID, IS_TERMINUS                | Reprises telles quelles : ce sont les clés de regroupement et de calcul du score.  |
+| SENS_ID                                             | Devient `SENS`, converti en chaîne de caractères : le sens vaut donc "0" ou "1" dans les données préparées et dans les fichiers de sortie. |
+| HEURE_DEPART_THEORIQUE, HEURE_ARRIVEE_THEORIQUE     | Fusionnées en `HEURE_THEORIQUE`.                                                   |
+| HEURE_DEPART_REELLE, HEURE_ARRIVEE_REELLE           | Fusionnées en `HEURE_REELLE`.                                                      |
+| PASSAGE_EVALUABLE                                   | Utilisée comme filtre, puis abandonnée.                                            |
+| DSP                                                 | Non conservée : elle ne sert, le cas échéant, qu'à filtrer les données et à ranger les fichiers de sortie par DSP. |
+| HEURE_DEPART_COMMANDEE, HEURE_ARRIVEE_COMMANDEE     | Non conservées : le score compare le réel au théorique, l'offre commandée n'entre pas dans le calcul. |
+| ORDRE, ZDA_NAME, ZDA_ID, LIGNE_NAME                 | Non conservées : informations de contexte et de référentiel, sans effet sur le score. |
+| ELIGIBLE_DECALAGE                                   | Non conservée : ne relève pas du calcul de la qualité de service.                  |
+
+#### Transformation appliquée
 
 1. **Filtre des passages évaluables** : seules les lignes dont `PASSAGE_EVALUABLE` vaut "True" sont conservées. Un
    passage non renseigné n'est pas évaluable.
-2. **Fusion des heures de départ et d'arrivée** : `HEURE_THEORIQUE` vaut `HEURE_THEORIQUE_DEPART` si cette heure est
-   renseignée, sinon `HEURE_THEORIQUE_ARRIVEE`. La même règle s'applique à `HEURE_REELLE`. C'est le cas du terminus
+2. **Fusion des heures de départ et d'arrivée** : `HEURE_THEORIQUE` vaut `HEURE_DEPART_THEORIQUE` si cette heure est
+   renseignée, sinon `HEURE_ARRIVEE_THEORIQUE`. La même règle s'applique à `HEURE_REELLE`. C'est le cas du terminus
    d'arrivée, où le véhicule n'a pas d'heure de départ : c'est bien son heure d'arrivée qui est évaluée.
-3. **Localisation en UTC** : les heures brutes sont naïves et déjà exprimées en UTC ; elles sont donc localisées en UTC
-   sans conversion, pour obtenir le type `datetime64[ns, UTC]` attendu.
-4. **Sélection des colonnes** : `LIGNE`, `SENS`, `ARRET`, `COURSE_ID` et `IS_TERMINUS` sont reprises telles quelles, et
-   `JOUR` devient la clé de partition des données préparées.
+3. **Localisation en UTC** : les heures brutes naïves sont localisées en UTC sans conversion, pour obtenir le type
+   `datetime64[ns, UTC]` attendu. Les heures déjà localisées sont converties en UTC.
+4. **Sens** : `SENS` reprend `SENS_ID`, converti en chaîne de caractères.
+5. **Sélection des colonnes** : voir le tableau ci-dessus.
 
 Les heures nulles sont conservées, car elles portent une information utilisée par le calcul des mesures : une heure
 théorique nulle correspond à un passage réel non prévu, et une heure réelle nulle à une absence de données (situation
@@ -243,6 +275,104 @@ Les valeurs suivantes peuvent être modifiées en fonction de la structure de vo
 - input-brute-file-name-pattern (Valeur par défaut: "offre_realisee_brute_%Y-%m-%d.parquet")
 
 
+#### Préparer des données brutes transporteur
+
+Cette étape ne concerne que les données au format de livraison transporteur (voir "Préparation des données brutes" en
+partie 1). Si vos fichiers sont déjà au format d'entrée attendu, passez directement à l'exemple d'exécution ci-dessous.
+
+##### Où placer les fichiers bruts
+
+La préparation cherche **un fichier par jour**, à un chemin entièrement déterminé par la date traitée :
+
+```
+<data-path>/<input-brute-path>/<input-brute-file-name-pattern appliqué à la date>
+```
+
+`input-brute-file-name-pattern` est un patron au format **strftime** : `%Y` est remplacé par l'année sur 4 chiffres,
+`%m` par le mois sur 2 chiffres et `%d` par le jour sur 2 chiffres. Avec les valeurs par défaut
+(`input_brute` et `offre_realisee_brute_%Y-%m-%d.parquet`), traiter le 27 septembre 2023 revient à lire :
+
+```
+./data/input_brute/offre_realisee_brute_2023-09-27.parquet
+```
+
+Il n'y a donc **rien à renommer** si vous adaptez les deux options au nommage de vos livraisons. Quelques exemples :
+
+| Fichier livré                                | Options à passer                                                                                     |
+|:---------------------------------------------|:-----------------------------------------------------------------------------------------------------|
+| `data/input_brute/offre_realisee_brute_2023-09-27.parquet` | aucune (valeurs par défaut)                                                             |
+| `data/input-brute/offre_realisee_brute_2026_10_09.parquet` | `--input-brute-path=input-brute --input-brute-file-name-pattern='offre_realisee_brute_%Y_%m_%d.parquet'` |
+| `data/livraisons/OR_20261009.parquet`        | `--input-brute-path=livraisons --input-brute-file-name-pattern='OR_%Y%m%d.parquet'`                   |
+
+Pensez à placer le patron entre guillemets simples pour éviter que le shell n'interprète les `%`.
+
+Chaque fichier doit contenir les colonnes listées dans "Format demandé aux transporteurs" ; les colonnes
+supplémentaires sont ignorées. La valeur de `JOUR` dans le fichier doit correspondre à la date de son nom : c'est
+`JOUR` qui détermine la partition de sortie, pas le nom du fichier.
+
+##### Lancer la préparation
+
+`--preparation` est **désactivée par défaut** : il faut l'ajouter explicitement. En la combinant avec `--no-mesure` et
+`--no-aggregation`, on exécute la préparation seule, ce qui permet de contrôler son résultat avant de calculer les
+indicateurs :
+
+```console
+offre_realisee
+    --data-path=./data
+    --start-date=2026-10-09
+    --end-date=2026-10-09
+    --preparation --no-mesure --no-aggregation
+```
+
+Et avec un nommage de livraison différent du nommage par défaut :
+
+```console
+offre_realisee
+    --data-path=./data
+    --start-date=2026-10-09
+    --end-date=2026-10-09
+    --preparation --no-mesure --no-aggregation
+    --input-brute-path=input-brute
+    --input-brute-file-name-pattern='offre_realisee_brute_%Y_%m_%d.parquet'
+```
+
+Une fois le résultat vérifié, la préparation s'enchaîne avec le calcul dans un seul appel — par exemple la ponctualité
+seule :
+
+```console
+offre_realisee
+    --data-path=./data
+    --start-date=2026-10-09
+    --end-date=2026-10-09
+    --preparation --mesure --ponctualite --no-regularite --no-aggregation
+```
+
+Sur une plage de plusieurs jours, `--n-thread` répartit les journées sur plusieurs processus en parallèle (valeur par
+défaut : 1, soit un traitement séquentiel).
+
+##### Ce que produit la préparation
+
+Pour chaque jour traité, un fichier est écrit dans la partition correspondante du dossier d'entrée :
+
+```
+<data-path>/<input-path>/<input-file-name>/JOUR=2026-10-09/part-20261009.parquet
+```
+
+La colonne `JOUR` n'est pas écrite dans le fichier : elle est portée par le nom du dossier de partition et réinjectée à
+la lecture. Le nom du fichier étant construit à partir de la date, **rejouer la préparation d'une journée écrase son
+propre résultat** sans créer de doublons : on peut relancer une journée autant de fois que nécessaire, par exemple après
+réception d'une livraison corrigée.
+
+##### Incidents fréquents
+
+| Symptôme                                                                        | Cause et correction                                                                                  |
+|:--------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------|
+| `No raw data to process for AAAA-MM-JJ` dans les logs                           | Aucun fichier au chemin attendu pour ce jour. La journée est ignorée sans erreur : vérifier `--input-brute-path` et `--input-brute-file-name-pattern`. Ce comportement permet de lancer une plage plus large que les livraisons disponibles. |
+| `ValueError: Colonnes absentes des données brutes d'offre réalisée : [...]`      | Une colonne requise manque dans le fichier livré. Les colonnes manquantes sont listées dans le message. |
+| `ValueError: La colonne PASSAGE_EVALUABLE doit être booléenne`                   | La colonne est livrée en texte ou en nombre. Elle doit être de type booléen, sans quoi toute valeur non vide — y compris "false" — serait interprétée comme vraie. |
+| `No evaluable data to save for AAAA-MM-JJ`                                      | Aucune ligne du fichier n'a `PASSAGE_EVALUABLE` à "True" : rien n'est écrit pour cette journée.       |
+| La préparation réussit, mais le calcul des mesures produit un fichier `*_error.csv` | La préparation ne contrôle pas le contenu des colonnes conservées. Si `ARRET` ou `SENS` comporte des valeurs nulles, le calcul des indicateurs s'interrompt sur la journée et écrit un fichier d'erreur. C'est un défaut de la livraison, à faire corriger par le transporteur. |
+
 #### Exemple d'execution
 ```console
 offre_realisee
@@ -260,17 +390,6 @@ Cette commande permet de calculer et d'agréger les statistiques de qualite de s
 Des paramètres supplémentaires peuvent être ajoutés pour exécuter le script sur :
 - la préparation, la mesure ou l’agrégation uniquement
 - la ponctualité ou la régularité uniquement
-
-Si vos données sont au format brut transporteur, ajoutez `--preparation` pour les transformer au format d'entrée
-attendu avant le calcul des mesures :
-```console
-offre_realisee
-    --data-path=<dossier-racine-des-donnees>
-    --preparation
-    --start-date=YYYY-MM-DD
-    --end-date=YYYY-MM-DD
-```
-L'étape de préparation peut être lancée seule, en la combinant avec `--no-mesure` et `--no-aggregation`.
 
 Par défaut la qualité de service est calculé par jour et agrégée par période pour la ponctualité et la régularité.
 

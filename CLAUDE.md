@@ -55,9 +55,12 @@ Four boolean toggles (all default True) select the work: `--mesure` / `--aggrega
 `--preparation` (default False, opt-in) adds an upstream bronze→silver stage: it reads one raw
 transporteur parquet per day from `--input-brute-path` (file name built with
 `--input-brute-file-name-pattern`, a strftime pattern), keeps the `PASSAGE_EVALUABLE` rows, merges
-`HEURE_*_DEPART` / `HEURE_*_ARRIVEE` into `HEURE_THEORIQUE` / `HEURE_REELLE` (departure first, arrival
+`HEURE_DEPART_*` / `HEURE_ARRIVEE_*` into `HEURE_THEORIQUE` / `HEURE_REELLE` (departure first, arrival
 at the arrival terminus), localizes them to UTC, and writes the `JOUR=` partitions of
-`input/offre_realisee.parquet` that the mesure stage reads.
+`input/offre_realisee.parquet` that the mesure stage reads. The transporteur delivery format is wider
+than what is kept — see `COLONNES_BRUTES_REQUISES` in `config/input_brute_config.py` and the
+"Préparation des données brutes" section of `0_documentation/QS_notice_tech.md`; extra delivered
+columns (`DSP`, `ORDRE`, `ZDA_*`, `LIGNE_NAME`, `HEURE_*_COMMANDEE`, `ELIGIBLE_DECALAGE`) are ignored.
 
 ## Architecture
 

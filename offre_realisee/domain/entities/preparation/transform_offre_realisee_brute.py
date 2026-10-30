@@ -27,7 +27,9 @@ def transform_offre_realisee_brute(df_offre_realisee_brute: pd.DataFrame) -> pd.
       - fusionner les heures de départ et d'arrivée en une seule heure de passage : l'heure de départ si elle est
         renseignée, sinon l'heure d'arrivée (cas du terminus d'arrivée, qui n'a pas d'heure de départ) ;
       - localiser les heures en UTC, les heures brutes étant naïves et déjà exprimées en UTC ;
-      - ne conserver que les colonnes nécessaires au calcul de la qualité de service.
+      - reprendre `SENS_ID` comme `SENS` ;
+      - ne conserver que les colonnes nécessaires au calcul de la qualité de service. Les autres colonnes du format de
+        livraison sont ignorées.
 
     Les lignes dont l'heure théorique est nulle (passage réel non prévu) ou dont l'heure réelle est nulle (absence de
     données) sont conservées : elles portent une information métier utilisée par le calcul des mesures.
@@ -59,10 +61,11 @@ def transform_offre_realisee_brute(df_offre_realisee_brute: pd.DataFrame) -> pd.
                 f"({nombre_lignes_brutes - len(df_offre_realisee)} passages non évaluables écartés)")
 
     df_offre_realisee = df_offre_realisee.assign(**{
+        InputColumns.sens: _sens(df_offre_realisee[InputBruteColumns.sens_id]),
         InputColumns.heure_theorique: _heure_de_passage(
-            df_offre_realisee, InputBruteColumns.heure_theorique_depart, InputBruteColumns.heure_theorique_arrivee),
+            df_offre_realisee, InputBruteColumns.heure_depart_theorique, InputBruteColumns.heure_arrivee_theorique),
         InputColumns.heure_reelle: _heure_de_passage(
-            df_offre_realisee, InputBruteColumns.heure_reelle_depart, InputBruteColumns.heure_reelle_arrivee),
+            df_offre_realisee, InputBruteColumns.heure_depart_reelle, InputBruteColumns.heure_arrivee_reelle),
     })
 
     return df_offre_realisee[COLONNES_OFFRE_REALISEE]
@@ -96,6 +99,28 @@ def _masque_passage_evaluable(serie_passage_evaluable: pd.Series) -> pd.Series:
                          f"valeurs inattendues : {sorted(map(str, valeurs_inattendues))}")
 
     return serie_passage_evaluable.eq(True).fillna(False).astype(bool)
+
+
+def _sens(serie_sens_id: pd.Series) -> pd.Series:
+    """Construit le sens à partir de l'identifiant de sens livré par le transporteur.
+
+    `SENS_ID` ne vaut que 0 ou 1 et n'est utilisé que comme clé de regroupement : il est repris tel quel, converti en
+    chaîne de caractères. Le passage par `Int64` évite qu'un identifiant livré en décimal devienne "0.0".
+
+    Parameters
+    ----------
+    serie_sens_id : Series
+        Colonne brute `SENS_ID`.
+
+    Returns
+    -------
+    sens : Series
+        Sens du déplacement sur la ligne, sous forme de chaîne de caractères.
+    """
+    if pd.api.types.is_numeric_dtype(serie_sens_id):
+        serie_sens_id = serie_sens_id.astype('Int64')
+
+    return serie_sens_id.astype('string')
 
 
 def _heure_de_passage(df_offre_realisee_brute: pd.DataFrame, colonne_depart: str, colonne_arrivee: str) -> pd.Series:

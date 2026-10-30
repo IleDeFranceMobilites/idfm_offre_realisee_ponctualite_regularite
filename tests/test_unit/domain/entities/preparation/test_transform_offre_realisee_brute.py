@@ -12,14 +12,14 @@ def offre_realisee_brute(**kwargs) -> pd.DataFrame:
     ligne_brute = {
         InputBruteColumns.jour: '2023-09-27',
         InputBruteColumns.ligne: '150',
-        InputBruteColumns.sens: 'GP->VIL',
+        InputBruteColumns.sens_id: 0,
         InputBruteColumns.arret: '4CH',
         InputBruteColumns.course_id: 1,
         InputBruteColumns.is_terminus: False,
-        InputBruteColumns.heure_theorique_depart: pd.Timestamp('2023-09-27 06:00:00'),
-        InputBruteColumns.heure_theorique_arrivee: pd.Timestamp('2023-09-27 05:59:00'),
-        InputBruteColumns.heure_reelle_depart: pd.Timestamp('2023-09-27 06:02:00'),
-        InputBruteColumns.heure_reelle_arrivee: pd.Timestamp('2023-09-27 06:01:00'),
+        InputBruteColumns.heure_depart_theorique: pd.Timestamp('2023-09-27 06:00:00'),
+        InputBruteColumns.heure_arrivee_theorique: pd.Timestamp('2023-09-27 05:59:00'),
+        InputBruteColumns.heure_depart_reelle: pd.Timestamp('2023-09-27 06:02:00'),
+        InputBruteColumns.heure_arrivee_reelle: pd.Timestamp('2023-09-27 06:01:00'),
         InputBruteColumns.passage_evaluable: True,
     }
     ligne_brute.update(kwargs)
@@ -42,12 +42,26 @@ def test_transform_offre_realisee_brute_heure_de_depart_prioritaire():
     assert str(result[InputColumns.heure_reelle].dtype) == 'datetime64[ns, UTC]'
 
 
+def test_transform_offre_realisee_brute_sens_repris_de_sens_id():
+    # Given - SENS_ID livré en décimal, cas où un "0.0" serait produit par une simple conversion en chaîne
+    df = pd.concat([
+        offre_realisee_brute(**{InputBruteColumns.sens_id: 0.0}),
+        offre_realisee_brute(**{InputBruteColumns.sens_id: 1.0}),
+    ], ignore_index=True)
+
+    # When
+    result = transform_offre_realisee_brute(df)
+
+    # Assert
+    assert result[InputColumns.sens].tolist() == ['0', '1']
+
+
 def test_transform_offre_realisee_brute_heure_arrivee_si_pas_de_depart():
     # Given - cas du terminus d'arrivée, qui n'a pas d'heure de départ
     df = offre_realisee_brute(**{
         InputBruteColumns.is_terminus: True,
-        InputBruteColumns.heure_theorique_depart: pd.NaT,
-        InputBruteColumns.heure_reelle_depart: pd.NaT,
+        InputBruteColumns.heure_depart_theorique: pd.NaT,
+        InputBruteColumns.heure_depart_reelle: pd.NaT,
     })
 
     # When
@@ -79,11 +93,11 @@ def test_transform_offre_realisee_brute_conserve_les_heures_nulles():
     # Given - un passage réel non prévu (sans heure théorique) et un passage théorique sans heure réelle
     df = pd.concat([
         offre_realisee_brute(**{InputBruteColumns.arret: 'PASSAGE_NON_PREVU',
-                                InputBruteColumns.heure_theorique_depart: pd.NaT,
-                                InputBruteColumns.heure_theorique_arrivee: pd.NaT}),
+                                InputBruteColumns.heure_depart_theorique: pd.NaT,
+                                InputBruteColumns.heure_arrivee_theorique: pd.NaT}),
         offre_realisee_brute(**{InputBruteColumns.arret: 'ABSENCE_DE_DONNEES',
-                                InputBruteColumns.heure_reelle_depart: pd.NaT,
-                                InputBruteColumns.heure_reelle_arrivee: pd.NaT}),
+                                InputBruteColumns.heure_depart_reelle: pd.NaT,
+                                InputBruteColumns.heure_arrivee_reelle: pd.NaT}),
     ], ignore_index=True)
 
     # When
@@ -98,8 +112,8 @@ def test_transform_offre_realisee_brute_conserve_les_heures_nulles():
 def test_transform_offre_realisee_brute_heures_deja_localisees():
     # Given
     df = offre_realisee_brute(**{
-        InputBruteColumns.heure_theorique_depart: pd.Timestamp('2023-09-27 08:00:00', tz='Europe/Paris'),
-        InputBruteColumns.heure_reelle_depart: pd.Timestamp('2023-09-27 08:02:00', tz='Europe/Paris'),
+        InputBruteColumns.heure_depart_theorique: pd.Timestamp('2023-09-27 08:00:00', tz='Europe/Paris'),
+        InputBruteColumns.heure_depart_reelle: pd.Timestamp('2023-09-27 08:02:00', tz='Europe/Paris'),
     })
 
     # When

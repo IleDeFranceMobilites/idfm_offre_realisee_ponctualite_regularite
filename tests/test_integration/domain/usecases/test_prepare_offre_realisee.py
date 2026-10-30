@@ -28,17 +28,17 @@ def offre_realisee_brute(jour: str) -> pd.DataFrame:
     return pd.DataFrame({
         InputBruteColumns.jour: [jour, jour, jour],
         InputBruteColumns.ligne: ['150', '150', '150'],
-        InputBruteColumns.sens: ['GP->VIL', 'GP->VIL', 'GP->VIL'],
+        InputBruteColumns.sens_id: [0, 0, 0],
         InputBruteColumns.arret: ['4CH', 'VIL', 'NON_EVALUABLE'],
         InputBruteColumns.course_id: [1, 1, 2],
         InputBruteColumns.is_terminus: [False, True, False],
-        InputBruteColumns.heure_theorique_depart: [
+        InputBruteColumns.heure_depart_theorique: [
             pd.Timestamp(f'{jour} 06:00:00'), pd.NaT, pd.Timestamp(f'{jour} 07:00:00')],
-        InputBruteColumns.heure_theorique_arrivee: [
+        InputBruteColumns.heure_arrivee_theorique: [
             pd.Timestamp(f'{jour} 05:59:00'), pd.Timestamp(f'{jour} 06:30:00'), pd.NaT],
-        InputBruteColumns.heure_reelle_depart: [
+        InputBruteColumns.heure_depart_reelle: [
             pd.Timestamp(f'{jour} 06:02:00'), pd.NaT, pd.Timestamp(f'{jour} 07:01:00')],
-        InputBruteColumns.heure_reelle_arrivee: [
+        InputBruteColumns.heure_arrivee_reelle: [
             pd.NaT, pd.Timestamp(f'{jour} 06:33:00'), pd.NaT],
         InputBruteColumns.passage_evaluable: [True, True, False],
     })
@@ -76,7 +76,8 @@ def test_prepare_offre_realisee(local_file_system_handler):
     expected_result = pd.DataFrame({
         InputColumns.ligne: ['150', '150'],
         InputColumns.arret: ['4CH', 'VIL'],
-        InputColumns.sens: ['GP->VIL', 'GP->VIL'],
+        # SENS est construit par la préparation à partir de SENS_ID, d'où le dtype "string"
+        InputColumns.sens: pd.array(['0', '0'], dtype='string'),
         InputColumns.heure_theorique: [
             pd.Timestamp(f'{jour} 06:00:00', tz='UTC'), pd.Timestamp(f'{jour} 06:30:00', tz='UTC')],
         InputColumns.heure_reelle: [

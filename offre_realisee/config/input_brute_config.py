@@ -4,29 +4,30 @@ from offre_realisee.config.file_extensions import FileExtensions
 class InputBruteColumns:
     ligne = 'LIGNE'
     jour = 'JOUR'
-    sens = 'SENS'
+    sens_id = 'SENS_ID'
     arret = 'ARRET'
     course_id = 'COURSE_ID'
     is_terminus = 'IS_TERMINUS'
-    heure_theorique_depart = 'HEURE_THEORIQUE_DEPART'
-    heure_theorique_arrivee = 'HEURE_THEORIQUE_ARRIVEE'
-    heure_reelle_depart = 'HEURE_REELLE_DEPART'
-    heure_reelle_arrivee = 'HEURE_REELLE_ARRIVEE'
+    heure_depart_theorique = 'HEURE_DEPART_THEORIQUE'
+    heure_arrivee_theorique = 'HEURE_ARRIVEE_THEORIQUE'
+    heure_depart_reelle = 'HEURE_DEPART_REELLE'
+    heure_arrivee_reelle = 'HEURE_ARRIVEE_REELLE'
     passage_evaluable = 'PASSAGE_EVALUABLE'
 
 
-# Colonnes que le fichier brut livré par le transporteur doit contenir pour pouvoir être transformé.
+# Colonnes que le fichier brut livré par le transporteur doit contenir pour pouvoir être transformé. Les autres colonnes
+# du format de livraison (DSP, ORDRE, ZDA_NAME, ZDA_ID, LIGNE_NAME, HEURE_*_COMMANDEE, ELIGIBLE_DECALAGE) sont ignorées.
 COLONNES_BRUTES_REQUISES = [
     InputBruteColumns.ligne,
     InputBruteColumns.jour,
-    InputBruteColumns.sens,
+    InputBruteColumns.sens_id,
     InputBruteColumns.arret,
     InputBruteColumns.course_id,
     InputBruteColumns.is_terminus,
-    InputBruteColumns.heure_theorique_depart,
-    InputBruteColumns.heure_theorique_arrivee,
-    InputBruteColumns.heure_reelle_depart,
-    InputBruteColumns.heure_reelle_arrivee,
+    InputBruteColumns.heure_depart_theorique,
+    InputBruteColumns.heure_arrivee_theorique,
+    InputBruteColumns.heure_depart_reelle,
+    InputBruteColumns.heure_arrivee_reelle,
     InputBruteColumns.passage_evaluable,
 ]
 
