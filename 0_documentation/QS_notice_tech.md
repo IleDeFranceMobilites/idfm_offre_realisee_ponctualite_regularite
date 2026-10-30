@@ -20,6 +20,46 @@ Ci-dessous, un descriptif des colonnes nécessaires pour l'exécution du code :
 | HEURE_REELLE      | datetime64[ns, UTC] | L'heure réelle de passage du bus/tram/train. Les valeurs de cette colonne doivent être au format datetime et sous la timezone "UTC".    |
 | IS_TERMINUS       | boolean             | "False" si l'arrêt n'est pas le terminus de la course, "True" s'il s'agit du terminus.                                                  |
 
+Les fichiers sont partitionnés par jour : la valeur du jour est portée par le nom du dossier de partition
+"JOUR=AAAA-MM-JJ" (voir la partie "Arborescence") et n'a donc pas à figurer dans le fichier lui-même.
+
+### Préparation des données brutes
+
+Les données livrées par les transporteurs ne sont pas directement au format décrit ci-dessus : les heures de passage y
+sont séparées en heure de départ et heure d'arrivée, et une colonne indique si le passage est évaluable. L'étape de
+préparation (`--preparation`) transforme ces données brutes au format attendu. Elle attend un fichier parquet par jour
+contenant les colonnes suivantes :
+
+| Nom de la colonne       | Type           | Description                                                                                             |
+|:------------------------|:---------------|:--------------------------------------------------------------------------------------------------------|
+| JOUR                    | string         | Le jour des données, au format "AAAA-MM-JJ". Il sert de clé de partition des données préparées.         |
+| LIGNE                   | string         | Le numéro de la ligne de bus/tram/train concernée.                                                      |
+| SENS                    | string         | Le format des valeurs est `[arrêt_départ]->[terminus]`. Ex : "VIL->RAM".                                |
+| ARRET                   | string         | Le nom unique de l'arrêt. Si un arrêt est sur plusieurs lignes, le nom doit être le même.               |
+| COURSE_ID               | string         | L'identifiant unique de la course théorique.                                                            |
+| IS_TERMINUS             | boolean        | "False" si l'arrêt n'est pas le terminus de la course, "True" s'il s'agit du terminus.                  |
+| HEURE_THEORIQUE_DEPART  | datetime64[ns] | L'heure théorique de départ de l'arrêt. Non renseignée au terminus d'arrivée.                           |
+| HEURE_THEORIQUE_ARRIVEE | datetime64[ns] | L'heure théorique d'arrivée à l'arrêt.                                                                  |
+| HEURE_REELLE_DEPART     | datetime64[ns] | L'heure réelle de départ de l'arrêt. Non renseignée au terminus d'arrivée.                              |
+| HEURE_REELLE_ARRIVEE    | datetime64[ns] | L'heure réelle d'arrivée à l'arrêt.                                                                     |
+| PASSAGE_EVALUABLE       | boolean        | "True" si le passage doit être pris en compte dans le calcul de la qualité de service.                  |
+
+La transformation appliquée est la suivante :
+
+1. **Filtre des passages évaluables** : seules les lignes dont `PASSAGE_EVALUABLE` vaut "True" sont conservées. Un
+   passage non renseigné n'est pas évaluable.
+2. **Fusion des heures de départ et d'arrivée** : `HEURE_THEORIQUE` vaut `HEURE_THEORIQUE_DEPART` si cette heure est
+   renseignée, sinon `HEURE_THEORIQUE_ARRIVEE`. La même règle s'applique à `HEURE_REELLE`. C'est le cas du terminus
+   d'arrivée, où le véhicule n'a pas d'heure de départ : c'est bien son heure d'arrivée qui est évaluée.
+3. **Localisation en UTC** : les heures brutes sont naïves et déjà exprimées en UTC ; elles sont donc localisées en UTC
+   sans conversion, pour obtenir le type `datetime64[ns, UTC]` attendu.
+4. **Sélection des colonnes** : `LIGNE`, `SENS`, `ARRET`, `COURSE_ID` et `IS_TERMINUS` sont reprises telles quelles, et
+   `JOUR` devient la clé de partition des données préparées.
+
+Les heures nulles sont conservées, car elles portent une information utilisée par le calcul des mesures : une heure
+théorique nulle correspond à un passage réel non prévu, et une heure réelle nulle à une absence de données (situation
+inacceptable).
+
 
 ## 2. Données en sortie
 
@@ -180,9 +220,15 @@ pip install .
 #### Structure des données
 Placer vos données dans un dossier respectant la structure définie.
 
-Le code a été implémenté en suivant une structure de répertoire définie. Les données d'entrée doivent être un fichier parquet nommé "**input-file-name**" partitionné par jour "DAY=AAAA-MM-JJ" en fonction du jour des données. Le dossier "**output**" contiendra les données de sortie. La création de dossiers pour organiser les fichiers de sortie est automatique.
+Le code a été implémenté en suivant une structure de répertoire définie. Les données d'entrée doivent être un fichier parquet nommé "**input-file-name**" partitionné par jour "JOUR=AAAA-MM-JJ" en fonction du jour des données. Le dossier "**output**" contiendra les données de sortie. La création de dossiers pour organiser les fichiers de sortie est automatique.
+
+Le dossier "**input-brute-path**" ne concerne que l'étape de préparation (`--preparation`) : il contient les données
+brutes livrées par le transporteur, à raison d'un fichier par jour dont le nom est construit à partir de la date. La
+préparation alimente le dossier d'entrée "input" à partir de ces fichiers.
 
 │─ **data-path**\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│─ input_brute\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│─ *offre_realisee_brute_AAAA-MM-JJ.parquet*\
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│─ input\
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│─ input-file-name\
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│─ JOUR=AAAA-MM-JJ\
@@ -193,6 +239,8 @@ Les valeurs suivantes peuvent être modifiées en fonction de la structure de vo
 - input (Valeur par défaut: "input")
 - output (Valeur par défaut: "output")
 - input-file-name (Valeur par défaut: "offre_realisee.parquet")
+- input-brute-path (Valeur par défaut: "input_brute")
+- input-brute-file-name-pattern (Valeur par défaut: "offre_realisee_brute_%Y-%m-%d.parquet")
 
 
 #### Exemple d'execution
@@ -210,8 +258,19 @@ offre_realisee
 Cette commande permet de calculer et d'agréger les statistiques de qualite de service entre la date de début (start-date) et la date de fin (end-date).
 
 Des paramètres supplémentaires peuvent être ajoutés pour exécuter le script sur :
-- la mesure ou l’agrégation uniquement
+- la préparation, la mesure ou l’agrégation uniquement
 - la ponctualité ou la régularité uniquement
+
+Si vos données sont au format brut transporteur, ajoutez `--preparation` pour les transformer au format d'entrée
+attendu avant le calcul des mesures :
+```console
+offre_realisee
+    --data-path=<dossier-racine-des-donnees>
+    --preparation
+    --start-date=YYYY-MM-DD
+    --end-date=YYYY-MM-DD
+```
+L'étape de préparation peut être lancée seule, en la combinant avec `--no-mesure` et `--no-aggregation`.
 
 Par défaut la qualité de service est calculé par jour et agrégée par période pour la ponctualité et la régularité.
 
@@ -220,15 +279,29 @@ Par défaut la qualité de service est calculé par jour et agrégée par pério
 ```console
 $ offre_realisee -h
 
-usage: offre_realisee [-h] [--mesure | --no-mesure] [--aggregation | --no-aggregation] [--ponctualite | --no-ponctualite]
-                      [--regularite | --no-regularite] --data-path DATA_PATH --start-date START_DATE --end-date END_DATE
-                      [--input-path INPUT_PATH] [--output-path OUTPUT_PATH] [--input-file-name INPUT_FILE_NAME] [--n-thread N_THREAD]
+usage: offre_realisee [-h] [--telecharge-calendrier-scolaire | --no-telecharge-calendrier-scolaire]
+                      [--preparation | --no-preparation] [--mesure | --no-mesure] [--aggregation | --no-aggregation]
+                      [--ponctualite | --no-ponctualite] [--regularite | --no-regularite] --data-path DATA_PATH
+                      --start-date START_DATE --end-date END_DATE [--input-path INPUT_PATH] [--output-path OUTPUT_PATH]
+                      [--input-file-name INPUT_FILE_NAME] [--input-brute-path INPUT_BRUTE_PATH]
+                      [--input-brute-file-name-pattern INPUT_BRUTE_FILE_NAME_PATTERN]
+                      [--calendrier-scolaire-file-name CALENDRIER_SCOLAIRE_FILE_NAME]
+                      [--periode-ete-start-date PERIODE_ETE_START_DATE] [--periode-ete-end-date PERIODE_ETE_END_DATE]
+                      [--list-journees-exceptionnelles [LIST_JOURNEES_EXCEPTIONNELLES ...]] [--n-thread N_THREAD]
 
 Calcul de la qualite de service.
 Compute qs
 
 options:
   -h, --help            show this help message and exit
+  --telecharge-calendrier-scolaire, --no-telecharge-calendrier-scolaire
+                        Télécharge le calendrier scolaire.
+                         (Valeur par défaut: False)
+                        Download holidays.
+  --preparation, --no-preparation
+                        Transforme les données brutes livrées par le transporteur au format attendu en entrée.
+                         (Valeur par défaut: False)
+                        Transform raw input data to the expected input format.
   --mesure, --no-mesure
                         Calcule la mesure par jour.
                          (Valeur par défaut: True)
@@ -262,7 +335,25 @@ options:
   --input-file-name INPUT_FILE_NAME
                         Nom du fichier de données d'entrée. (default: offre_realisee.parquet)
                         Input parquet file name. (default: offre_realisee.parquet)
-  --n-thread N_THREAD   Nombre de threads en parallèle dans le calcul des mesures. (default: 1)
+  --input-brute-path INPUT_BRUTE_PATH
+                        Chemin relatif par rapport au 'data-path' vers le dossier des données brutes livrées par le transporteur. (Valeur par défaut: input_brute)
+                        Relative path to the raw input folder from data path. (default: input_brute)
+  --input-brute-file-name-pattern INPUT_BRUTE_FILE_NAME_PATTERN
+                        Patron du nom des fichiers de données brutes, au format strftime (un fichier par jour). (Valeur par défaut: offre_realisee_brute_%Y-%m-%d.parquet)
+                        Raw input file name pattern, in strftime format (one file per day). (default: offre_realisee_brute_%Y-%m-%d.parquet)
+  --calendrier-scolaire-file-name CALENDRIER_SCOLAIRE_FILE_NAME
+                        Nom du fichier du referentiel du calendrier scolaire. (default: calendrier_scolaire.parquet)
+                        School calendar parquet file name. (default: calendrier_scolaire.parquet)
+  --periode-ete-start-date PERIODE_ETE_START_DATE
+                        Première date de la periode d'été. Doit être au format : YYYY-MM-DD
+                        Summer first date. Must be in format: YYYY-MM-DD
+  --periode-ete-end-date PERIODE_ETE_END_DATE
+                        Dernière date de la periode d'été. Doit être au format : YYYY-MM-DD
+                        Summer last date. Must be in format: YYYY-MM-DD
+  --list-journees-exceptionnelles [LIST_JOURNEES_EXCEPTIONNELLES ...]
+                        Liste des dates des journées exceptionnelles à exclure des calculs agrégés. (Valeur par défaut: None)
+                        Datetime list of exceptionnal days to exclude. (default: None)
+  --n-thread N_THREAD   Nombre de threads en parallèle dans le calcul des mesures. (Valeur par défaut: 1)
                         Number of parallel threads. (default: 1)
 ```
 
