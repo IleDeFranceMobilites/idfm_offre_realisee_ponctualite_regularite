@@ -4,32 +4,7 @@
 
 ## 1. Données en entrée
 
-### Format des données
-Ce code a été implémenté à partir d'un format de données en entrée dont toutes les colonnes sont nécessaires.
-Les fichiers en entrée doivent être au format parquet. La granularité des fichiers est au jour (1 fichier par jour).
-La partie "Arborescence" de la notice vous donnera l'organisation de ces fichiers dans les dossiers adéquats.
-Ci-dessous, un descriptif des colonnes nécessaires pour l'exécution du code :
-
-| Nom de la colonne | Type                | Description                                                                                                                             |
-|:------------------|:--------------------|:----------------------------------------------------------------------------------------------------------------------------------------|
-| LIGNE             | string              | Le numéro de la ligne de bus/tram/train concernée.                                                                                      |
-| SENS              | string              | Le sens du déplacement sur la ligne. Le format des valeurs peut être `[arrêt_départ]->[terminus]` (ex : "VIL->RAM") ou l'identifiant de sens ("0" ou "1") : cette colonne ne sert que de clé de regroupement. Les données issues de l'étape de préparation contiennent l'identifiant de sens. |
-| ARRET             | string              | Le nom unique de l'arrêt. Si un arrêt est sur plusieurs lignes, le nom doit être le même.                                               |
-| COURSE_ID         | string              | L'identifiant unique de la course théorique. Il sert à compter le nombre de courses théoriques par ligne et par jour.                   |
-| HEURE_THEORIQUE   | datetime64[ns, UTC] | L'heure théorique de passage du bus/tram/train. Les valeurs de cette colonne doivent être au format datetime et sous la timezone "UTC". |
-| HEURE_REELLE      | datetime64[ns, UTC] | L'heure réelle de passage du bus/tram/train. Les valeurs de cette colonne doivent être au format datetime et sous la timezone "UTC".    |
-| IS_TERMINUS       | boolean             | "False" si l'arrêt n'est pas le terminus de la course, "True" s'il s'agit du terminus.                                                  |
-
-Les fichiers sont partitionnés par jour : la valeur du jour est portée par le nom du dossier de partition
-"JOUR=AAAA-MM-JJ" (voir la partie "Arborescence") et n'a donc pas à figurer dans le fichier lui-même.
-
-### Préparation des données brutes
-
-Les données livrées par les transporteurs ne sont pas directement au format décrit ci-dessus : les heures de passage y
-sont séparées en heure de départ et heure d'arrivée, et une colonne indique si le passage est évaluable. L'étape de
-préparation (`--preparation`) transforme ces données brutes au format attendu, à partir d'un fichier parquet par jour.
-
-#### Format demandé aux transporteurs
+### Format demandé aux transporteurs
 
 Le format de livraison demandé aux transporteurs est le suivant. Il est plus large que ce dont le calcul de la qualité
 de service a besoin : la granularité est le passage d'une course à un arrêt, avec son contexte (référentiel d'arrêt,
@@ -57,6 +32,33 @@ ordre dans la course, offre commandée).
 | ELIGIBLE_DECALAGE       | boolean             | Indicateur de décalage fourni par le transporteur.                                                      |
 | PASSAGE_EVALUABLE       | boolean             | "True" si le passage doit être pris en compte dans le calcul de la qualité de service.                  |
 
+Ce format est plus large que celui attendu en entrée de l'algorithme de calcul des indicateurs, décrit ci-dessous.
+
+### Format des données
+Ce code a été implémenté à partir d'un format de données en entrée dont toutes les colonnes sont nécessaires.
+Les fichiers en entrée doivent être au format parquet. La granularité des fichiers est au jour (1 fichier par jour).
+La partie "Arborescence" de la notice vous donnera l'organisation de ces fichiers dans les dossiers adéquats.
+Ci-dessous, un descriptif des colonnes nécessaires pour l'exécution du code :
+
+| Nom de la colonne | Type                | Description                                                                                                                             |
+|:------------------|:--------------------|:----------------------------------------------------------------------------------------------------------------------------------------|
+| LIGNE             | string              | Le numéro de la ligne de bus/tram/train concernée.                                                                                      |
+| SENS              | string              | Le sens du déplacement sur la ligne. Le format des valeurs peut être `[arrêt_départ]->[terminus]` (ex : "VIL->RAM") ou l'identifiant de sens ("0" ou "1") : cette colonne ne sert que de clé de regroupement. Les données issues de l'étape de préparation contiennent l'identifiant de sens. |
+| ARRET             | string              | Le nom unique de l'arrêt. Si un arrêt est sur plusieurs lignes, le nom doit être le même.                                               |
+| COURSE_ID         | string              | L'identifiant unique de la course théorique. Il sert à compter le nombre de courses théoriques par ligne et par jour.                   |
+| HEURE_THEORIQUE   | datetime64[ns, UTC] | L'heure théorique de passage du bus/tram/train. Les valeurs de cette colonne doivent être au format datetime et sous la timezone "UTC". |
+| HEURE_REELLE      | datetime64[ns, UTC] | L'heure réelle de passage du bus/tram/train. Les valeurs de cette colonne doivent être au format datetime et sous la timezone "UTC".    |
+| IS_TERMINUS       | boolean             | "False" si l'arrêt n'est pas le terminus de la course, "True" s'il s'agit du terminus.                                                  |
+
+Les fichiers sont partitionnés par jour : la valeur du jour est portée par le nom du dossier de partition
+"JOUR=AAAA-MM-JJ" (voir la partie "Arborescence") et n'a donc pas à figurer dans le fichier lui-même.
+
+### Préparation des données brutes
+
+Les données livrées par les transporteurs ne sont pas directement au format décrit ci-dessus : les heures de passage y
+sont séparées en heure de départ et heure d'arrivée, et une colonne indique si le passage est évaluable. L'étape de
+préparation (`--preparation`) transforme ces données brutes au format attendu, à partir d'un fichier parquet par jour.
+
 #### Colonnes conservées par la préparation
 
 **Toutes ces colonnes ne sont pas conservées** : la préparation ne garde que celles qui interviennent dans le calcul
@@ -71,7 +73,7 @@ colonnes supplémentaires, elles sont simplement ignorées.
 | HEURE_DEPART_THEORIQUE, HEURE_ARRIVEE_THEORIQUE     | Fusionnées en `HEURE_THEORIQUE`.                                                   |
 | HEURE_DEPART_REELLE, HEURE_ARRIVEE_REELLE           | Fusionnées en `HEURE_REELLE`.                                                      |
 | PASSAGE_EVALUABLE                                   | Utilisée comme filtre, puis abandonnée.                                            |
-| DSP                                                 | Non conservée : elle ne sert, le cas échéant, qu'à filtrer les données et à ranger les fichiers de sortie par DSP. |
+| DSP                                                 | Non conservée par l'étape de préparation : `DSP` n'est pas supprimée du package, c'est une colonne optionnelle (non obligatoire) du format d'entrée de l'algorithme qui sert, si elle est renseignée, à filtrer les données et à ranger les fichiers de sortie par DSP. Si vous utilisez l'étape de préparation et voulez bénéficier de ce filtrage, il faut l'ajouter vous-même après la préparation. |
 | HEURE_DEPART_COMMANDEE, HEURE_ARRIVEE_COMMANDEE     | Non conservées : le score compare le réel au théorique, l'offre commandée n'entre pas dans le calcul. |
 | ORDRE, ZDA_NAME, ZDA_ID, LIGNE_NAME                 | Non conservées : informations de contexte et de référentiel, sans effet sur le score. |
 | ELIGIBLE_DECALAGE                                   | Non conservée : ne relève pas du calcul de la qualité de service.                  |
