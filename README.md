@@ -38,11 +38,15 @@ Placer vos données dans un dossier respectant la structure définie.
 Le code a été implémenté en suivant une structure de répertoire définie. Les données d'entrée doivent être un fichier parquet nommé "**input-file-name**" partitionné par jour "JOUR=AAAA-MM-JJ" en fonction du jour des données ainsi qu'un fichier parquet nommé "**calendrier-scolaire-file-name**" contenant le référentiel du calendrier scolaire (ce fichier pouvant être téléchargé via le code). Le dossier "**output**" contiendra les données de sortie. La création de dossiers pour organiser les fichiers de sortie est automatique.
 
 |- **data-path**\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- input_brute\
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- offre_realisee_brute_AAAA-MM-JJ.parquet\
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- input\
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- input-file-name\
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- JOUR=AAAA-MM-JJ\
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- calendrier-scolaire-file-name\
 │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|- output
+
+Le dossier "**input-brute-path**" ne concerne que l'étape de préparation (`--preparation`) : il contient les données brutes livrées par le transporteur, à raison d'un fichier par jour.
 
 Les valeurs suivantes peuvent être modifiées en fonction de la structure de votre répertoire :
 - data-path
@@ -50,15 +54,20 @@ Les valeurs suivantes peuvent être modifiées en fonction de la structure de vo
 - output (Valeur par défaut: "output")
 - input-file-name (Valeur par défaut: "offre_realisee.parquet")
 - calendrier-scolaire-file-namee (Valeur par défaut: "calendrier_scolaire.parquet")
+- input-brute-path (Valeur par défaut: "input_brute")
+- input-brute-file-name-pattern (Valeur par défaut: "offre_realisee_brute_%Y-%m-%d.parquet")
 
 #### Format des données
 Certaines colonnes doivent être présente dans les fichiers d'entrée :
 - LIGNE : Identifiant unique de ligne (idéalement égale à l'identifiant dans [le référentiel ILICO](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://data.iledefrance-mobilites.fr/api/v2/catalog/datasets/referentiels-lignes-arrets-offre-netex/attachments/referentiel_des_lignes_netex_v1_pdf&ved=2ahUKEwjiyveh8OCKAxUTR6QEHY-UNCEQFnoECA4QAQ&usg=AOvVaw1Q8OgKhgRHN2Ao_Yyw8Lcr))
 - SENS : Sens du déplacement sur la ligne (0 ou 1)
 - ARRET : Identifiant unique de l'arrêt sur la ligne (idéalement égale à l'identifiant dans [le referentiel ICAR](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://data.iledefrance-mobilites.fr/api/v2/catalog/datasets/referentiels-lignes-arrets-offre-netex/attachments/referentiel_des_arrets_netex_v1_pdf&ved=2ahUKEwiyz6Wi8eCKAxWOT6QEHdTUPKIQFnoECBMQAQ&usg=AOvVaw1NZUNibX1nfLt94B3-txG3))
+- COURSE_ID : Identifiant unique de la course théorique
 - HEURE_THEORIQUE : Heure de passage théorique
 - HEURE_REELLE : Heure de passage réalisée
 - IS_TERMINUS : Indique si l'arrêt correspond à un terminus ou non (Booléen)
+
+Si vos données sont au format brut transporteur (heures séparées en départ / arrivée et colonne PASSAGE_EVALUABLE), l'étape de préparation `--preparation` les transforme au format ci-dessus. Le détail des colonnes brutes attendues et des règles de transformation est décrit dans la [notice technique](0_documentation/QS_notice_tech.md).
 
 
 #### Exemple d'execution
@@ -81,7 +90,7 @@ Cette commande permet de calculer et d'agréger les statistiques de qualite de s
 
 Des paramètres supplémentaires peuvent être ajoutés pour exécuter le script sur :
 - le téléchargment du calendrier scolaire
-- la mesure ou l’agrégation uniquement
+- la préparation des données brutes (`--preparation`), la mesure ou l’agrégation uniquement
 - la ponctualité ou la régularité uniquement
 
 Par défaut la qualité de service est calculé par jour et agrégée par période pour la ponctualité et la régularité.
@@ -90,10 +99,13 @@ Par défaut la qualité de service est calculé par jour et agrégée par pério
 
 ```console
 $ offre_realisee -h
-usage: offre_realisee [-h] [--telecharge-calendrier-scolaire | --no-telecharge-calendrier-scolaire] [--mesure | --no-mesure]
+usage: offre_realisee [-h] [--telecharge-calendrier-scolaire | --no-telecharge-calendrier-scolaire]
+                      [--preparation | --no-preparation] [--mesure | --no-mesure]
                       [--aggregation | --no-aggregation] [--ponctualite | --no-ponctualite] [--regularite | --no-regularite] --data-path
                       DATA_PATH --start-date START_DATE --end-date END_DATE [--input-path INPUT_PATH] [--output-path OUTPUT_PATH]
-                      [--input-file-name INPUT_FILE_NAME] [--calendrier-scolaire-file-name CALENDRIER_SCOLAIRE_FILE_NAME]
+                      [--input-file-name INPUT_FILE_NAME] [--input-brute-path INPUT_BRUTE_PATH]
+                      [--input-brute-file-name-pattern INPUT_BRUTE_FILE_NAME_PATTERN]
+                      [--calendrier-scolaire-file-name CALENDRIER_SCOLAIRE_FILE_NAME]
                       [--periode-ete-start-date PERIODE_ETE_START_DATE] [--periode-ete-end-date PERIODE_ETE_END_DATE]
                       [--list-journees-exceptionnelles [LIST_JOURNEES_EXCEPTIONNELLES ...]] [--n-thread N_THREAD]
 
@@ -106,6 +118,10 @@ options:
                         Télécharge le calendrier scolaire.
                          (Valeur par défaut: False)
                         Download holidays.
+  --preparation, --no-preparation
+                        Transforme les données brutes livrées par le transporteur au format attendu en entrée.
+                         (Valeur par défaut: False)
+                        Transform raw input data to the expected input format.
   --mesure, --no-mesure
                         Calcule la mesure par jour.
                          (Valeur par défaut: True)
@@ -139,6 +155,12 @@ options:
   --input-file-name INPUT_FILE_NAME
                         Nom du fichier de données d'entrée. (default: offre_realisee.parquet)
                         Input parquet file name. (default: offre_realisee.parquet)
+  --input-brute-path INPUT_BRUTE_PATH
+                        Chemin relatif par rapport au 'data-path' vers le dossier des données brutes livrées par le transporteur. (Valeur par défaut: input_brute)
+                        Relative path to the raw input folder from data path. (default: input_brute)
+  --input-brute-file-name-pattern INPUT_BRUTE_FILE_NAME_PATTERN
+                        Patron du nom des fichiers de données brutes, au format strftime (un fichier par jour). (Valeur par défaut: offre_realisee_brute_%Y-%m-%d.parquet)
+                        Raw input file name pattern, in strftime format (one file per day). (default: offre_realisee_brute_%Y-%m-%d.parquet)
   --calendrier-scolaire-file-name CALENDRIER_SCOLAIRE_FILE_NAME
                         Nom du fichier du referentiel du calendrier scolaire. (default: calendrier_scolaire.parquet)
                         School calendar parquet file name. (default: calendrier_scolaire.parquet)

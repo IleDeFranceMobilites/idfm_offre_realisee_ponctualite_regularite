@@ -149,3 +149,4 @@ cython_debug/
 # Local Data
 data/input/
 data/output/
+data/*

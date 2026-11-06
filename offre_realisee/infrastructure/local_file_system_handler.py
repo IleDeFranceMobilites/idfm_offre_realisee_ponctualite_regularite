@@ -6,23 +6,30 @@ import pandas as pd
 from offre_realisee.config.aggregation_config import AggregationLevel
 from offre_realisee.config.calendrier_scolaire_config import PARQUET_ENGINE, PARQUET_COMPRESSION
 from offre_realisee.config.file_extensions import FileExtensions
+from offre_realisee.config.input_brute_config import (DEFAULT_INPUT_BRUTE_FILE_NAME_PATTERN,
+                                                      DEFAULT_INPUT_BRUTE_PATH)
 from offre_realisee.config.input_config import InputColumns
 from offre_realisee.config.logger import logger
 from offre_realisee.config.offre_realisee_config import MESURE_TYPE
 from offre_realisee.config.offre_realisee_config import MesureType
 from offre_realisee.domain.port.calendrier_scolaire_file_system_handler import CalendrierScolaireFileSystemHandler
 from offre_realisee.domain.port.file_system_handler import FileSystemHandler
+from offre_realisee.domain.port.offre_realisee_brute_file_system_handler import OffreRealiseeBruteFileSystemHandler
 
 
-class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHandler):
+class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHandler,
+                             OffreRealiseeBruteFileSystemHandler):
 
     def __init__(self, data_path: str, input_path: str, output_path: str, input_file_name: str,
-                 calendrier_scolaire_file_name: str):
+                 calendrier_scolaire_file_name: str, input_brute_path: str = DEFAULT_INPUT_BRUTE_PATH,
+                 input_brute_file_name_pattern: str = DEFAULT_INPUT_BRUTE_FILE_NAME_PATTERN):
         self.data_path = data_path
         self.input_path = input_path
         self.output_path = output_path
         self.input_file_name = input_file_name
         self.calendrier_scolaire_file_name = calendrier_scolaire_file_name
+        self.input_brute_path = input_brute_path
+        self.input_brute_file_name_pattern = input_brute_file_name_pattern
 
     def read_offre_realisee(self, **kwargs) -> pd.DataFrame:
         """Récupération des données d'offre réalisée.
@@ -72,6 +79,57 @@ class LocalFileSystemHandler(FileSystemHandler, CalendrierScolaireFileSystemHand
         )
 
         return df_offre_realisee
+
+    def get_daily_offre_realisee_brute(self, date: date) -> pd.DataFrame:
+        """Récupération des données brutes d'offre réalisée pour une date.
+
+        Les transporteurs livrent un fichier par jour, dont le nom est construit à partir de la date.
+
+        Parameters
+        ----------
+        date : date
+            Date pour laquelle nous voulons les données brutes d'offre réalisée.
+
+        Returns
+        -------
+        df_offre_realisee_brute : DataFrame
+            DataFrame brut d'offre réalisée.
+        """
+        file_path = os.path.join(self.data_path, self.input_brute_path,
+                                 date.strftime(self.input_brute_file_name_pattern))
+
+        logger.info(f"Reading raw input data from: {file_path}")
+        return pd.read_parquet(file_path)
+
+    def save_daily_offre_realisee(self, df_offre_realisee: pd.DataFrame, date: date) -> None:
+        """Sauvegarde des données d'offre réalisée dans le dossier input, partitionnées par jour.
+
+        La colonne JOUR n'est pas écrite dans le fichier : elle est portée par le nom du dossier de partition
+        "JOUR=AAAA-MM-JJ" et réinjectée à la lecture du dataset. Le nom du fichier étant construit à partir de la date
+        du fichier brut, rejouer la préparation d'une journée écrase son propre résultat sans créer de doublons.
+
+        Parameters
+        ----------
+        df_offre_realisee : DataFrame
+            DataFrame d'offre réalisée que nous voulons sauvegarder.
+        date : date
+            Date du fichier brut à l'origine des données.
+        """
+        dataset_path = os.path.join(self.data_path, self.input_path, self.input_file_name)
+        file_name = f"part-{date.strftime('%Y%m%d')}" + FileExtensions.parquet
+
+        for jour, df_offre_realisee_du_jour in df_offre_realisee.groupby(InputColumns.jour, observed=True):
+            jour_partition = jour.strftime('%Y-%m-%d') if hasattr(jour, 'strftime') else str(jour)
+            folder_path = os.path.join(dataset_path, f"{InputColumns.jour}={jour_partition}")
+
+            if not os.path.exists(folder_path):
+                os.makedirs(folder_path, exist_ok=True)
+
+            file_path = os.path.join(folder_path, file_name)
+
+            logger.info(f"Writing a dataframe of shape {df_offre_realisee_du_jour.shape} in {file_path}")
+            df_offre_realisee_du_jour.drop(columns=InputColumns.jour).to_parquet(
+                file_path, engine=PARQUET_ENGINE, compression=PARQUET_COMPRESSION, index=False)
 
     def save_daily_mesure_qs(
             self, df_mesure_qs: pd.DataFrame, date: date, dsp: str, mesure_type: MesureType
