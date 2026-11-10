@@ -34,8 +34,33 @@
 
           <div class="body" role="main">
             
-  <section id="add-frequency">
-<h1>add_frequency<a class="headerlink" href="#add-frequency" title="Lien vers cette rubrique">¶</a></h1>
+  <section id="module-offre_realisee.domain.entities.add_frequency">
+<span id="add-frequency"></span><h1>add_frequency<a class="headerlink" href="#module-offre_realisee.domain.entities.add_frequency" title="Lien vers cette rubrique">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="offre_realisee.domain.entities.add_frequency.add_frequency">
+<span class="sig-prename descclassname"><span class="pre">offre_realisee.domain.entities.add_frequency.</span></span><span class="sig-name descname"><span class="pre">add_frequency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_by_stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.domain.entities.add_frequency.add_frequency" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Ajout d’une colonne de fréquence aux données de ponctualité par arrêt.</p>
+<p>Cette fonction prend en entrée un DataFrame contenant des données de ponctualité par arrêt et ajoute une colonne
+indiquant la fréquence de passage pour chaque enregistrement. La fréquence est déterminée en comparant la différence
+entre l’heure théorique actuelle et celle du cinquième passage suivant. Si cette différence est inférieure au seuil
+FREQUENCY_THRESHOLD (défini à 1h), la fréquence est considérée comme haute (HF), sinon elle est considérée comme
+basse (BF). Elle retourne le DataFrame modifié avec la colonne de fréquence ajoutée.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df_by_stop<span class="classifier">pd.DataFrame</span></dt><dd><p>DataFrame contenant les données de ponctualité par arrêt.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df_by_stop<span class="classifier">DataFrame</span></dt><dd><p>DataFrame modifié avec une colonne de fréquence ajoutée.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
 </section>
 
 

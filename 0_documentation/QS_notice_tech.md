@@ -118,7 +118,7 @@ Les colonnes sont présentées ci-dessous dans l'ordre dans lequel elles apparai
 | RETARD_NON_CONFORME                                         | int64  | Le détail de NON_CONFORME en basse fréquence : le nombre de passages entre 10 et 15 min de retard, qui valent 0 point chacun.                                                             |
 | NON_CONFORME                                                | int64  | Le nombre de situations de non conformité, qui ne rapportent aucun point (entre 10 et 15 minutes de retard pour une fréquence basse). Égal à RETARD_NON_CONFORME. |
 | SCORE_DE_CONFORMITE                                         | float  | La somme de l'ensemble des scores de conformité obtenus par arrêt et par course sur la ligne pour la période analysée et selon les règles de calcul précisées dans le cahier des charges. |
-| SITUATION_INACCEPTABLE_RETARD                               | int64  | Le nombre de SI causées par un retard >12min ou 15min selon la fréquence de la ligne.                                                                                                     |
+| SITUATION_INACCEPTABLE_RETARD                               | int64  | Le nombre de courses ayant au moins un retard >12min ou 15min selon la fréquence de la ligne. Plafonné à 1 SI par course, déclenchée dès le premier arrêt en retard inacceptable.         |
 | SITUATION_INACCEPTABLE_AVANCE                               | int64  | Le nombre de SI causées par une avance >2min.                                                                                                                                            |
 | SITUATION_INACCEPTABLE_THEORIQUE_SANS_HORAIRE_REEL_ATTRIBUE | int64  | Le nombre de courses ayant au moins un horaire de passage réel absent (face à un horaire de passage théorique renseigné). Plafonné à 1 SI par course, déclenchée dès le premier arrêt manquant. |
 | SITUATION_INACCEPTABLE_TOTAL                                | int64  | La somme de l'ensemble des SI pour la ligne et la période analysée.                                                                                                                      |
@@ -482,9 +482,12 @@ options:
 
 ## Fréquence
 
-Dans le calcul de la qualité de service, on distingue les passages en haute fréquence et les passages en faible
-fréquence. Un passage à un arrêt sera considéré comme un passage de haute fréquence si les cinq passages théoriques
-suivants du même arrêt ont lieu dans l'heure. Les cinq derniers passages sont donc systématiquement en basse fréquence.
+Dans le calcul de la qualité de service, on distingue les passages en haute fréquence et les passages en basse
+fréquence, selon le nombre de passages théoriques au même arrêt par heure glissante : moins de 6 passages théoriques
+par heure glissante correspond à la basse fréquence, 6 passages théoriques ou plus par heure glissante correspond à
+la haute fréquence. En pratique, un passage à un arrêt sera considéré comme un passage de haute fréquence si, en
+comptant ce passage et les cinq passages théoriques suivants du même arrêt (soit 6 passages), ceux-ci ont tous lieu
+dans l'heure. Les cinq derniers passages sont donc systématiquement en basse fréquence.
 
 ## Nombre de courses théoriques
 
