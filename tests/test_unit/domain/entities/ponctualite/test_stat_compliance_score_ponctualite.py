@@ -207,6 +207,68 @@ def test_stat_situation_inacceptable_absence_plafonnee_a_une_par_course():
     pd.testing.assert_frame_equal(result, expected_result)
 
 
+def test_stat_situation_inacceptable_retard_plafonnee_a_une_par_course():
+    # Given - la course C1 est en retard inacceptable à 2 arrêts, la course C2 passe à l'heure à tous les arrêts
+    df = pd.DataFrame({
+        MesurePonctualite.ligne: [1, 1, 1, 1, 1, 1],
+        MesurePonctualite.arret: [1, 2, 3, 1, 2, 3],
+        MesurePonctualite.sens: [1, 1, 1, 1, 1, 1],
+        InputColumns.course_id: ['C1', 'C1', 'C1', 'C2', 'C2', 'C2'],
+        MesurePonctualite.resultat: [
+            ComplianceType.situation_inacceptable_retard,
+            ComplianceType.situation_inacceptable_retard,
+            ComplianceType.compliant_delay,
+            ComplianceType.compliant_delay,
+            ComplianceType.compliant_delay,
+            ComplianceType.compliant_delay,
+        ]
+    })
+
+    expected_result = pd.DataFrame({
+        MesurePonctualite.ligne: [1],
+        MesurePonctualite.situation_inacceptable_avance: [0],
+        MesurePonctualite.situation_inacceptable_retard: [1],
+        MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue: [0],
+        MesurePonctualite.situation_inacceptable_total: [1],
+    })
+
+    # When
+    result = stat_situation_inacceptable(df)
+
+    # Then
+    pd.testing.assert_frame_equal(result, expected_result)
+
+
+def test_stat_situation_inacceptable_retard_une_par_course_manquante():
+    # Given - les courses C1 et C2 sont chacune en retard inacceptable à un arrêt différent
+    df = pd.DataFrame({
+        MesurePonctualite.ligne: [1, 1, 1, 1],
+        MesurePonctualite.arret: [1, 2, 1, 2],
+        MesurePonctualite.sens: [1, 1, 1, 1],
+        InputColumns.course_id: ['C1', 'C1', 'C2', 'C2'],
+        MesurePonctualite.resultat: [
+            ComplianceType.situation_inacceptable_retard,
+            ComplianceType.compliant_delay,
+            ComplianceType.compliant_delay,
+            ComplianceType.situation_inacceptable_retard,
+        ]
+    })
+
+    expected_result = pd.DataFrame({
+        MesurePonctualite.ligne: [1],
+        MesurePonctualite.situation_inacceptable_avance: [0],
+        MesurePonctualite.situation_inacceptable_retard: [2],
+        MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue: [0],
+        MesurePonctualite.situation_inacceptable_total: [2],
+    })
+
+    # When
+    result = stat_situation_inacceptable(df)
+
+    # Then
+    pd.testing.assert_frame_equal(result, expected_result)
+
+
 def test_stat_situation_inacceptable_absence_une_par_course_manquante():
     # Given - les courses C1 et C2 manquent chacune un arrêt différent
     df = pd.DataFrame({
