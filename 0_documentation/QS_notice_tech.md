@@ -141,7 +141,7 @@ pas recalculées dans les fichiers agrégés.
 | NOMBRE_COURSES_THEORIQUES              | int64  | Nombre de courses théoriques distinctes (COURSE_ID uniques ayant un horaire théorique) sur la période analysée. À la différence de NOMBRE_PASSAGES_THEORIQUES, une course n'est comptée qu'une fois quel que soit son nombre d'arrêts. |
 | NOMBRE_PASSAGES_THEORIQUES             | int64  | Nombre de passages théoriques total sur la période analysée.                                                                                                                              |
 | NOMBRE_PASSAGES_REELS                  | int64  | Nombre de passages réels total sur la période analysée. Ce nombre peut-être inférieur au nombre de passages théoriques, à de rares occasions il peut être supérieur.                       |
-| NOMBRE_MESURES_REELLES                 | int64  | NOMBRE_PASSAGES_REELS moins, pour chaque arrêt, son premier passage de la période analysée (qui n'a pas de passage précédent permettant de calculer un intervalle, cf. partie 3). Ce premier passage reste compté dans NOMBRE_PASSAGES_REELS mais ne correspond à aucune mesure d'intervalle effective. |
+| NOMBRE_MESURES_REELLES                 | int64  | Le nombre d'intervalles réels sur lesquels un score de régularité a effectivement pu être calculé. Il est égal à NOMBRE_PASSAGES_REELS moins, pour chaque arrêt, son premier passage de la période analysée (qui n'a pas de passage précédent permettant de calculer un intervalle, cf. partie 3). Ce premier passage reste compté dans NOMBRE_PASSAGES_REELS et rapporte 1 point à SCORE_DE_CONFORMITE (il est forcé "conforme" par convention), mais ne correspond à aucune mesure d'intervalle effective : NOMBRE_MESURES_REELLES donne ainsi le volume réel de données sur lequel portent les résultats détaillés (SEMI_CONFORME, NON_CONFORME, situations inacceptables). |
 | NON_PASSAGE_ARRET                      | int64  | Nombre de passages prévus mais non réalisés : NOMBRE_PASSAGES_THEORIQUES - NOMBRE_PASSAGES_REELS.                                                                                          |
 | SCORE_DE_CONFORMITE                    | float  | La somme de l'ensemble des scores de conformité obtenus par arrêt et par course sur la ligne pour la période analysée et selon les règles de calcul précisées dans le cahier des charges. |
 | SEMI_CONFORME                          | int64  | Le nombre d'intervalles semi-conformes (score de 0.65) sur la ligne pour la période analysée.                                                                                             |
@@ -635,7 +635,10 @@ inacceptables tant que le calcul n'est pas implémenté.
 - Toutes les heures réelles sont considérées à l'exception de la première heure de la journée n'ayant pas de passage
 antérieur donc pas d'interval. Ce premier passage reste compté dans NOMBRE_PASSAGES_REELS (il est forcé à
 "conforme") mais est exclu de NOMBRE_MESURES_REELLES, qui ne compte que les passages ayant effectivement produit un
-intervalle mesuré.
+intervalle mesuré. Cette convention évite de pénaliser une ligne pour une limite de la donnée (absence de passage
+antérieur), mais elle fait que ce premier passage rapporte malgré tout 1 point à SCORE_DE_CONFORMITE sans qu'aucun
+intervalle n'ait réellement été mesuré ; NOMBRE_MESURES_REELLES n'est donc pas le dénominateur de TAUX_DE_CONFORMITE,
+mais un indicateur du volume de données réellement disponible pour apprécier la régularité.
 - On associe à chaque heure réelle l'heure théorique la plus proche. (Une même heure théorique peut être associée à
 deux heures réelles différentes)
 - Dans le cas ou une heure réelle est aussi aussi proche de l'heure théorique inferieur que de l'heure théorique
