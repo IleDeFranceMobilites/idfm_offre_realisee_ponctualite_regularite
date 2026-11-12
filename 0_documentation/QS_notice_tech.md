@@ -108,6 +108,7 @@ Les colonnes sont présentées ci-dessous dans l'ordre dans lequel elles apparai
 | NOMBRE_COURSES_THEORIQUES                                   | int64  | Nombre de courses théoriques distinctes (COURSE_ID uniques ayant un horaire théorique) sur la période analysée. À la différence de NOMBRE_PASSAGES_THEORIQUES, une course n'est comptée qu'une fois quel que soit son nombre d'arrêts. |
 | NOMBRE_PASSAGES_THEORIQUES                                  | int64  | Nombre de passages théoriques total sur la période analysée.                                                                                                                             |
 | NOMBRE_PASSAGES_REELS                                       | int64  | Nombre de passages réels total sur la période analysée. Ce nombre peut-être inférieur au nombre de passages théoriques, à de rares occasions il peut être supérieur.                      |
+| NOMBRE_MESURES_REELLES                                      | int64  | NOMBRE_PASSAGES_REELS moins, pour chaque arrêt, son premier passage réel assigné de la période analysée. À la différence de la régularité, ce premier passage a bien un score de ponctualité valide (il n'est pas forcé "conforme") : il reste exclu de NOMBRE_MESURES_REELLES uniquement par cohérence avec la régularité, où le premier passage d'un arrêt n'a par construction aucun intervalle mesurable. |
 | NON_PASSAGE_ARRET                                           | int64  | Nombre de passages prévus mais non réalisés : NOMBRE_PASSAGES_THEORIQUES - NOMBRE_PASSAGES_REELS.                                                                                        |
 | AVANCE_CONFORME                                             | int64  | La somme des situations de conformité avance (<1 minutes d'avance)                                                                                                                       |
 | RETARD_CONFORME                                             | int64  | La somme des situations de conformité retard (retard <5 min pour une fréquence basse et <3min pour une fréquence haute)                                                                   |
@@ -129,9 +130,9 @@ Les colonnes sont présentées ci-dessous dans l'ordre dans lequel elles apparai
 
 Les colonnes de conformité (AVANCE_CONFORME, RETARD_CONFORME, RETARD_75_CONFORME, RETARD_50_CONFORME, SEMI_CONFORME,
 RETARD_25_CONFORME, RETARD_NON_CONFORME, NON_CONFORME) sont des dénombrements de passages : elles sont sommées lors des
-agrégations, comme le nombre de courses théoriques et les situations inacceptables. Les colonnes
-TAUX_DE_SITUATION_INNACEPTABLE et TAUX_DE_REMONTEE_SAE ne sont présentes que dans les mesures journalières et ne sont
-pas recalculées dans les fichiers agrégés.
+agrégations, comme le nombre de courses théoriques, NOMBRE_MESURES_REELLES et les situations inacceptables. Les
+colonnes TAUX_DE_SITUATION_INNACEPTABLE et TAUX_DE_REMONTEE_SAE ne sont présentes que dans les mesures journalières et
+ne sont pas recalculées dans les fichiers agrégés.
 
 ### Format des données - Régularité
 

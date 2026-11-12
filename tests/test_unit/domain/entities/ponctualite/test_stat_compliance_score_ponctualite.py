@@ -26,7 +26,11 @@ def test_stat_compliance_score_ponctualite():
             ComplianceType.compliant_delay,
             ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
             ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
-            ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence]]
+            ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence]],
+        # Un seul premier passage assigné par arrêt : (ligne 1, arrêt 1), (ligne 1, arrêt 2), (ligne 2, arrêt 1)
+        MesurePonctualite.est_premier_passage: [
+            True, False, False, False, False, True, False, False, False, False, False, True
+        ]
     })
 
     expected_result = pd.DataFrame({
@@ -40,6 +44,7 @@ def test_stat_compliance_score_ponctualite():
         MesurePonctualite.retard_50_conforme: [2, 1],
         MesurePonctualite.retard_25_conforme: [1, 0],
         MesurePonctualite.retard_non_conforme: [1, 0],
+        MesurePonctualite.nombre_mesures_reelles: [8, 0],
         MesurePonctualite.semi_conforme: [4, 1],
         MesurePonctualite.non_conforme: [1, 0],
         MesurePonctualite.situation_inacceptable_avance: [0, 0],

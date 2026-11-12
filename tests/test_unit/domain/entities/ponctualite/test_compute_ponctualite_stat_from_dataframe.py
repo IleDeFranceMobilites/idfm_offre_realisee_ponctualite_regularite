@@ -110,6 +110,88 @@ def test_nb_courses_theoriques_counts_course_once_across_multiple_stops():
     )
 
 
+def test_nombre_mesures_reelles_ponctualite_one_stop():
+    # Given - 1 arrêt, 4 passages réels tous assignés : le premier passage réel de l'arrêt ne compte pas comme
+    # mesure réelle (par cohérence avec la régularité), bien que son score de ponctualité reste valide.
+    df = pd.DataFrame({
+        InputColumns.ligne: ['L1'] * 4,
+        InputColumns.sens: [1] * 4,
+        InputColumns.arret: ['A1'] * 4,
+        InputColumns.heure_theorique: [
+            datetime.fromisoformat("2023-01-01 10:00:00+00:00"),
+            datetime.fromisoformat("2023-01-01 10:05:00+00:00"),
+            datetime.fromisoformat("2023-01-01 10:10:00+00:00"),
+            datetime.fromisoformat("2023-01-01 10:15:00+00:00"),
+        ],
+        InputColumns.heure_reelle: [
+            datetime.fromisoformat("2023-01-01 10:01:00+00:00"),
+            datetime.fromisoformat("2023-01-01 10:06:00+00:00"),
+            datetime.fromisoformat("2023-01-01 10:11:00+00:00"),
+            datetime.fromisoformat("2023-01-01 10:16:00+00:00"),
+        ],
+        InputColumns.is_terminus: [False] * 4,
+        InputColumns.course_id: [f'C{i + 1}' for i in range(4)],
+    })
+
+    expected = pd.DataFrame({
+        MesurePonctualite.ligne: ['L1'],
+        MesurePonctualite.nombre_reel: [4],
+        MesurePonctualite.nombre_mesures_reelles: [3],
+    })
+
+    # When
+    result = compute_ponctualite_stat_from_dataframe(df)
+
+    # Then
+    pd.testing.assert_frame_equal(
+        result[[
+            MesurePonctualite.ligne, MesurePonctualite.nombre_reel, MesurePonctualite.nombre_mesures_reelles
+        ]].reset_index(drop=True),
+        expected,
+    )
+
+
+def test_nombre_mesures_reelles_ponctualite_excludes_first_passage_per_arret():
+    # Given - 2 arrêts distincts (A1, A2), 4 passages réels assignés chacun : chaque arrêt exclut son propre
+    # premier passage réel.
+    df = pd.DataFrame({
+        InputColumns.ligne: ['L1'] * 8,
+        InputColumns.sens: [1] * 8,
+        InputColumns.arret: ['A1'] * 4 + ['A2'] * 4,
+        InputColumns.heure_theorique: [
+            datetime.fromisoformat("2023-01-01 10:00:00+00:00"),
+            datetime.fromisoformat("2023-01-01 10:05:00+00:00"),
+            datetime.fromisoformat("2023-01-01 10:10:00+00:00"),
+            datetime.fromisoformat("2023-01-01 10:15:00+00:00"),
+        ] * 2,
+        InputColumns.heure_reelle: [
+            datetime.fromisoformat("2023-01-01 10:01:00+00:00"),
+            datetime.fromisoformat("2023-01-01 10:06:00+00:00"),
+            datetime.fromisoformat("2023-01-01 10:11:00+00:00"),
+            datetime.fromisoformat("2023-01-01 10:16:00+00:00"),
+        ] * 2,
+        InputColumns.is_terminus: [False] * 8,
+        InputColumns.course_id: [f'C{i + 1}' for i in range(4)] * 2,
+    })
+
+    expected = pd.DataFrame({
+        MesurePonctualite.ligne: ['L1'],
+        MesurePonctualite.nombre_reel: [8],
+        MesurePonctualite.nombre_mesures_reelles: [6],
+    })
+
+    # When
+    result = compute_ponctualite_stat_from_dataframe(df)
+
+    # Then
+    pd.testing.assert_frame_equal(
+        result[[
+            MesurePonctualite.ligne, MesurePonctualite.nombre_reel, MesurePonctualite.nombre_mesures_reelles
+        ]].reset_index(drop=True),
+        expected,
+    )
+
+
 def test_non_passage_arret_et_si_absence_par_course():
     # Given - C1 passe aux 3 arrets, C2 ne passe pas aux arrets A1 et A2, un passage réel en surplus à A3
     df = pd.DataFrame({

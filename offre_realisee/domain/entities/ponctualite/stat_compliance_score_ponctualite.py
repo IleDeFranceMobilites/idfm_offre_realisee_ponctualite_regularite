@@ -9,6 +9,10 @@ _SI_VALUES_SET = {
     ComplianceType.situation_inacceptable_absence
 }
 
+# Compte intermédiaire des premiers passages (un par arrêt), utilisé uniquement pour calculer
+# NOMBRE_MESURES_REELLES. Jamais exposé en sortie.
+_NOMBRE_PREMIERS_PASSAGES = 'NOMBRE_PREMIERS_PASSAGES'
+
 _SEMI_COMPLIANT_HF = ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.haute_frequence]
 _SEMI_COMPLIANT_BF = ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence]
 _NOT_COMPLIANT_HF = ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.haute_frequence]
@@ -100,6 +104,9 @@ def stat_compliance_score_ponctualite(df: pd.DataFrame, metadata_cols: list[str]
     Elle renvoie un DataFrame contenant :
     - Le nombre de passage théoriques.
     - Le nombre de passages réelles assignées à une valeur théorique.
+    - Le nombre de mesures réelles (NOMBRE_MESURES_REELLES) : nombre de passages réels moins, pour chaque arrêt, son
+      premier passage réel assigné de la période analysée (cf. EST_PREMIER_PASSAGE), par cohérence avec la
+      régularité.
     - La somme des scores de conformité.
     - Les statistiques sur la conformité (semi-conforme, non-conforme, avance conforme et retard conforme), ainsi que
       le détail des paliers de retard selon la fréquence de la ligne (retard 75% et 25% en haute fréquence,
@@ -124,17 +131,39 @@ def stat_compliance_score_ponctualite(df: pd.DataFrame, metadata_cols: list[str]
     """
     df_si = stat_situation_inacceptable(df)
 
-    df = df.groupby([MesurePonctualite.ligne] + metadata_cols)[MesurePonctualite.resultat].agg([
-        (MesurePonctualite.nombre_theorique, 'count'),
-        (MesurePonctualite.nombre_reel, lambda x: x.isin(_ASSIGNED_VALUES_SET).sum()),
-        (MesurePonctualite.score_de_conformite, lambda x: x[~x.isin(_SI_VALUES_SET)].sum()),
-        (MesurePonctualite.avance_conforme, lambda x: x.isin([ComplianceType.compliant_advance]).sum()),
-        (MesurePonctualite.retard_conforme, lambda x: x.isin([ComplianceType.compliant_delay]).sum()),
-        (MesurePonctualite.retard_75_conforme, lambda x: x.isin([_SEMI_COMPLIANT_HF]).sum()),
-        (MesurePonctualite.retard_50_conforme, lambda x: x.isin([_SEMI_COMPLIANT_BF]).sum()),
-        (MesurePonctualite.retard_25_conforme, lambda x: x.isin([_NOT_COMPLIANT_HF]).sum()),
-        (MesurePonctualite.retard_non_conforme, lambda x: x.isin([_NOT_COMPLIANT_BF]).sum())
-    ]).reset_index()
+    df = df.groupby([MesurePonctualite.ligne] + metadata_cols).agg(**{
+        MesurePonctualite.nombre_theorique: (MesurePonctualite.resultat, 'count'),
+        MesurePonctualite.nombre_reel: (
+            MesurePonctualite.resultat, lambda x: x.isin(_ASSIGNED_VALUES_SET).sum()
+        ),
+        MesurePonctualite.score_de_conformite: (
+            MesurePonctualite.resultat, lambda x: x[~x.isin(_SI_VALUES_SET)].sum()
+        ),
+        MesurePonctualite.avance_conforme: (
+            MesurePonctualite.resultat, lambda x: x.isin([ComplianceType.compliant_advance]).sum()
+        ),
+        MesurePonctualite.retard_conforme: (
+            MesurePonctualite.resultat, lambda x: x.isin([ComplianceType.compliant_delay]).sum()
+        ),
+        MesurePonctualite.retard_75_conforme: (
+            MesurePonctualite.resultat, lambda x: x.isin([_SEMI_COMPLIANT_HF]).sum()
+        ),
+        MesurePonctualite.retard_50_conforme: (
+            MesurePonctualite.resultat, lambda x: x.isin([_SEMI_COMPLIANT_BF]).sum()
+        ),
+        MesurePonctualite.retard_25_conforme: (
+            MesurePonctualite.resultat, lambda x: x.isin([_NOT_COMPLIANT_HF]).sum()
+        ),
+        MesurePonctualite.retard_non_conforme: (
+            MesurePonctualite.resultat, lambda x: x.isin([_NOT_COMPLIANT_BF]).sum()
+        ),
+        _NOMBRE_PREMIERS_PASSAGES: (MesurePonctualite.est_premier_passage, 'sum'),
+    }).reset_index()
+
+    df[MesurePonctualite.nombre_mesures_reelles] = (
+        df[MesurePonctualite.nombre_reel] - df[_NOMBRE_PREMIERS_PASSAGES]
+    )
+    df = df.drop(columns=[_NOMBRE_PREMIERS_PASSAGES])
 
     # Les paliers de retard rapportant encore des points se cumulent en semi-conforme, y compris le
     # palier à 0.25 point en haute fréquence ; seul le palier à 0 point reste non conforme.

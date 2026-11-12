@@ -63,6 +63,8 @@ def test_process_stop_ponctualite():
                 ComplianceType.compliant_delay, ComplianceType.compliant_advance, ComplianceType.compliant_delay,
                 ComplianceType.situation_inacceptable_absence, ComplianceType.compliant_delay,
                 ComplianceType.situation_inacceptable_absence, ComplianceType.compliant_advance],
+            # Le premier passage réel assigné (chronologiquement) de l'arrêt est 10:02:00
+            MesurePonctualite.est_premier_passage: [True, False, False, False, False, False, False],
         }
     )
 
@@ -104,6 +106,7 @@ def test_process_stop_ponctualite_small_set():
             MesurePonctualite.is_terminus: [False, False],
             MesurePonctualite.resultat: [ComplianceType.situation_inacceptable_absence,
                                          ComplianceType.compliant_advance],
+            MesurePonctualite.est_premier_passage: [False, True],
         }
     )
 
@@ -142,6 +145,7 @@ def test_process_stop_ponctualite_small_set_less_reel():
             MesurePonctualite.is_terminus: [False, False],
             MesurePonctualite.resultat: [ComplianceType.situation_inacceptable_absence,
                                          ComplianceType.compliant_advance],
+            MesurePonctualite.est_premier_passage: [False, True],
         }
     )
 
@@ -189,6 +193,7 @@ def test_process_stop_ponctualite_small_set_no_assignment_because_after_next_sto
             MesurePonctualite.resultat: [
                 ComplianceType.compliant_advance, ComplianceType.situation_inacceptable_absence,
                 ComplianceType.compliant_delay],
+            MesurePonctualite.est_premier_passage: [True, False, False],
         }
     )
 
@@ -236,6 +241,7 @@ def test_process_stop_ponctualite_small_set_no_assignment_because_before_previou
             MesurePonctualite.resultat: [
                 ComplianceType.compliant_advance, ComplianceType.situation_inacceptable_absence,
                 ComplianceType.compliant_delay],
+            MesurePonctualite.est_premier_passage: [True, False, False],
         }
     )
 
@@ -264,6 +270,7 @@ def test_process_stop_ponctualite_early():
             MesurePonctualite.heure_reelle: [datetime.fromisoformat("2023-01-01 09:38:49+00:00")],
             MesurePonctualite.is_terminus: [False],
             MesurePonctualite.resultat: [ComplianceType.situation_inacceptable_avance],
+            MesurePonctualite.est_premier_passage: [True],
         }
     )
 
@@ -292,6 +299,7 @@ def test_process_stop_ponctualite_one_hour_early():
             MesurePonctualite.heure_reelle: [pd.NaT],
             MesurePonctualite.is_terminus: [False],
             MesurePonctualite.resultat: [ComplianceType.situation_inacceptable_absence],
+            MesurePonctualite.est_premier_passage: [False],
         }
     )
     expected_result[MesurePonctualite.heure_reelle] = expected_result[
@@ -322,6 +330,7 @@ def test_process_stop_ponctualite_late():
             MesurePonctualite.heure_reelle: [datetime.fromisoformat("2023-01-01 10:38:49+00:00")],
             MesurePonctualite.is_terminus: [False],
             MesurePonctualite.resultat: [ComplianceType.situation_inacceptable_retard],
+            MesurePonctualite.est_premier_passage: [True],
         }
     )
 
@@ -350,6 +359,7 @@ def test_process_stop_ponctualite_one_hour_late():
             MesurePonctualite.heure_reelle: [pd.NaT],
             MesurePonctualite.is_terminus: [False],
             MesurePonctualite.resultat: [ComplianceType.situation_inacceptable_absence],
+            MesurePonctualite.est_premier_passage: [False],
         }
     )
     expected_result[MesurePonctualite.heure_reelle] = expected_result[

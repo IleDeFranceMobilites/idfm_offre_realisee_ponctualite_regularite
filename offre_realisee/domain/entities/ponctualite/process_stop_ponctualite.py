@@ -66,7 +66,36 @@ def process_stop_ponctualite(df_by_stop: pd.DataFrame) -> pd.DataFrame:
         MesurePonctualite.heure_reelle: pd.NaT,
     })
 
+    df_by_stop = set_est_premier_passage(df_by_stop)
+
     return df_by_stop.drop([MesurePonctualite.difference_theorique], axis=1)
+
+
+def set_est_premier_passage(df_by_stop: pd.DataFrame) -> pd.DataFrame:
+    """Marque, pour un arrêt, le premier passage réel assigné de la période analysée via EST_PREMIER_PASSAGE.
+
+    À la différence de la régularité, ce premier passage n'a pas besoin d'être forcé "conforme" : son score de
+    ponctualité (écart réel/théorique) reste valide même sans passage antérieur. EST_PREMIER_PASSAGE sert uniquement
+    à l'exclure du nombre de mesures réelles (cf. NOMBRE_MESURES_REELLES), par cohérence avec la régularité.
+
+    Parameters
+    ----------
+    df_by_stop : DataFrame
+        DataFrame contenant les données par arrêt, avec les heures réelles assignées (NaT si non assigné).
+
+    Returns
+    -------
+    df_by_stop : DataFrame
+        DataFrame avec la colonne EST_PREMIER_PASSAGE ajoutée.
+    """
+    df_by_stop[MesurePonctualite.est_premier_passage] = False
+
+    assigned_mask = df_by_stop[MesurePonctualite.heure_reelle].notna()
+    if assigned_mask.any():
+        first_record_idx = df_by_stop.loc[assigned_mask, MesurePonctualite.heure_reelle].idxmin()
+        df_by_stop.loc[first_record_idx, MesurePonctualite.est_premier_passage] = True
+
+    return df_by_stop
 
 
 def compute_cost_matrix(df_by_stop: pd.DataFrame, heure_reelle_col: pd.Series) -> np.ndarray:

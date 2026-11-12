@@ -73,6 +73,8 @@ class MesurePonctualite(Mesure):
     resultat = 'RESULTAT'
     nombre_theorique = 'NOMBRE_PASSAGES_THEORIQUES'
     nombre_reel = 'NOMBRE_PASSAGES_REELS'
+    nombre_mesures_reelles = 'NOMBRE_MESURES_REELLES'
+    est_premier_passage = 'EST_PREMIER_PASSAGE'
     score_de_conformite = 'SCORE_DE_CONFORMITE'
     situation_inacceptable_retard = 'SITUATION_INACCEPTABLE_RETARD'
     situation_inacceptable_avance = 'SITUATION_INACCEPTABLE_AVANCE'
@@ -112,6 +114,7 @@ class MesurePonctualite(Mesure):
         nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
+        nombre_mesures_reelles,
         non_passage_arret,
         score_de_conformite,
         *situtation_conforme_types,
@@ -122,6 +125,7 @@ class MesurePonctualite(Mesure):
         nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
+        nombre_mesures_reelles,
         non_passage_arret,
         *situtation_conforme_types,
         score_de_conformite,
@@ -139,6 +143,7 @@ class MesurePonctualite(Mesure):
         nb_courses_theoriques,
         nombre_theorique,
         nombre_reel,
+        nombre_mesures_reelles,
         non_passage_arret,
         *situtation_conforme_types,
         score_de_conformite,
