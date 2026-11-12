@@ -141,6 +141,7 @@ pas recalculées dans les fichiers agrégés.
 | NOMBRE_COURSES_THEORIQUES              | int64  | Nombre de courses théoriques distinctes (COURSE_ID uniques ayant un horaire théorique) sur la période analysée. À la différence de NOMBRE_PASSAGES_THEORIQUES, une course n'est comptée qu'une fois quel que soit son nombre d'arrêts. |
 | NOMBRE_PASSAGES_THEORIQUES             | int64  | Nombre de passages théoriques total sur la période analysée.                                                                                                                              |
 | NOMBRE_PASSAGES_REELS                  | int64  | Nombre de passages réels total sur la période analysée. Ce nombre peut-être inférieur au nombre de passages théoriques, à de rares occasions il peut être supérieur.                       |
+| NOMBRE_MESURES_REELLES                 | int64  | NOMBRE_PASSAGES_REELS moins, pour chaque arrêt, son premier passage de la période analysée (qui n'a pas de passage précédent permettant de calculer un intervalle, cf. partie 3). Ce premier passage reste compté dans NOMBRE_PASSAGES_REELS mais ne correspond à aucune mesure d'intervalle effective. |
 | NON_PASSAGE_ARRET                      | int64  | Nombre de passages prévus mais non réalisés : NOMBRE_PASSAGES_THEORIQUES - NOMBRE_PASSAGES_REELS.                                                                                          |
 | SCORE_DE_CONFORMITE                    | float  | La somme de l'ensemble des scores de conformité obtenus par arrêt et par course sur la ligne pour la période analysée et selon les règles de calcul précisées dans le cahier des charges. |
 | SEMI_CONFORME                          | int64  | Le nombre d'intervalles semi-conformes (score de 0.65) sur la ligne pour la période analysée.                                                                                             |
@@ -153,7 +154,7 @@ pas recalculées dans les fichiers agrégés.
 | TAUX_ABSENCE_DE_DONNEES                | float  | (Le nombre de passages théoriques - le nombre de passages réels) / le nombre de passages théoriques * 100.                                                                                     |
 
 Comme pour la ponctualité, SEMI_CONFORME et NON_CONFORME sont des dénombrements d'intervalles et sont sommés lors des
-agrégations, de même que NOMBRE_COURSES_THEORIQUES.
+agrégations, de même que NOMBRE_COURSES_THEORIQUES et NOMBRE_MESURES_REELLES.
 
 ### Les niveaux d'aggrégation
 Afin d'analyser plus finement certaines périodes et certaines situation, nous avons mis en place 3 niveaux d'aggrégation :
@@ -632,7 +633,9 @@ inacceptables tant que le calcul n'est pas implémenté.
 ### Comment les passages réels sont-ils associés aux passages théoriques à un arrêt ?
 
 - Toutes les heures réelles sont considérées à l'exception de la première heure de la journée n'ayant pas de passage
-antérieur donc pas d'interval.
+antérieur donc pas d'interval. Ce premier passage reste compté dans NOMBRE_PASSAGES_REELS (il est forcé à
+"conforme") mais est exclu de NOMBRE_MESURES_REELLES, qui ne compte que les passages ayant effectivement produit un
+intervalle mesuré.
 - On associe à chaque heure réelle l'heure théorique la plus proche. (Une même heure théorique peut être associée à
 deux heures réelles différentes)
 - Dans le cas ou une heure réelle est aussi aussi proche de l'heure théorique inferieur que de l'heure théorique
@@ -646,6 +649,7 @@ somme des trois typologies : train de bus, écart important et capacité d'empor
 - Le score est égal à la somme des scores par arrêts divisée par la somme des passages théoriques par arrêts.
 - Le nombre de passages semi conformes et non conformes est également remonté par ligne.
 
-Lors de l'agrégation (par mois, période, année...), les nombres de courses, de passages, le score de conformité, les
-nombres de passages semi conformes et non conformes ainsi que chaque typologie de situation inacceptable sont sommés
-par ligne, puis le taux de conformité et le taux d'absence de données sont recalculés à partir de ces totaux.
+Lors de l'agrégation (par mois, période, année...), les nombres de courses, de passages, le nombre de mesures
+réelles, le score de conformité, les nombres de passages semi conformes et non conformes ainsi que chaque typologie
+de situation inacceptable sont sommés par ligne, puis le taux de conformité et le taux d'absence de données sont
+recalculés à partir de ces totaux.

@@ -69,6 +69,9 @@ def test_choose_best_score():
                 ComplianceType.semi_compliant[MesureType.regularite],
                 ComplianceType.compliant, ComplianceType.compliant,
                 ComplianceType.compliant
+            ],
+            MesureRegularite.est_premier_passage: [
+                True, False, False, False, False, False, False, False, False, False
             ]
         }
     )
@@ -228,11 +231,14 @@ def test_set_first_record_to_compliant():
     })
 
     expected_result = pd.DataFrame({
-        MesureRegularite.resultat: [ComplianceType.situation_inacceptable_train_de_bus, ComplianceType.compliant]
+        MesureRegularite.resultat: [ComplianceType.situation_inacceptable_train_de_bus, ComplianceType.compliant],
+        MesureRegularite.est_premier_passage: [False, True]
     })
 
     # When
     result = set_first_record_to_compliant(df)
 
     # Then
-    pd.testing.assert_frame_equal(result[[MesureRegularite.resultat]], expected_result)
+    pd.testing.assert_frame_equal(
+        result[[MesureRegularite.resultat, MesureRegularite.est_premier_passage]], expected_result
+    )

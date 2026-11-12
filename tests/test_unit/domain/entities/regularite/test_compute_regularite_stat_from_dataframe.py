@@ -95,6 +95,66 @@ def test_nb_courses_theoriques_regularite_counts_course_once_across_multiple_sto
     )
 
 
+def test_nombre_mesures_reelles_regularite_one_stop():
+    # Given - 1 arrêt, 6 passages réels : le premier passage de la journée ne compte pas comme mesure réelle
+    df = pd.DataFrame({
+        InputColumns.ligne: ['L1'] * 6,
+        InputColumns.sens: [1] * 6,
+        InputColumns.arret: ['A1'] * 6,
+        InputColumns.heure_theorique: _HF_THEORIQUE,
+        InputColumns.heure_reelle: _HF_REELLE,
+        InputColumns.is_terminus: [False] * 6,
+        InputColumns.course_id: [f'C{i + 1}' for i in range(6)],
+    })
+
+    expected = pd.DataFrame({
+        MesureRegularite.ligne: ['L1'],
+        MesureRegularite.nombre_reel: [6],
+        MesureRegularite.nombre_mesures_reelles: [5],
+    })
+
+    # When
+    result = compute_regularite_stat_from_dataframe(df)
+
+    # Then
+    pd.testing.assert_frame_equal(
+        result[[
+            MesureRegularite.ligne, MesureRegularite.nombre_reel, MesureRegularite.nombre_mesures_reelles
+        ]].reset_index(drop=True),
+        expected,
+    )
+
+
+def test_nombre_mesures_reelles_regularite_excludes_first_passage_per_arret():
+    # Given - 2 arrêts distincts (A1, A2), 6 passages réels chacun : chaque arrêt exclut son propre premier passage
+    df = pd.DataFrame({
+        InputColumns.ligne: ['L1'] * 12,
+        InputColumns.sens: [1] * 12,
+        InputColumns.arret: ['A1'] * 6 + ['A2'] * 6,
+        InputColumns.heure_theorique: _HF_THEORIQUE * 2,
+        InputColumns.heure_reelle: _HF_REELLE * 2,
+        InputColumns.is_terminus: [False] * 12,
+        InputColumns.course_id: [f'C{i + 1}' for i in range(6)] * 2,
+    })
+
+    expected = pd.DataFrame({
+        MesureRegularite.ligne: ['L1'],
+        MesureRegularite.nombre_reel: [12],
+        MesureRegularite.nombre_mesures_reelles: [10],
+    })
+
+    # When
+    result = compute_regularite_stat_from_dataframe(df)
+
+    # Then
+    pd.testing.assert_frame_equal(
+        result[[
+            MesureRegularite.ligne, MesureRegularite.nombre_reel, MesureRegularite.nombre_mesures_reelles
+        ]].reset_index(drop=True),
+        expected,
+    )
+
+
 def test_non_passage_arret_regularite():
     # Given - 6 passages théoriques haute fréquence, le 4ème n'a pas de passage réel
     df = pd.DataFrame({

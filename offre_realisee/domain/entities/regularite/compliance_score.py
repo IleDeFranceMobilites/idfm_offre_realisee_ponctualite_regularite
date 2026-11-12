@@ -114,7 +114,8 @@ def select_best_score_if_equals(df_score: pd.DataFrame) -> pd.DataFrame:
 def set_first_record_to_compliant(df_score: pd.DataFrame) -> pd.DataFrame:
     """Fixe un score de conformité pour la régularité "conforme" au premier passage de la période analysée.
     Le premier passage est toujours considéré comme "conforme" car il n'y a pas de passage précédent permettant de
-    calculer un intervalle.
+    calculer un intervalle. Ce premier passage est également marqué via EST_PREMIER_PASSAGE, afin de pouvoir
+    l'exclure du nombre de mesures réelles (cf. NOMBRE_MESURES_REELLES).
 
     Parameters
     ----------
@@ -126,9 +127,12 @@ def set_first_record_to_compliant(df_score: pd.DataFrame) -> pd.DataFrame:
     df_score : DataFrame
         DataFrame qui contient les scores de conformité auxquels on a fixé le score de conformité du premier passage
     """
-    df_score.loc[
-        df_score[MesureRegularite.heure_reelle].idxmin(), MesureRegularite.resultat
-    ] = ComplianceType.compliant
+    first_record_idx = df_score[MesureRegularite.heure_reelle].idxmin()
+
+    df_score.loc[first_record_idx, MesureRegularite.resultat] = ComplianceType.compliant
+
+    df_score[MesureRegularite.est_premier_passage] = False
+    df_score.loc[first_record_idx, MesureRegularite.est_premier_passage] = True
 
     return df_score
 
@@ -158,7 +162,9 @@ def choose_best_score(df: pd.DataFrame) -> pd.DataFrame:
     df_score = select_best_score_if_equals(df_score)
     df_score = set_first_record_to_compliant(df_score)
 
-    result_df = df_score[[MesureRegularite.heure_reelle, MesureRegularite.resultat]]
+    result_df = df_score[[
+        MesureRegularite.heure_reelle, MesureRegularite.resultat, MesureRegularite.est_premier_passage
+    ]]
 
     assert not any(result_df[MesureRegularite.resultat].isna())
 
