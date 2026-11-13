@@ -34,8 +34,29 @@
 
           <div class="body" role="main">
             
-  <section id="drop-stop-without-real-time">
-<h1>drop_stop_without_real_time<a class="headerlink" href="#drop-stop-without-real-time" title="Lien vers cette rubrique">¶</a></h1>
+  <section id="module-offre_realisee.domain.entities.drop_stop_without_real_time">
+<span id="drop-stop-without-real-time"></span><h1>drop_stop_without_real_time<a class="headerlink" href="#module-offre_realisee.domain.entities.drop_stop_without_real_time" title="Lien vers cette rubrique">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="offre_realisee.domain.entities.drop_stop_without_real_time.drop_stop_without_real_time">
+<span class="sig-prename descclassname"><span class="pre">offre_realisee.domain.entities.drop_stop_without_real_time.</span></span><span class="sig-name descname"><span class="pre">drop_stop_without_real_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.domain.entities.drop_stop_without_real_time.drop_stop_without_real_time" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Supprime les arrêts sans heure réelle du DataFrame.
+Un arrêt sans aucune heure réelle n’est pas pris en compte, il peut s’agir d’un arrêt non desservi.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame ayant une colonne d’heure réelle.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame filtré excluant les arrêts sans heure réelle.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
 </section>
 
 

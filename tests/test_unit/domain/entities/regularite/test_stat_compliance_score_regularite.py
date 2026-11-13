@@ -18,6 +18,10 @@ def test_stat_regularite_compliance_score():
             ComplianceType.situation_inacceptable_train_de_bus, ComplianceType.compliant, ComplianceType.compliant,
             ComplianceType.semi_compliant[MesureType.regularite], ComplianceType.compliant,
             ComplianceType.semi_compliant[MesureType.regularite]
+        ],
+        # Un seul premier passage par arrêt : arrets 1, 2, 3, 4, 5.
+        MesureRegularite.est_premier_passage: [
+            True, False, False, True, True, False, False, True, False, True
         ]
     })
     n_theorique_by_lignes = {"1": 5, "2": 7, "3": 1}
@@ -32,6 +36,7 @@ def test_stat_regularite_compliance_score():
         MesureRegularite.situation_inacceptable_total: [2, 1, 0],
         MesureRegularite.nombre_theorique: [5, 7, 1],
         MesureRegularite.nombre_reel: [4, 5, 1],
+        MesureRegularite.nombre_mesures_reelles: [2, 3, 0],
         MesureRegularite.taux_de_conformite: [33.0, 52.14, 65.0],
         MesureRegularite.taux_absence_de_donnees: [20.0, 28.57, 0.0],
         MesureRegularite.non_conforme:[0, 0, 0],
@@ -55,7 +60,8 @@ def test_stat_regularite_si_capacite_d_emport_nulle_et_comptee_dans_le_total():
         MesureRegularite.resultat: [
             ComplianceType.compliant, ComplianceType.situation_inacceptable_train_de_bus,
             ComplianceType.situation_inacceptable_faible_frequence
-        ]
+        ],
+        MesureRegularite.est_premier_passage: [True, False, False]
     })
     n_theorique_by_lignes = {"1": 3}
     any_high_frequency_on_lignes = {"1": True}
@@ -67,6 +73,7 @@ def test_stat_regularite_si_capacite_d_emport_nulle_et_comptee_dans_le_total():
     # Then - la capacité d'emport n'est pas encore remontée, le total reste la somme des 3 typologies
     assert result[MesureRegularite.situation_inacceptable_capacite_d_emport].tolist() == [0]
     assert result[MesureRegularite.situation_inacceptable_total].tolist() == [2]
+    assert result[MesureRegularite.nombre_mesures_reelles].tolist() == [2]
 
 
 def test_stat_regularite_compliance_score_no_high_frequency():
@@ -76,6 +83,7 @@ def test_stat_regularite_compliance_score_no_high_frequency():
         MesureRegularite.arret: [1, 1],
         MesureRegularite.sens: [1, 1],
         MesureRegularite.resultat: [ComplianceType.compliant, ComplianceType.compliant],
+        MesureRegularite.est_premier_passage: [True, True]
     })
     n_theorique_by_lignes = {"1": 1, "2": 1}
     any_high_frequency_on_lignes = {"1": False, "2": True}
@@ -89,6 +97,7 @@ def test_stat_regularite_compliance_score_no_high_frequency():
         MesureRegularite.situation_inacceptable_total: [0],
         MesureRegularite.nombre_theorique: [1],
         MesureRegularite.nombre_reel: [1],
+        MesureRegularite.nombre_mesures_reelles: [0],
         MesureRegularite.taux_de_conformite: [100.],
         MesureRegularite.taux_absence_de_donnees: [0.],
         MesureRegularite.non_conforme: [0],

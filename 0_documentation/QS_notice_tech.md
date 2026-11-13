@@ -108,6 +108,7 @@ Les colonnes sont présentées ci-dessous dans l'ordre dans lequel elles apparai
 | NOMBRE_COURSES_THEORIQUES                                   | int64  | Nombre de courses théoriques distinctes (COURSE_ID uniques ayant un horaire théorique) sur la période analysée. À la différence de NOMBRE_PASSAGES_THEORIQUES, une course n'est comptée qu'une fois quel que soit son nombre d'arrêts. |
 | NOMBRE_PASSAGES_THEORIQUES                                  | int64  | Nombre de passages théoriques total sur la période analysée.                                                                                                                             |
 | NOMBRE_PASSAGES_REELS                                       | int64  | Nombre de passages réels total sur la période analysée. Ce nombre peut-être inférieur au nombre de passages théoriques, à de rares occasions il peut être supérieur.                      |
+| NOMBRE_MESURES_REELLES                                      | int64  | NOMBRE_PASSAGES_REELS moins, pour chaque arrêt, son premier passage réel assigné de la période analysée. À la différence de la régularité, ce premier passage a bien un score de ponctualité valide (il n'est pas forcé "conforme") : il reste exclu de NOMBRE_MESURES_REELLES uniquement par cohérence avec la régularité, où le premier passage d'un arrêt n'a par construction aucun intervalle mesurable. |
 | NON_PASSAGE_ARRET                                           | int64  | Nombre de passages prévus mais non réalisés : NOMBRE_PASSAGES_THEORIQUES - NOMBRE_PASSAGES_REELS.                                                                                        |
 | AVANCE_CONFORME                                             | int64  | La somme des situations de conformité avance (<1 minutes d'avance)                                                                                                                       |
 | RETARD_CONFORME                                             | int64  | La somme des situations de conformité retard (retard <5 min pour une fréquence basse et <3min pour une fréquence haute)                                                                   |
@@ -118,7 +119,7 @@ Les colonnes sont présentées ci-dessous dans l'ordre dans lequel elles apparai
 | RETARD_NON_CONFORME                                         | int64  | Le détail de NON_CONFORME en basse fréquence : le nombre de passages entre 10 et 15 min de retard, qui valent 0 point chacun.                                                             |
 | NON_CONFORME                                                | int64  | Le nombre de situations de non conformité, qui ne rapportent aucun point (entre 10 et 15 minutes de retard pour une fréquence basse). Égal à RETARD_NON_CONFORME. |
 | SCORE_DE_CONFORMITE                                         | float  | La somme de l'ensemble des scores de conformité obtenus par arrêt et par course sur la ligne pour la période analysée et selon les règles de calcul précisées dans le cahier des charges. |
-| SITUATION_INACCEPTABLE_RETARD                               | int64  | Le nombre de SI causées par un retard >12min ou 15min selon la fréquence de la ligne.                                                                                                     |
+| SITUATION_INACCEPTABLE_RETARD                               | int64  | Le nombre de courses ayant au moins un retard >12min ou 15min selon la fréquence de la ligne. Plafonné à 1 SI par course, déclenchée dès le premier arrêt en retard inacceptable.         |
 | SITUATION_INACCEPTABLE_AVANCE                               | int64  | Le nombre de SI causées par une avance >2min.                                                                                                                                            |
 | SITUATION_INACCEPTABLE_THEORIQUE_SANS_HORAIRE_REEL_ATTRIBUE | int64  | Le nombre de courses ayant au moins un horaire de passage réel absent (face à un horaire de passage théorique renseigné). Plafonné à 1 SI par course, déclenchée dès le premier arrêt manquant. |
 | SITUATION_INACCEPTABLE_TOTAL                                | int64  | La somme de l'ensemble des SI pour la ligne et la période analysée.                                                                                                                      |
@@ -129,9 +130,9 @@ Les colonnes sont présentées ci-dessous dans l'ordre dans lequel elles apparai
 
 Les colonnes de conformité (AVANCE_CONFORME, RETARD_CONFORME, RETARD_75_CONFORME, RETARD_50_CONFORME, SEMI_CONFORME,
 RETARD_25_CONFORME, RETARD_NON_CONFORME, NON_CONFORME) sont des dénombrements de passages : elles sont sommées lors des
-agrégations, comme le nombre de courses théoriques et les situations inacceptables. Les colonnes
-TAUX_DE_SITUATION_INNACEPTABLE et TAUX_DE_REMONTEE_SAE ne sont présentes que dans les mesures journalières et ne sont
-pas recalculées dans les fichiers agrégés.
+agrégations, comme le nombre de courses théoriques, NOMBRE_MESURES_REELLES et les situations inacceptables. Les
+colonnes TAUX_DE_SITUATION_INNACEPTABLE et TAUX_DE_REMONTEE_SAE ne sont présentes que dans les mesures journalières et
+ne sont pas recalculées dans les fichiers agrégés.
 
 ### Format des données - Régularité
 
@@ -141,6 +142,7 @@ pas recalculées dans les fichiers agrégés.
 | NOMBRE_COURSES_THEORIQUES              | int64  | Nombre de courses théoriques distinctes (COURSE_ID uniques ayant un horaire théorique) sur la période analysée. À la différence de NOMBRE_PASSAGES_THEORIQUES, une course n'est comptée qu'une fois quel que soit son nombre d'arrêts. |
 | NOMBRE_PASSAGES_THEORIQUES             | int64  | Nombre de passages théoriques total sur la période analysée.                                                                                                                              |
 | NOMBRE_PASSAGES_REELS                  | int64  | Nombre de passages réels total sur la période analysée. Ce nombre peut-être inférieur au nombre de passages théoriques, à de rares occasions il peut être supérieur.                       |
+| NOMBRE_MESURES_REELLES                 | int64  | Le nombre d'intervalles réels sur lesquels un score de régularité a effectivement pu être calculé. Il est égal à NOMBRE_PASSAGES_REELS moins, pour chaque arrêt, son premier passage de la période analysée (qui n'a pas de passage précédent permettant de calculer un intervalle, cf. partie 3). Ce premier passage reste compté dans NOMBRE_PASSAGES_REELS et rapporte 1 point à SCORE_DE_CONFORMITE (il est forcé "conforme" par convention), mais ne correspond à aucune mesure d'intervalle effective : NOMBRE_MESURES_REELLES donne ainsi le volume réel de données sur lequel portent les résultats détaillés (SEMI_CONFORME, NON_CONFORME, situations inacceptables). |
 | NON_PASSAGE_ARRET                      | int64  | Nombre de passages prévus mais non réalisés : NOMBRE_PASSAGES_THEORIQUES - NOMBRE_PASSAGES_REELS.                                                                                          |
 | SCORE_DE_CONFORMITE                    | float  | La somme de l'ensemble des scores de conformité obtenus par arrêt et par course sur la ligne pour la période analysée et selon les règles de calcul précisées dans le cahier des charges. |
 | SEMI_CONFORME                          | int64  | Le nombre d'intervalles semi-conformes (score de 0.65) sur la ligne pour la période analysée.                                                                                             |
@@ -153,7 +155,7 @@ pas recalculées dans les fichiers agrégés.
 | TAUX_ABSENCE_DE_DONNEES                | float  | (Le nombre de passages théoriques - le nombre de passages réels) / le nombre de passages théoriques * 100.                                                                                     |
 
 Comme pour la ponctualité, SEMI_CONFORME et NON_CONFORME sont des dénombrements d'intervalles et sont sommés lors des
-agrégations, de même que NOMBRE_COURSES_THEORIQUES.
+agrégations, de même que NOMBRE_COURSES_THEORIQUES et NOMBRE_MESURES_REELLES.
 
 ### Les niveaux d'aggrégation
 Afin d'analyser plus finement certaines périodes et certaines situation, nous avons mis en place 3 niveaux d'aggrégation :
@@ -482,9 +484,12 @@ options:
 
 ## Fréquence
 
-Dans le calcul de la qualité de service, on distingue les passages en haute fréquence et les passages en faible
-fréquence. Un passage à un arrêt sera considéré comme un passage de haute fréquence si les cinq passages théoriques
-suivants du même arrêt ont lieu dans l'heure. Les cinq derniers passages sont donc systématiquement en basse fréquence.
+Dans le calcul de la qualité de service, on distingue les passages en haute fréquence et les passages en basse
+fréquence, selon le nombre de passages théoriques au même arrêt par heure glissante : moins de 6 passages théoriques
+par heure glissante correspond à la basse fréquence, 6 passages théoriques ou plus par heure glissante correspond à
+la haute fréquence. En pratique, un passage à un arrêt sera considéré comme un passage de haute fréquence si, en
+comptant ce passage et les cinq passages théoriques suivants du même arrêt (soit 6 passages), ceux-ci ont tous lieu
+dans l'heure. Les cinq derniers passages sont donc systématiquement en basse fréquence.
 
 ## Nombre de courses théoriques
 
@@ -629,7 +634,12 @@ inacceptables tant que le calcul n'est pas implémenté.
 ### Comment les passages réels sont-ils associés aux passages théoriques à un arrêt ?
 
 - Toutes les heures réelles sont considérées à l'exception de la première heure de la journée n'ayant pas de passage
-antérieur donc pas d'interval.
+antérieur donc pas d'interval. Ce premier passage reste compté dans NOMBRE_PASSAGES_REELS (il est forcé à
+"conforme") mais est exclu de NOMBRE_MESURES_REELLES, qui ne compte que les passages ayant effectivement produit un
+intervalle mesuré. Cette convention évite de pénaliser une ligne pour une limite de la donnée (absence de passage
+antérieur), mais elle fait que ce premier passage rapporte malgré tout 1 point à SCORE_DE_CONFORMITE sans qu'aucun
+intervalle n'ait réellement été mesuré ; NOMBRE_MESURES_REELLES n'est donc pas le dénominateur de TAUX_DE_CONFORMITE,
+mais un indicateur du volume de données réellement disponible pour apprécier la régularité.
 - On associe à chaque heure réelle l'heure théorique la plus proche. (Une même heure théorique peut être associée à
 deux heures réelles différentes)
 - Dans le cas ou une heure réelle est aussi aussi proche de l'heure théorique inferieur que de l'heure théorique
@@ -643,6 +653,7 @@ somme des trois typologies : train de bus, écart important et capacité d'empor
 - Le score est égal à la somme des scores par arrêts divisée par la somme des passages théoriques par arrêts.
 - Le nombre de passages semi conformes et non conformes est également remonté par ligne.
 
-Lors de l'agrégation (par mois, période, année...), les nombres de courses, de passages, le score de conformité, les
-nombres de passages semi conformes et non conformes ainsi que chaque typologie de situation inacceptable sont sommés
-par ligne, puis le taux de conformité et le taux d'absence de données sont recalculés à partir de ces totaux.
+Lors de l'agrégation (par mois, période, année...), les nombres de courses, de passages, le nombre de mesures
+réelles, le score de conformité, les nombres de passages semi conformes et non conformes ainsi que chaque typologie
+de situation inacceptable sont sommés par ligne, puis le taux de conformité et le taux d'absence de données sont
+recalculés à partir de ces totaux.

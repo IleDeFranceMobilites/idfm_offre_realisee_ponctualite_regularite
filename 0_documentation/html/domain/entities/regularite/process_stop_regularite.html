@@ -34,8 +34,36 @@
 
           <div class="body" role="main">
             
-  <section id="process-stop-regularite">
-<h1>process_stop_regularite<a class="headerlink" href="#process-stop-regularite" title="Lien vers cette rubrique">¶</a></h1>
+  <section id="module-offre_realisee.domain.entities.regularite.process_stop_regularite">
+<span id="process-stop-regularite"></span><h1>process_stop_regularite<a class="headerlink" href="#module-offre_realisee.domain.entities.regularite.process_stop_regularite" title="Lien vers cette rubrique">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="offre_realisee.domain.entities.regularite.process_stop_regularite.process_stop_regularite">
+<span class="sig-prename descclassname"><span class="pre">offre_realisee.domain.entities.regularite.process_stop_regularite.</span></span><span class="sig-name descname"><span class="pre">process_stop_regularite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_by_stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata_cols</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#offre_realisee.domain.entities.regularite.process_stop_regularite.process_stop_regularite" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Calcule le score de conformité pour tous les passages d’un arrêt sur la période analysée.
+Les étapes de calcul sont les suivantes :
+1. Association d’un passage à l’heure réelle à 2 passages à l’heure théorique (inf.=précédent, sup.=suivant)
+2. Calcul du score de conformité en fonction de chacun des 2 passages à l’heure théorique
+3. Sélection du score de conformité le plus optimal en fonction des résultats précédents</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="simple">
+<dt>df_by_stop<span class="classifier">DataFrame</span></dt><dd><p>DataFrame qui contient les données de passages réels et théoriques pour un arrêt sur toute la période analysée</p>
+</dd>
+<dt>metadata_cols: list[str]</dt><dd><p>Colonnes contenant des méta informations invariables par lignes qui doivent être conservées, par défaut à [].</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Lien vers cette rubrique">¶</a></h2>
+<blockquote>
+<div><dl class="simple">
+<dt>df_score<span class="classifier">DataFrame</span></dt><dd><p>DataFrame qui contient les scores de conformité pour tous les passages d’un arrêt sur la période analysée</p>
+</dd>
+</dl>
+</div></blockquote>
+</section>
+</dd></dl>
+
 </section>
 
 

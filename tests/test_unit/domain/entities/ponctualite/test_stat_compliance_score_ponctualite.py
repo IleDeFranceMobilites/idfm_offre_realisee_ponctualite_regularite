@@ -26,7 +26,11 @@ def test_stat_compliance_score_ponctualite():
             ComplianceType.compliant_delay,
             ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
             ComplianceType.not_compliant[MesureType.ponctualite][FrequenceType.haute_frequence],
-            ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence]]
+            ComplianceType.semi_compliant[MesureType.ponctualite][FrequenceType.basse_frequence]],
+        # Un seul premier passage assigné par arrêt : (ligne 1, arrêt 1), (ligne 1, arrêt 2), (ligne 2, arrêt 1)
+        MesurePonctualite.est_premier_passage: [
+            True, False, False, False, False, True, False, False, False, False, False, True
+        ]
     })
 
     expected_result = pd.DataFrame({
@@ -40,6 +44,7 @@ def test_stat_compliance_score_ponctualite():
         MesurePonctualite.retard_50_conforme: [2, 1],
         MesurePonctualite.retard_25_conforme: [1, 0],
         MesurePonctualite.retard_non_conforme: [1, 0],
+        MesurePonctualite.nombre_mesures_reelles: [8, 0],
         MesurePonctualite.semi_conforme: [4, 1],
         MesurePonctualite.non_conforme: [1, 0],
         MesurePonctualite.situation_inacceptable_avance: [0, 0],
@@ -198,6 +203,68 @@ def test_stat_situation_inacceptable_absence_plafonnee_a_une_par_course():
         MesurePonctualite.situation_inacceptable_retard: [0],
         MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue: [1],
         MesurePonctualite.situation_inacceptable_total: [1],
+    })
+
+    # When
+    result = stat_situation_inacceptable(df)
+
+    # Then
+    pd.testing.assert_frame_equal(result, expected_result)
+
+
+def test_stat_situation_inacceptable_retard_plafonnee_a_une_par_course():
+    # Given - la course C1 est en retard inacceptable à 2 arrêts, la course C2 passe à l'heure à tous les arrêts
+    df = pd.DataFrame({
+        MesurePonctualite.ligne: [1, 1, 1, 1, 1, 1],
+        MesurePonctualite.arret: [1, 2, 3, 1, 2, 3],
+        MesurePonctualite.sens: [1, 1, 1, 1, 1, 1],
+        InputColumns.course_id: ['C1', 'C1', 'C1', 'C2', 'C2', 'C2'],
+        MesurePonctualite.resultat: [
+            ComplianceType.situation_inacceptable_retard,
+            ComplianceType.situation_inacceptable_retard,
+            ComplianceType.compliant_delay,
+            ComplianceType.compliant_delay,
+            ComplianceType.compliant_delay,
+            ComplianceType.compliant_delay,
+        ]
+    })
+
+    expected_result = pd.DataFrame({
+        MesurePonctualite.ligne: [1],
+        MesurePonctualite.situation_inacceptable_avance: [0],
+        MesurePonctualite.situation_inacceptable_retard: [1],
+        MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue: [0],
+        MesurePonctualite.situation_inacceptable_total: [1],
+    })
+
+    # When
+    result = stat_situation_inacceptable(df)
+
+    # Then
+    pd.testing.assert_frame_equal(result, expected_result)
+
+
+def test_stat_situation_inacceptable_retard_une_par_course_manquante():
+    # Given - les courses C1 et C2 sont chacune en retard inacceptable à un arrêt différent
+    df = pd.DataFrame({
+        MesurePonctualite.ligne: [1, 1, 1, 1],
+        MesurePonctualite.arret: [1, 2, 1, 2],
+        MesurePonctualite.sens: [1, 1, 1, 1],
+        InputColumns.course_id: ['C1', 'C1', 'C2', 'C2'],
+        MesurePonctualite.resultat: [
+            ComplianceType.situation_inacceptable_retard,
+            ComplianceType.compliant_delay,
+            ComplianceType.compliant_delay,
+            ComplianceType.situation_inacceptable_retard,
+        ]
+    })
+
+    expected_result = pd.DataFrame({
+        MesurePonctualite.ligne: [1],
+        MesurePonctualite.situation_inacceptable_avance: [0],
+        MesurePonctualite.situation_inacceptable_retard: [2],
+        MesurePonctualite.situation_inacceptable_sans_horaire_reel_attribue: [0],
+        MesurePonctualite.situation_inacceptable_total: [2],
     })
 
     # When
